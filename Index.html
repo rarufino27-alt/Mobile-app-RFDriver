@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <h1>🚖 RV RfViagens 🚖</h1>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root{
+      --bg1:#127e00;      /* azul petróleo escuro */
+      --bg2:#ffffff;      /* grafite azulado */
+      --card:#0b1224aa;   /* glass */
+      --accent:#22c55e;   /* verde vivo */
+      --accent-dark:#16a34a;
+      --text:#000000;     /* texto claro */
+      --muted:#ffffff;    /* texto secundário */
+      --input-bg:#ffffff;
+      --input-border:#000000;
+      --chip:#0cb527;
+    }
+
+    /* Fundo com gradiente sutil e textura */
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+      font-size: 14px;
+      margin: 0;
+      padding: 24px 12px;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% 10%, #1b2a55 0%, transparent 60%),
+        radial-gradient(1200px 600px at 90% 20%, #0e3b2f 0%, transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+    }
+
+    /* Título principal mantendo a tag existente */
+    h1 {
+      font-size: 36px;
+      color: var(--input-bg);
+      text-align: center;
+      margin: 0 0 18px;
+      letter-spacing: .5px;
+      opacity: .95;
+    }
+
+    .container {
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .container h1 {
+      font-size: 18px;
+      color: var(--input-bg);
+      text-align: left;
+      margin-bottom: 16px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .container h1::before{
+      content:"💻";
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin: 10px 0 6px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing:.2px;
+    }
+
+    input[type="text"], input[type="number"], select {
+      width: 80%;
+      padding: 10px 12px;
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      background-color: var(--input-bg);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s, transform .05s;
+    }
+    input::placeholder { color: #99a4c2; opacity:.8; }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(34,197,94,.15);
+    }
+    input:active { transform: scale(0.998); }
+
+    select {
+      appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+        linear-gradient(135deg, var(--muted) 50%, transparent 50%),
+        linear-gradient(to right, transparent, transparent);
+      background-position:
+        calc(100% - 18px) calc(50% - 4px),
+        calc(100% - 12px) calc(50% - 4px),
+        calc(100% - 2.5em) 0.5em;
+      background-size: 6px 6px, 6px 6px, 1px 1.8em;
+      background-repeat: no-repeat;
+      padding-right: 2.5rem;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+    .row > div { flex: 1; }
+
+    button {
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+      color: white;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 14px;
+      margin-right: 8px;
+      transition: transform .06s ease, filter .2s ease, box-shadow .2s ease;
+      box-shadow: 0 8px 18px rgba(22,163,74,0.25);
+    }
+    button:hover { filter: brightness(1.03); box-shadow: 0 10px 22px rgba(22,163,74,0.35); }
+    button:active { transform: translateY(1px); }
+
+    #resultado {
+      margin-top: 18px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34,197,94,0.25);
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: pre-wrap;
+      color: #d1fae5;
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+      margin: 20px 0;
+    }
+
+    /* Chips/etiquetas informativas (se quiser usar depois) */
+    .chip {
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--chip);
+      color:#cbd5e1;
+      font-size:12px;
+      margin-bottom:8px;
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    /* Responsividade suave */
+    @media (max-width: 480px){
+      body{ padding:16px 10px; }
+      .container{ padding:14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculadora de viagens</h1>
+
+    <label>👨🏽‍✈Motorista:</label>
+    <input type="text" id="motorista" placeholder="Nome do motorista" />
+    <label>CPF/CNPJ:</label>
+    <input type="text" id="cpfCnpj" placeholder="Documento do motorista" />
+
+    <label>Marca/Modelo do Veículo:</label>
+    <input type="text" id="carro" placeholder="Ex: Gol 1.6 - Volkswagen" />
+    <div class="row">
+      <div>
+        <label>Placa:</label>
+        <input type="text" id="placa" placeholder="Ex: ABC-1234" />
+      </div>
+      <div>
+        <label>Cor:</label>
+        <input type="text" id="cor" placeholder="Ex: Branco" />
+      </div>
+    </div>
+
+    <label>🛫Origem/Destino (opcional):</label>
+    <input type="text" id="origem" placeholder="Ex: Av. Paulista" />
+    <label>🛬Destino/Origem (opcional):</label>
+    <input type="text" id="destino" placeholder="Ex: Av. Ipiranga" />
+    <label>Valor por KM cobrado ao cliente (R$):</label>
+    <input type="number" id="valorKm" placeholder="Ex: 2.50" step="0.01" />
+    <label>KM Rodado:</label>
+    <input type="number" id="kmRodado" placeholder="Ex: 12.5" step="0.01" />
+    <label>Duração da Corrida (em minutos):</label>
+    <input type="number" id="duracaoMin" placeholder="Ex: 25" step="1" />
+    <label>Tipo de uso nesta corrida (cidade ou pista):</label>
+    <select id="tipoUso">
+      <option value="cidade">Cidade</option>
+      <option value="pista">Pista</option>
+    </select>
+    <label>Tipo de viagem:</label>
+    <select id="tipoViagem">
+      <option value="soIdaComVolta">Só ida (com opção de volta)</option>
+      <option value="soIdaSemVolta">Só ida (sem opção de volta)</option>
+      <option value="idaVoltaEspera">Ida e volta com espera</option>
+      <option value="idaVolta">Ida e volta</option>
+      <option value="bateVolta">Bate e volta</option>
+    </select>
+
+    <hr style="margin: 20px 0;">
+    <h3 class="chip">Informações de GNV</h3>
+    <label>Valor de um cilindro cheio (R$):</label>
+    <input type="number" id="valorCilindro" step="0.01" onchange="salvarGNV()" />
+    <label>Autonomia na cidade (KM por cilindro):</label>
+    <input type="number" id="autonomiaCidade" step="1" onchange="salvarGNV()" />
+    <label>Autonomia na pista (KM por cilindro):</label>
+    <input type="number" id="autonomiaPista" step="1" onchange="salvarGNV()" />
+
+    <button onclick="calcularEstimativa()">Calcular Estimativa</button>
+    <button onclick="enviarWhatsApp()">Enviar via WhatsApp</button>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    /* ===========================
+       Persistência dos dados do motorista
+       Campos: motorista, cpfCnpj, carro, placa, cor
+       =========================== */
+    const PERFIL_KEY = 'rfv_perfilMotorista';
+
+    function carregarPerfil() {
+      const salvo = localStorage.getItem(PERFIL_KEY);
+      if (!salvo) return;
+      try {
+        const p = JSON.parse(salvo);
+        if (p.motorista) document.getElementById('motorista').value = p.motorista;
+        if (p.cpfCnpj) document.getElementById('cpfCnpj').value = p.cpfCnpj;
+        if (p.carro) document.getElementById('carro').value = p.carro;
+        if (p.placa) document.getElementById('placa').value = p.placa;
+        if (p.cor) document.getElementById('cor').value = p.cor;
+      } catch(e){ /* ignore */ }
+    }
+
+    function salvarPerfilCampo() {
+      const p = {
+        motorista: document.getElementById('motorista').value || '',
+        cpfCnpj: document.getElementById('cpfCnpj').value || '',
+        carro: document.getElementById('carro').value || '',
+        placa: document.getElementById('placa').value || '',
+        cor: document.getElementById('cor').value || ''
+      };
+      localStorage.setItem(PERFIL_KEY, JSON.stringify(p));
+    }
+
+    function conectarAutoSavePerfil() {
+      ['motorista','cpfCnpj','carro','placa','cor'].forEach(id=>{
+        const el = document.getElementById(id);
+        // salva quando o usuário termina de digitar ou sai do campo
+        el.addEventListener('change', salvarPerfilCampo);
+        el.addEventListener('blur', salvarPerfilCampo);
+        // salva também enquanto digita (leve e imediato)
+        el.addEventListener('input', salvarPerfilCampo);
+      });
+    }
+
+    /* ===========================
+       Persistência do GNV (já existia)
+       =========================== */
+    window.onload = function () {
+      // Carrega GNV
+      const gnv = JSON.parse(localStorage.getItem('gnvData'));
+      if (gnv) {
+        document.getElementById("valorCilindro").value = gnv.valorCilindro;
+        document.getElementById("autonomiaCidade").value = gnv.autonomiaCidade;
+        document.getElementById("autonomiaPista").value = gnv.autonomiaPista;
+      }
+      // Carrega perfil do motorista
+      carregarPerfil();
+      conectarAutoSavePerfil();
+    };
+
+    function salvarGNV() {
+      const valorCilindro = parseFloat(document.getElementById("valorCilindro").value);
+      const autonomiaCidade = parseFloat(document.getElementById("autonomiaCidade").value);
+      const autonomiaPista = parseFloat(document.getElementById("autonomiaPista").value);
+      if (!isNaN(valorCilindro) && !isNaN(autonomiaCidade) && !isNaN(autonomiaPista)) {
+        const dados = { valorCilindro, autonomiaCidade, autonomiaPista };
+        localStorage.setItem('gnvData', JSON.stringify(dados));
+      }
+    }
+
+    let valorTotalBrutoGlobal = 0;
+    let duracaoMinGlobal = 0;
+
+    function calcularEstimativa() {
+      const valorKm = parseFloat(document.getElementById("valorKm").value);
+      const kmRodado = parseFloat(document.getElementById("kmRodado").value);
+      const duracaoMin = parseFloat(document.getElementById("duracaoMin").value);
+      const tipoUso = document.getElementById("tipoUso").value;
+      const tipoViagem = document.getElementById("tipoViagem").value;
+      const gnv = JSON.parse(localStorage.getItem('gnvData'));
+      if (!gnv || isNaN(valorKm) || isNaN(kmRodado) || isNaN(duracaoMin) || duracaoMin <= 0) {
+        alert("Preencha todos os campos corretamente.");
+        return;
+      }
+
+      const autonomiaSelecionada = tipoUso === 'cidade' ? gnv.autonomiaCidade : gnv.autonomiaPista;
+      const custoGnvKm = gnv.valorCilindro / autonomiaSelecionada;
+      let valorTotalBruto = 0;
+      let custoGnvTotal = 0;
+
+      switch (tipoViagem) {
+        case 'soIdaComVolta':
+          valorTotalBruto = valorKm * kmRodado;
+          custoGnvTotal = custoGnvKm * kmRodado;
+          break;
+        case 'soIdaSemVolta':
+          valorTotalBruto = valorKm * kmRodado;
+          custoGnvTotal = custoGnvKm * kmRodado * 2;
+          break;
+        case 'idaVoltaEspera':
+          valorTotalBruto = valorKm * kmRodado * 2 * 1.10;
+          custoGnvTotal = custoGnvKm * kmRodado * 2;
+          break;
+        case 'idaVolta':
+          valorTotalBruto = valorKm * kmRodado * 2;
+          custoGnvTotal = custoGnvKm * kmRodado * 2;
+          break;
+        case 'bateVolta':
+          valorTotalBruto = ((valorKm * kmRodado) * 2) / 1.25;
+          custoGnvTotal = custoGnvKm * kmRodado * 2;
+          break;
+      }
+
+      const valorLiquido = valorTotalBruto - custoGnvTotal;
+      const duracaoHoras = duracaoMin / 60;
+      const kmPorMinuto = kmRodado / duracaoMin;
+      const kmPorHora = kmRodado / duracaoHoras;
+      const valorHoraLiquida = valorLiquido / duracaoHoras;
+
+      valorTotalBrutoGlobal = valorTotalBruto;
+      duracaoMinGlobal = duracaoMin;
+
+      const info = `
+Motorista: ${document.getElementById("motorista").value || '-'}
+CPF/CNPJ: ${document.getElementById("cpfCnpj").value || '-'}
+Carro: ${document.getElementById("carro").value || '-'}
+Placa: ${document.getElementById("placa").value || '-'}
+Cor: ${document.getElementById("cor").value || '-'}
+Origem: ${document.getElementById("origem").value || '-'}
+Destino: ${document.getElementById("destino").value || '-'}
+
+Valor total bruto: R$ ${valorTotalBruto.toFixed(2)}
+Custo GNV (${tipoUso}): R$ ${custoGnvTotal.toFixed(2)}
+Valor líquido estimado: R$ ${valorLiquido.toFixed(2)}
+
+Duração: ${duracaoMin} min (${duracaoHoras.toFixed(2)} h)
+KM por minuto: ${kmPorMinuto.toFixed(2)} km/min
+KM por hora: ${kmPorHora.toFixed(2)} km/h
+Valor líquido por hora: R$ ${valorHoraLiquida.toFixed(2)}
+      `;
+      document.getElementById("resultado").innerText = info;
+    }
+
+    function enviarWhatsApp() {
+      const motorista = document.getElementById("motorista").value || '-';
+      const cpfCnpj = document.getElementById("cpfCnpj").value || '-';
+      const carro = document.getElementById("carro").value || '-';
+      const placa = document.getElementById("placa").value || '-';
+      const cor = document.getElementById("cor").value || '-';
+      const origem = document.getElementById("origem").value || '-';
+      const destino = document.getElementById("destino").value || '-';
+      const valorTotal = valorTotalBrutoGlobal.toFixed(2);
+      const duracaoMin = duracaoMinGlobal;
+
+      if (!valorTotal || duracaoMin === 0) {
+        alert("Calcule a estimativa antes de enviar.");
+        return;
+      }
+
+      const mensagem = `🚖 *Estimativa RF VIAGENS* 🚖
+
+Motorista: ${motorista}
+CPF/CNPJ: ${cpfCnpj}
+Carro: ${carro}
+Placa: ${placa}
+Cor: ${cor}
+Origem: ${origem}
+Destino: ${destino}
+Valor Total: R$ ${valorTotal}
+Duração: ${duracaoMin} minutos`;
+
+      window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
+    }
+  </script>
+</body>
+</html>

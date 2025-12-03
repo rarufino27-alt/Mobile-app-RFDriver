@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Manutenção - Motorista App</title>
+<style>
+:root{
+  --bg:#121212; --card:#1E1E1E; --panel:#2A2A2A; --accent:#1DB954; --danger:#ff3b30; --warn:#f3b22a; --muted:#bbb;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:#fff;padding-bottom:160px;}
+header{background:var(--accent);padding:14px;text-align:center;color:#000;font-weight:700;font-size:20px;}
+.container{max-width:980px;margin:12px auto;padding:16px;}
+.row{display:flex;gap:12px;flex-wrap:wrap;}
+.col{flex:1;min-width:260px;}
+.card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.5);margin-bottom:12px;}
+.input, input, select, textarea, .smallBtn {width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:var(--panel);color:#fff;margin-bottom:8px;}
+.smallBtn{display:inline-block;text-align:center;cursor:pointer}
+.btn{background:var(--accent);color:#000;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer}
+.btnGhost{background:#333;color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer}
+.listItem{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:#0f0f0f;margin-bottom:8px}
+.badge{padding:6px 8px;border-radius:8px;font-weight:700}
+.kmSmall{font-size:13px;color:var(--muted)}
+.label{color:var(--muted);font-size:13px;margin-bottom:6px}
+
+/* colors */
+.statusGreen{background:linear-gradient(90deg,#093b13,#116a2f);color:#dfffe4}
+.statusWarn{background:linear-gradient(90deg,#8a6a00,#f3b22a);color:#201400}
+.statusRed{background:linear-gradient(90deg,#5a0a06,#ff3b30);color:#fff}
+
+/* export/controls row */
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.smallNote{color:var(--muted);font-size:13px;margin-top:8px}
+
+/* history table */
+.table{width:100%;border-collapse:collapse}
+.table th{background:#1b1b1b;color:var(--muted);padding:8px;text-align:left;font-weight:700}
+.table td{padding:8px;border-top:1px solid #222;font-size:14px;color:#fff}
+
+/* bottom menu */
+.bottom-menu{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:88%;background:#1B1B1B;padding:10px 0;border-radius:18px;display:flex;justify-content:space-around;box-shadow:0 6px 25px rgba(0,0,0,0.6);z-index:1000;}
+.bottom-menu .menu-item{ text-align:center;color:#fff;text-decoration:none;font-size:13px;display:flex;flex-direction:column;align-items:center;}
+.bottom-menu .menu-item .icon{font-size:22px;margin-bottom:4px;}
+.bottom-menu .menu-item.active{color:var(--accent);}
+
+@media(max-width:820px){ .row{flex-direction:column} .col{min-width:100%} }
+</style>
+</head>
+<body>
+
+<header>Manutenção</header>
+
+<div class="container">
+
+  <!-- CAR INFO & KM -->
+  <div class="card">
+    <h3>Dados do Veículo / KM Atual</h3>
+    <div class="row">
+      <div class="col">
+        <div class="label">Nome / Proprietário</div>
+        <input id="perfilNome" class="input" placeholder="Nome">
+      </div>
+      <div class="col">
+        <div class="label">Marca</div>
+        <input id="perfilMarca" class="input" placeholder="Marca do carro">
+      </div>
+      <div class="col">
+        <div class="label">Modelo</div>
+        <input id="perfilModelo" class="input" placeholder="Modelo">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="label">Ano</div>
+        <input id="perfilAno" class="input" placeholder="Ano">
+      </div>
+      <div class="col">
+        <div class="label">Placa</div>
+        <input id="perfilPlaca" class="input" placeholder="Placa">
+      </div>
+      <div class="col">
+        <div class="label">KM atual (registrar diariamente)</div>
+        <input id="kmAtual" class="input" type="number" placeholder="Ex: 12345">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;">
+      <button id="salvarPerfil" class="btn">Salvar dados e atualizar KM</button>
+      <button id="limparPerfil" class="btnGhost">Recarregar</button>
+      <div style="flex:1"></div>
+      <button id="exportWhats" class="btnGhost">Enviar por WhatsApp</button>
+      <button id="exportPdf" class="btnGhost">Gerar PDF</button>
+    </div>
+
+    <div class="smallNote">Ao salvar o KM atual, todos os registros de manutenção serão recalculados e o km restante atualizado automaticamente.</div>
+  </div>
+
+  <!-- ADD MAINTENANCE -->
+  <div class="card">
+    <h3>Cadastrar manutenção / item</h3>
+    <div class="label">Nome da manutenção</div>
+    <input id="mNome" class="input" placeholder="Ex: Troca de óleo">
+
+    <div class="row">
+      <div class="col">
+        <div class="label">Km da última troca</div>
+        <input id="mKmUltima" class="input" type="number" placeholder="Ex: 45000">
+      </div>
+      <div class="col">
+        <div class="label">Intervalo para próxima troca (km)</div>
+        <input id="mIntervalo" class="input" type="number" placeholder="Ex: 10000">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="label">Custo estimado (último valor pago)</div>
+        <input id="mCusto" class="input" type="number" step="0.01" placeholder="R$">
+      </div>
+      <div class="col">
+        <div class="label">Observações (opcional)</div>
+        <input id="mObs" class="input" placeholder="Ex: usar óleo X, prioridade...">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;">
+      <button id="addManut" class="btn">Adicionar / Salvar manutenção</button>
+      <button id="limparFormManut" class="btnGhost">Limpar</button>
+    </div>
+  </div>
+
+  <!-- LIST OF MAINTENANCES -->
+  <div class="card">
+    <h3>Manutenções cadastradas (ordenadas por urgência)</h3>
+    <div id="listaManutencoes"></div>
+    <div class="smallNote">Vermelho ≤ 800km • Amarelo ≤ 2000km • Verde > 2000km</div>
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div class="card">
+    <h3>Histórico de manutenções realizadas</h3>
+    <table class="table" id="histTable">
+      <thead><tr><th>Data</th><th>Nome</th><th>KM</th><th>Valor</th><th>Obs</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- bottom menu -->
+<nav class="bottom-menu" aria-label="Menu">
+    <a href="index.html" class="menu-item"><span class="icon">🏠</span><span>Dashboard</span></a>
+    <a href="entradas.html" class="menu-item"><span class="icon">💵</span><span>Entradas</span></a>
+    <a href="manutencao.html" class="menu-item active"><span class="icon">🛠️</span><span>Manutenção</span></a>
+    <a href="resumo.html" class="menu-item"><span class="icon">📊</span><span>Resumo</span></a>
+    <a href="perfil.html" class="menu-item"><span class="icon">👤</span><span>Perfil</span></a>
+    <a href="calculadora.html" class="menu-item"><span class="icon">📟</span><span>Calc</span></a>
+</nav>
+
+<!-- libs for PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+/* Storage keys:
+   - perfilMotorista: { nome, carro, modelo, ano, placa, kmAtual }
+   - manutencoes: array of { id, nome, kmUltimaTroca, intervaloKm, custoEstimado, obs, kmProxima, kmRestante, valorPorKm, criadoEm }
+   - manutHistorico: array of { id, nome, kmTroca, custoPago, data, obs }
+*/
+
+// helpers
+const $ = id => document.getElementById(id);
+const fmt = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const nowISO = ()=> new Date().toISOString();
+
+// load/save
+function loadPerfil(){ try{ return JSON.parse(localStorage.getItem('perfilMotorista') || '{}'); }catch(e){ return {}; } }
+function savePerfil(p){ localStorage.setItem('perfilMotorista', JSON.stringify(p)); }
+function loadManuts(){ try{ return JSON.parse(localStorage.getItem('manutencoes') || '[]'); }catch(e){ return []; } }
+function saveManuts(a){ localStorage.setItem('manutencoes', JSON.stringify(a)); }
+function loadHist(){ try{ return JSON.parse(localStorage.getItem('manutHistorico') || '[]'); }catch(e){ return []; } }
+function saveHist(a){ localStorage.setItem('manutHistorico', JSON.stringify(a)); }
+
+// calculations
+function calcularProximas(manut, kmAtual){
+  manut.kmProxima = Number(manut.kmUltimaTroca) + Number(manut.intervaloKm);
+  manut.kmRestante = Number(manut.kmProxima) - Number(kmAtual);
+  manut.valorPorKm = (Number(manut.custoEstimado) || 0) / (Number(manut.intervaloKm) || 1);
+  return manut;
+}
+
+function colorFromKmRestante(km){
+  if(km <= 800) return 'statusRed';
+  if(km <= 2000) return 'statusWarn';
+  return 'statusGreen';
+}
+
+// UI render
+function renderPerfilAndInputs(){
+  const perfil = loadPerfil();
+  $('perfilNome').value = perfil.nome || '';
+  $('perfilMarca').value = perfil.carro || '';
+  $('perfilModelo').value = perfil.modelo || '';
+  $('perfilAno').value = perfil.ano || '';
+  $('perfilPlaca').value = perfil.placa || '';
+  $('kmAtual').value = perfil.kmAtual || '';
+}
+
+function renderManutencoes(){
+  const manuts = loadManuts();
+  const perfil = loadPerfil();
+  const kmAtual = Number(perfil.kmAtual || 0);
+  // recalc all
+  for(let m of manuts) calcularProximas(m, kmAtual);
+  // sort by kmRestante ascending (most urgent first)
+  manuts.sort((a,b)=> (a.kmRestante - b.kmRestante));
+  // save recalculated
+  saveManuts(manuts);
+
+  const container = $('listaManutencoes');
+  container.innerHTML = '';
+  if(manuts.length===0) { container.innerHTML = '<div class="smallNote">Nenhuma manutenção cadastrada.</div>'; return; }
+
+  manuts.forEach(m=>{
+    const div = document.createElement('div');
+    div.className = 'listItem';
+    // left: info
+    const left = document.createElement('div');
+    left.style.maxWidth = '70%';
+    left.innerHTML = `<div style="font-weight:800">${escapeHtml(m.nome)}</div>
+      <div class="kmSmall">Última troca: ${m.kmUltimaTroca} km • Próx: ${m.kmProxima} km</div>
+      <div class="kmSmall">Valor estimado: ${fmt(m.custoEstimado)} • Valor por km: ${fmt(m.valorPorKm)}</div>
+      ${m.obs ? `<div class="kmSmall">Obs: ${escapeHtml(m.obs)}</div>` : ''}`;
+
+    // right: status & actions
+    const right = document.createElement('div');
+    right.style.textAlign = 'right';
+    const statusClass = colorFromKmRestante(m.kmRestante);
+    const kmRest = Number(m.kmRestante);
+    const kmText = kmRest < 0 ? `${Math.abs(kmRest)} km atrasado` : `${kmRest} km restantes`;
+    right.innerHTML = `<div class="badge ${statusClass}">${kmText}</div>
+      <div style="margin-top:8px">
+        <button class="smallBtn btnGhost" onclick="editarManut(${m.id})">Editar</button>
+        <button class="smallBtn btnGhost" onclick="removerManut(${m.id})">Remover</button>
+        <button class="smallBtn btn" onclick="marcarRealizada(${m.id})">Marcar realizada</button>
+      </div>`;
+
+    div.appendChild(left);
+    div.appendChild(right);
+    container.appendChild(div);
+  });
+
+  // also show total per-km suggested reserve
+  const totalPerKm = manuts.reduce((s,mi)=> s + Number(mi.valorPorKm || 0), 0);
+  const info = document.createElement('div');
+  info.className = 'smallNote';
+  info.innerText = `Total sugerido a separar para manutenção por km: ${fmt(totalPerKm)} por km (soma dos itens cadastrados)`;
+  container.appendChild(info);
+}
+
+function renderHistorico(){
+  const hist = loadHist();
+  const tbody = document.querySelector('#histTable tbody');
+  tbody.innerHTML = '';
+  if(hist.length===0){ tbody.innerHTML = '<tr><td colspan="5" class="smallNote">Nenhuma manutenção registrada.</td></tr>'; return; }
+  // show most recent first
+  hist.slice().reverse().forEach(h=>{
+    const tr = document.createElement('tr');
+    const data = h.data ? (new Date(h.data)).toLocaleString() : '';
+    tr.innerHTML = `<td>${data}</td><td>${escapeHtml(h.nome)}</td><td>${h.kmTroca}</td><td>${fmt(h.custoPago)}</td><td>${escapeHtml(h.obs||'')}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* CRUD actions */
+function adicionarManut(){
+  const nome = $('mNome').value.trim();
+  const kmUltima = Number($('mKmUltima').value);
+  const intervalo = Number($('mIntervalo').value);
+  const custo = Number($('mCusto').value);
+  const obs = $('mObs').value.trim();
+
+  if(!nome || !kmUltima || !intervalo){ alert('Preencha nome, km da última troca e intervalo.'); return; }
+
+  const perfil = loadPerfil();
+  const kmAtual = Number(perfil.kmAtual || 0);
+
+  const m = {
+    id: Date.now(),
+    nome,
+    kmUltimaTroca: kmUltima,
+    intervaloKm: intervalo,
+    custoEstimado: custo,
+    obs,
+    criadoEm: nowISO()
+  };
+  calcularProximas(m, kmAtual);
+
+  const manuts = loadManuts();
+  manuts.push(m);
+  saveManuts(manuts);
+  renderManutencoes();
+  limparFormManut();
+}
+
+function editarManut(id){
+  const manuts = loadManuts();
+  const m = manuts.find(x=>x.id===id);
+  if(!m) return alert('Manutenção não encontrada.');
+  // fill form
+  $('mNome').value = m.nome || '';
+  $('mKmUltima').value = m.kmUltimaTroca || '';
+  $('mIntervalo').value = m.intervaloKm || '';
+  $('mCusto').value = m.custoEstimado || '';
+  $('mObs').value = m.obs || '';
+  // remove old and wait user to save -> we'll add as new on save (or you can implement update inplace)
+  removerManut(id);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function removerManut(id){
+  if(!confirm('Remover esta manutenção?')) return;
+  let manuts = loadManuts();
+  manuts = manuts.filter(m=>m.id!==id);
+  saveManuts(manuts);
+  renderManutencoes();
+}
+
+function marcarRealizada(id){
+  const manuts = loadManuts();
+  const m = manuts.find(x=>x.id===id);
+  if(!m) return alert('Manutenção não encontrada');
+
+  const perfil = loadPerfil();
+  const kmAtual = Number(perfil.kmAtual || 0);
+
+  // ask for km da troca (default last or kmAtual) and valor pago
+  const kmTroca = Number(prompt('Informe o KM da troca (use KM atual ou km da última troca):', kmAtual || m.kmProxima || m.kmUltimaTroca));
+  if(!kmTroca){ alert('KM inválido. Operação cancelada.'); return; }
+  const custoPago = Number(prompt('Informe o valor pago (R$):', m.custoEstimado || 0)) || 0;
+  const obs = prompt('Observações (opcional):','') || '';
+
+  // create historic record
+  const hist = loadHist();
+  hist.push({
+    id: Date.now(),
+    nome: m.nome,
+    kmTroca,
+    custoPago,
+    data: nowISO(),
+    obs
+  });
+  saveHist(hist);
+
+  // update the maintenance last-km to this kmTroca and recalc next
+  m.kmUltimaTroca = kmTroca;
+  calcularProximas(m, kmAtual);
+  saveManuts(manuts);
+
+  // optionally update perfil.kmAtual if kmTroca > kmAtual
+  if(kmTroca > kmAtual){
+    perfil.kmAtual = kmTroca;
+    savePerfil(perfil);
+    renderPerfilAndInputs();
+  }
+
+  renderManutencoes();
+  renderHistorico();
+  alert('Manutenção registrada no histórico e item atualizado.');
+}
+
+/* profile saving and updating km recalculation */
+function salvarPerfil(){
+  const perfil = loadPerfil();
+  perfil.nome = $('perfilNome').value.trim();
+  perfil.carro = $('perfilMarca').value.trim();
+  perfil.modelo = $('perfilModelo').value.trim();
+  perfil.ano = $('perfilAno').value.trim();
+  perfil.placa = $('perfilPlaca').value.trim();
+  const novoKm = Number($('kmAtual').value || 0);
+  if(novoKm && novoKm < (perfil.kmAtual||0)){
+    if(!confirm('O KM informado é menor que o KM salvo anteriormente. Deseja realmente sobrescrever?')) return;
+  }
+  if(novoKm) perfil.kmAtual = novoKm;
+  savePerfil(perfil);
+  // recalc manutencoes
+  const manuts = loadManuts();
+  for(let m of manuts) calcularProximas(m, perfil.kmAtual || 0);
+  saveManuts(manuts);
+  renderManutencoes();
+  alert('Perfil e KM atual salvos e manutenções recalculadas.');
+}
+
+/* exports */
+function exportWhats(){
+  const perfil = loadPerfil();
+  const manuts = loadManuts();
+  let msg = `Relatório de Manutenção - ${new Date().toLocaleDateString()}\nVeículo: ${perfil.carro||''} ${perfil.modelo||''} - KM atual: ${perfil.kmAtual||0}\n\nManutenções:\n`;
+  const sorted = manuts.slice().sort((a,b)=>a.kmRestante - b.kmRestante);
+  sorted.forEach(m=>{
+    msg += `• ${m.nome}: prox ${m.kmProxima} (restam ${m.kmRestante} km) • custo estimado ${fmt(m.custoEstimado)}\n`;
+  });
+  const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(url,'_blank');
+}
+
+async function exportPdf(){
+  try{
+    const el = document.querySelector('.container');
+    const clone = el.cloneNode(true);
+    clone.style.width = '1000px';
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'fixed'; wrapper.style.left='-9999px';
+    wrapper.appendChild(clone);
+    document.body.appendChild(wrapper);
+    const canvas = await html2canvas(clone, { scale:2, useCORS:true, backgroundColor: '#121212' });
+    document.body.removeChild(wrapper);
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p','mm','a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const imgProps = pdf.getImageProperties(imgData);
+    const imgWidth = pageWidth;
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+    if(imgHeight <= pdf.internal.pageSize.getHeight()){
+      pdf.addImage(imgData,'PNG',0,0,imgWidth,imgHeight);
+    } else {
+      // split
+      const pageHeightPx = Math.round(canvas.width * (pdf.internal.pageSize.getHeight() / imgWidth));
+      let y=0;
+      while(y < canvas.height){
+        const part = document.createElement('canvas');
+        part.width = canvas.width;
+        part.height = Math.min(pageHeightPx, canvas.height - y);
+        const ctx = part.getContext('2d');
+        ctx.drawImage(canvas, 0, y, canvas.width, part.height, 0, 0, canvas.width, part.height);
+        const data = part.toDataURL('image/png');
+        const partImgHeight = (part.height * imgWidth) / canvas.width;
+        pdf.addImage(data,'PNG',0,0,imgWidth,partImgHeight);
+        y += pageHeightPx;
+        if(y < canvas.height) pdf.addPage();
+      }
+    }
+    pdf.save(`manutencoes_${new Date().toISOString().slice(0,10)}.pdf`);
+  } catch(e){ console.error(e); alert('Erro ao gerar PDF: ' + (e.message||e)); }
+}
+
+/* utilities */
+function escapeHtml(str){ if(!str) return ''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function limparFormManut(){ $('mNome').value=''; $('mKmUltima').value=''; $('mIntervalo').value=''; $('mCusto').value=''; $('mObs').value=''; }
+
+/* init bindings */
+document.getElementById('addManut').addEventListener('click', adicionarManut);
+document.getElementById('limparFormManut').addEventListener('click', limparFormManut);
+document.getElementById('salvarPerfil').addEventListener('click', salvarPerfil);
+document.getElementById('limparPerfil').addEventListener('click', ()=> { renderPerfilAndInputs(); renderManutencoes(); renderHistorico(); });
+document.getElementById('exportWhats').addEventListener('click', exportWhats);
+document.getElementById('exportPdf').addEventListener('click', exportPdf);
+
+/* boot */
+(function boot(){
+  // ensure arrays exist
+  if(!localStorage.getItem('manutencoes')) localStorage.setItem('manutencoes','[]');
+  if(!localStorage.getItem('manutHistorico')) localStorage.setItem('manutHistorico','[]');
+  // render UI
+  renderPerfilAndInputs();
+  renderManutencoes();
+  renderHistorico();
+})();
+
+</script>
+</body>
+</html>

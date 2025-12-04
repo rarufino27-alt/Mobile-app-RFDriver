@@ -4,138 +4,355 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Dashboard - Motorista App</title>
+
 <style>
-:root{
-    --bg:#121212; --card:#1E1E1E; --panel:#2A2A2A; --accent:#1DB954; --danger:#ff3b30; --muted:#bbb;
+/* PALETA CORPORATIVA */
+:root {
+    /* CORES MODO CLARO (atual) */
+    --bg: #ffffff;
+    --page-gap: #f3f5f8;
+    --card: #fafbfc;
+    --card-strong: #f0f2f5;
+    --panel: #ffffff;
+
+    --brand: #0b5bd7;
+    --brand-dark: #073f8a;
+
+    --accent-success: #1DB954;
+    --accent-danger: #ff3b30;
+
+    --muted: #65707a;
+    --text: #0b1115;
+
+    --shadow: 0 6px 16px rgba(13,30,45,0.07);
+    --shadow-strong: 0 10px 32px rgba(10,20,30,0.12);
+
+    --radius: 14px;
 }
+
+/* ========= MODO ESCURO ========= */
+.dark {
+    --bg: #0f1115;
+    --page-gap: #15171c;
+
+    --card: #181a20;
+    --card-strong: #1d1f27;
+    --panel: #1b1d25;
+
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+
+    --shadow: 0 6px 16px rgba(0,0,0,0.35);
+    --shadow-strong: 0 10px 32px rgba(0,0,0,0.45);
+
+    --brand: #3b82f6;
+    --brand-dark: #2563eb;
+
+    --accent-success: #22c55e;
+    --accent-danger: #ef4444;
+}
+
+/* BASE */
+*{box-sizing:border-box}
 body{
-    margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--bg); color:#fff; padding-bottom:140px;
+    margin:0;
+    font-family: Inter,Roboto,Arial,sans-serif;
+    background:linear-gradient(180deg,var(--page-gap),var(--bg) 50%);
+    color:var(--text);
+    padding-bottom:160px;
 }
-header{ background:var(--accent); padding:14px; text-align:center; color:#000; font-weight:700; font-size:20px;}
-.container{ max-width:980px; margin:12px auto; padding:0 16px; box-sizing:border-box; }
 
-/* greeting */
-#greeting{ text-align:center; color:var(--accent); margin:10px 0; font-size:18px; }
-
-/* layout main */
-.card-lucro {
-    background: var(--card);
+/* HEADER */
+header{
+    padding:18px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    max-width:980px;
+    margin:12px auto;
+}
+.brand{
+    display:flex; align-items:center; gap:12px;
+}
+.brand .logo{
+    width:46px; height:46px;
     border-radius:12px;
-    padding:20px;
-    text-align:center;
-    margin:12px 0;
-    box-shadow:0 6px 18px rgba(0,0,0,0.5);
-    transition: box-shadow .5s ease, transform .2s ease;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:18px; color:#fff;
+    background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+    box-shadow:var(--shadow);
 }
-.card-lucro .label{ color:var(--muted); font-size:14px; }
-.card-lucro .valor{ font-size:36px; font-weight:800; margin-top:6px; }
 
-/* glow animations */
-@keyframes glowGreen { 0%{ box-shadow:0 0 0 rgba(0,0,0,0);}50%{ box-shadow:0 0 20px rgba(29,185,84,0.45);}100%{ box-shadow:0 0 0 rgba(0,0,0,0);} }
-@keyframes glowRed   { 0%{ box-shadow:0 0 0 rgba(0,0,0,0);}50%{ box-shadow:0 0 20px rgba(255,59,48,0.45);}100%{ box-shadow:0 0 0 rgba(0,0,0,0);} }
+/* CONTAINER */
+.container{ max-width:980px; margin:0 auto; padding:0 16px; }
 
-/* small cards row */
-.row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:12px; }
-.card-small { flex:1 1 48%; background:var(--card); border-radius:10px; padding:14px; text-align:center; box-shadow:0 6px 18px rgba(0,0,0,0.4); min-width:200px; }
-.card-small .title{ color:var(--muted); font-size:13px; }
-.card-small .value{ font-size:22px; font-weight:700; margin-top:8px; color:var(--accent); }
+/* GREETING */
+#greeting{ color:var(--muted); margin:6px 0 14px; font-size:15px; }
 
-/* force gastos red */
-.card-small .value.gastos { color: var(--danger) !important; }
+/* CARD LUCRO */
+.card-lucro{
+    background:var(--card-strong);
+    border-radius:var(--radius);
+    padding:24px;
+    border:3px solid transparent;
+    box-shadow:var(--shadow-strong);
+    margin:14px 0 20px;
+    transition:.3s;
+}
+.card-lucro.positivo{
+    border-color:var(--accent-success);
+    box-shadow:0 0 0 4px rgba(29,185,84,.18), var(--shadow-strong);
+}
+.card-lucro.negativo{
+    border-color:var(--accent-danger);
+    box-shadow:0 0 0 4px rgba(255,59,48,.20), var(--shadow-strong);
+}
+.card-lucro .label{ font-size:14px; color:var(--muted); }
+.card-lucro .valor{ font-size:34px; font-weight:900; margin-top:6px; }
+.card-lucro .sub{ font-size:13px; color:var(--muted); }
 
-/* meta daily panel */
-.meta-card { background:var(--card); border-radius:12px; padding:14px; box-shadow:0 6px 18px rgba(0,0,0,0.5); margin-top:12px; }
-.progressWrap{ display:flex; gap:20px; align-items:center; flex-wrap:wrap; }
-.circular { width:120px; height:120px; position:relative; }
-.circular svg{ transform:rotate(-90deg); }
-.circular .label{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; }
-.circular .pct{ font-size:18px; font-weight:800; }
+/* CARDS PEQUENOS */
+.row{ display:flex; gap:14px; flex-wrap:wrap; }
+.card-small{
+    flex:1; min-width:200px;
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:18px;
+    box-shadow:var(--shadow);
+    border:1px solid #e2e7ec;
+}
+.card-small .title{ font-size:13px; color:var(--muted); }
+.card-small .value{ font-size:22px; font-weight:900; color:var(--brand); margin-top:6px; }
+.card-small .gastos{ color:var(--accent-danger)!important; }
 
-.progressBar{ width:100%; height:14px; background:#0e0e0e; border-radius:10px; overflow:hidden; margin-top:8px; }
-.progressBar .fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--accent),#0ab85a); transition: width .6s ease; }
+/* META DIÁRIA – PAINEL */
+.meta-card{
+    background:var(--card-strong);
+    border-radius:var(--radius);
+    padding:22px;
+    border:2px solid #d6dae0;
+    margin-top:18px;
+    box-shadow:var(--shadow-strong);
+}
 
-.metrics{ display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; }
-.metric{ flex:1; background:linear-gradient(180deg,#151515,#1b1b1b); padding:10px; border-radius:8px; text-align:center; }
-.metric h4{ margin:0; font-size:13px; color:var(--muted); }
-.metric .big{ margin-top:6px; font-size:16px; font-weight:800; color:var(--accent); }
+.meta-card h3{
+    margin:0 0 12px 0;
+    font-size:16px;
+    font-weight:800;
+}
 
-/* mini bar chart */
-.chartRow{ display:flex; gap:12px; align-items:flex-end; justify-content:center; padding:12px 0; }
-.bar{ width:80px; background:#0b0b0b; border-radius:8px 8px 0 0; display:flex; align-items:flex-end; justify-content:center; padding-top:6px; box-sizing:border-box; }
-.bar .inner{ width:70%; background:var(--accent); border-radius:6px 6px 0 0; transition:height .6s ease; display:flex; align-items:flex-end; justify-content:center; color:#000; font-weight:700; padding-bottom:6px; }
-.bar .label{ margin-top:8px; font-size:12px; color:var(--muted); text-align:center; }
+/* CIRCULO - 100% FIXO */
+.circular{
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    background:#fff;
+    position:relative;     /* FIXA O TAMANHO */
+    overflow:hidden;       /* NÃO VAZA MAIS */
+    box-shadow:inset 0 0 25px rgba(13,35,68,0.10), var(--shadow);
+}
 
-/* alert */
-.alert{ margin-top:10px; padding:10px; border-radius:8px; background:#2a1515; color:var(--danger); font-weight:700; display:none; text-align:center; }
+/* SVG NÃO MOVE NADA */
+.circular svg{
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+}
 
-/* bottom menu */
-.bottom-menu{ position:fixed; bottom:15px; left:50%; transform:translateX(-50%); width:88%; background:#1B1B1B; padding:10px 0; border-radius:18px; display:flex; justify-content:space-around; box-shadow:0 6px 25px rgba(0,0,0,0.6); z-index:1000; }
-.bottom-menu .menu-item{ text-align:center; color:#fff; text-decoration:none; font-size:13px; display:flex; flex-direction:column; align-items:center; }
-.bottom-menu .menu-item .icon{ font-size:22px; margin-bottom:4px; }
-.bottom-menu .menu-item.active{ color:var(--accent); }
+/* LABEL INTERNA */
+.circular .label{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    pointer-events:none;
+}
+.circular .pct{
+    font-size:20px; font-weight:900; color:var(--brand);
+}
 
-@media(max-width:720px){
-    .row { flex-direction:column; }
-    .card-small { width:100%; }
-    .progressWrap { justify-content:center; }
-    .chartRow .bar { width:28%; }
+/* MINICHART */
+.chartRow{
+    display:flex; gap:14px; padding:12px 0;
+}
+.bar{
+    width:82px; min-height:70px;
+    background:#e4e8ef;
+    border-radius:10px 10px 0 0;
+    display:flex; align-items:flex-end; justify-content:center;
+}
+.bar .inner{
+    width:70%;
+    border-radius:8px 8px 0 0;
+    color:#fff; padding-bottom:6px;
+    font-weight:700;
+}
+
+/* PROGRESSO LINEAR */
+.progressBar{
+    width:100%; height:14px;
+    background:#e4e8ee;
+    border-radius:10px;
+    overflow:hidden;
+}
+.progressBar .fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--brand),var(--brand-dark));
+    transition:.6s;
+}
+
+/* ALERTA */
+.alert{
+    margin-top:12px;
+    background:#ffe6e6;
+    border:1px solid rgba(255,59,48,0.15);
+    padding:12px;
+    border-radius:10px;
+    text-align:center;
+    font-weight:800;
+    color:var(--accent-danger);
+    display:none;
+}
+
+/* ===== MENU INFERIOR CORPORATIVO AZUL ===== */
+.bottom-menu{
+    position:fixed;
+    bottom:18px; left:50%;
+    transform:translateX(-50%);
+    width:92%; max-width:980px;
+    background:linear-gradient(135deg, var(--brand), var(--brand-dark)); /* azul corporativo */
+    padding:14px 12px;
+    border-radius:18px;
+    box-shadow:0 14px 36px rgba(0,0,0,0.25);
+    display:flex;
+    justify-content:space-around;
+    border:1px solid rgba(255,255,255,0.15);
+}
+
+/* Itens */
+.bottom-menu .menu-item{
+    text-align:center;
+    text-decoration:none !important; /* sem underline */
+    color:#fff;                      /* texto branco */
+    font-weight:700;                 /* NEGRITO */
+    font-size:13px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    padding:6px 8px;
+}
+
+/* Ícones estilo outline */
+.bottom-menu .menu-item .icon{
+    font-size:22px;
+    font-weight:900;
+    opacity:0.9;
+}
+
+/* Ativo – mantém branco, mas adiciona brilho */
+.bottom-menu .menu-item.active{
+    color:#fff;
+    background:rgba(255,255,255,0.20);
+    border-radius:10px;
+    box-shadow:inset 0 0 8px rgba(255,255,255,0.18);
+}
+
+/* FAB */
+.fab{
+    position:fixed;
+    right:22px; bottom:95px;
+    width:60px; height:60px;
+    border-radius:16px;
+    font-size:32px;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff;
+    background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+    box-shadow:0 18px 40px rgba(11,91,215,.25);
+    border:4px solid #fff;
 }
 </style>
 </head>
+
 <body>
 
-<header>Dashboard</header>
-<div id="greeting"></div>
+<header>
+    <div class="brand">
+        <div class="logo">RF</div>
+        <h1>Dashboard</h1>
+    </div>
+<button id="toggleTheme" 
+        style="
+            background:var(--card-strong);
+            color:var(--text);
+            border:1px solid rgba(0,0,0,0.15);
+            padding:8px 12px;
+            border-radius:10px;
+            cursor:pointer;
+            font-weight:700;
+        ">
+    🌙
+</button>
+</header>
 
 <div class="container">
 
-    <!-- LUCRO ESTIMADO -->
-    <div id="cardLucro" class="card-lucro" role="region" aria-label="Lucro estimado">
-        <div class="label">Lucro Estimado</div>
-        <div id="lucroValor" class="valor">R$ 0,00</div>
+    <div id="greeting"></div>
+
+    <div id="cardLucro" class="card-lucro">
+        <div>
+            <div class="label">Lucro Estimado</div>
+            <div id="lucroValor" class="valor">R$ 0,00</div>
+            <div class="sub">Visão líquida do dia</div>
+        </div>
     </div>
 
-    <!-- ROW: gastos (left) and faturado (right) -->
     <div class="row">
-        <div class="card-small" role="region" aria-label="Gastos do dia">
+        <div class="card-small">
             <div class="title">Gastos do Dia</div>
             <div id="gastosDia" class="value gastos">R$ 0,00</div>
         </div>
 
-        <div class="card-small" role="region" aria-label="Total faturado hoje">
+        <div class="card-small">
             <div class="title">Total Faturado Hoje</div>
             <div id="totalFaturado" class="value">R$ 0,00</div>
         </div>
     </div>
 
-    <!-- META DIÁRIA PANEL (COMPLETO PARA O DIA) -->
-    <div class="meta-card" role="region" aria-label="Meta diária">
-        <h3 style="margin:0 0 8px 0;">Acompanhamento - Meta Diária</h3>
+    <!-- META DIÁRIA -->
+    <div class="meta-card">
 
-        <div class="progressWrap">
+        <h3>Acompanhamento - Meta Diária</h3>
+
+        <div style="display:flex; gap:18px; flex-wrap:wrap;">
+
             <div class="circular" id="circularWrap"></div>
 
             <div style="flex:1; min-width:220px;">
-                <div style="color:var(--muted);font-size:13px;">Meta diária</div>
-                <div id="labelMetaDia" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
 
-                <div style="color:var(--muted);font-size:13px;margin-top:8px;">Feito hoje (líquido)</div>
-                <div id="feitoHoje" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
+                <div style="color:var(--muted);">Meta diária</div>
+                <div id="labelMetaDia" style="font-size:20px;font-weight:800;margin-top:4px;">R$ 0,00</div>
 
-                <div style="color:var(--muted);font-size:13px;margin-top:8px;">Diferença</div>
-                <div id="diffHoje" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
+                <div style="color:var(--muted); margin-top:10px;">Feito hoje</div>
+                <div id="feitoHoje" style="font-size:20px;font-weight:800;margin-top:4px;color:var(--brand)">R$ 0,00</div>
 
-                <div style="margin-top:12px;">
-                    <div class="progressBar"><div class="fill" id="linearFill" style="width:0%"></div></div>
-                    <div style="font-size:12px;color:var(--muted);margin-top:6px;">Progresso do dia</div>
+                <div style="color:var(--muted); margin-top:10px;">Diferença</div>
+                <div id="diffHoje" style="font-size:20px;font-weight:800;margin-top:4px;">R$ 0,00</div>
+
+                <div style="margin-top:16px;">
+                    <div class="progressBar"><div id="linearFill" class="fill"></div></div>
                 </div>
+
             </div>
         </div>
 
-        <div style="margin-top:12px;">
-            <div class="chartRow" aria-hidden="false">
-                <div class="bar"><div class="inner" id="barMeta" style="height:10%"></div><div class="label">Meta</div></div>
-                <div class="bar"><div class="inner" id="barHoje" style="height:10%"></div><div class="label">Hoje</div></div>
+        <div style="margin-top:14px;">
+            <div class="chartRow">
+                <div class="bar"><div id="barMeta" class="inner"></div></div>
+                <div class="bar"><div id="barHoje" class="inner"></div></div>
             </div>
         </div>
 
@@ -144,200 +361,206 @@ header{ background:var(--accent); padding:14px; text-align:center; color:#000; f
 
 </div>
 
-<!-- bottom menu -->
-<nav class="bottom-menu" aria-label="Menu">
-    <a href="index.html" class="menu-item active"><span class="icon">🏠</span><span>Dashboard</span></a>
-    <a href="entradas.html" class="menu-item"><span class="icon">💵</span><span>Entradas</span></a>
-    <a href="manutencao.html" class="menu-item"><span class="icon">🛠️</span><span>Manutenção</span></a>
-    <a href="resumo.html" class="menu-item"><span class="icon">📊</span><span>Resumo</span></a>
-    <a href="perfil.html" class="menu-item"><span class="icon">👤</span><span>Perfil</span></a>
-    <a href="calculadora.html" class="menu-item"><span class="icon">📟</span><span>Calc</span></a>
+<button class="fab">+</button>
+
+<nav class="bottom-menu">
+
+    <a href="index.html" class="menu-item active">
+        <span class="icon">⌂</span>
+        Dashboard
+    </a>
+
+    <a href="entradas.html" class="menu-item">
+        <span class="icon">⧉</span>
+        Entradas
+    </a>
+
+    <a href="manutencao.html" class="menu-item">
+        <span class="icon">🛠</span>
+        Manutenção
+    </a>
+
+    <a href="resumo.html" class="menu-item">
+        <span class="icon">📈</span>
+        Resumo
+    </a>
+
+    <a href="perfil.html" class="menu-item">
+        <span class="icon">👤</span>
+        Perfil
+    </a>
+
+    <a href="calculadora.html" class="menu-item">
+        <span class="icon">⌗</span>
+        Calc
+    </a>
+
 </nav>
 
 <script>
-/* HELPERS */
+/* Helpers */
 const $ = id => document.getElementById(id);
-const brl = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const brl = v => Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 
-function isSameDayISO(isoDateStr){
-    if(!isoDateStr) return false;
-    const d = new Date(isoDateStr);
-    const now = new Date();
-    return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth() && d.getDate()===now.getDate();
-}
-function isSameMonthISO(isoDateStr){
-    if(!isoDateStr) return false;
-    const d = new Date(isoDateStr);
-    const now = new Date();
-    return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
-}
-
-/* LOAD DATA */
+/* Load state */
 function loadState(){
-    const registros = JSON.parse(localStorage.getItem('entradasSaidas') || '[]');
-    const metaObj = JSON.parse(localStorage.getItem('metaMensal') || '{}');
-    const recebers = JSON.parse(localStorage.getItem('valoresReceber') || '[]');
-    const perfil = JSON.parse(localStorage.getItem('perfilMotorista') || '{}');
-    return { registros, metaObj, recebers, perfil };
+    return {
+        registros: JSON.parse(localStorage.getItem("entradasSaidas")||"[]"),
+        metaObj: JSON.parse(localStorage.getItem("metaMensal")||"{}"),
+        recebers: JSON.parse(localStorage.getItem("valoresReceber")||"[]"),
+        perfil: JSON.parse(localStorage.getItem("perfilMotorista")||"{}")
+    };
 }
 
-/* CALCULOS DIÁRIOS */
-/* soma apenas as ENTRADAS brutas do dia (mantido para exibição lado-a-lado) */
-function somaFaturadoHojeBruto(registros){
-    return registros.reduce((s,r)=>{
-        if(r.tipo === 'entrada' && isSameDayISO(r.criadoEm)) return s + Number(r.valorBruto||0);
-        return s;
-    }, 0);
+function isSameDay(s){
+    if(!s) return false;
+    const d=new Date(s),n=new Date();
+    return d.getFullYear()==n.getFullYear() && d.getMonth()==n.getMonth() && d.getDate()==n.getDate();
 }
 
-/* soma apenas as SAÍDAS do dia (mantido para exibição lado-a-lado) */
-function somaGastosHoje(registros){
-    return registros.reduce((s,r)=>{
-        if(r.tipo === 'saida' && isSameDayISO(r.criadoEm)) return s + Number(r.valor||0);
-        return s;
-    }, 0);
-}
+/* Calculadoras */
+function somaBruto(reg){return reg.reduce((s,r)=>r.tipo=="entrada"&&isSameDay(r.criadoEm)?s+Number(r.valorBruto||0):s,0);}
+function somaLiq(reg){return reg.reduce((s,r)=>r.tipo=="entrada"&&isSameDay(r.criadoEm)?s+Number(r.valor||0):s,0);}
+function somaSaidas(reg){return reg.reduce((s,r)=>r.tipo=="saida"&&isSameDay(r.criadoEm)?s+Number(r.valor||0):s,0);}
 
-/* soma apenas as ENTRADAS líquidas do dia (para cálculo da meta real) */
-function somaEntradasLiquidasHoje(registros){
-    return registros.reduce((s,r)=>{
-        if(r.tipo === 'entrada' && isSameDayISO(r.criadoEm)) return s + Number(r.valor||0);
-        return s;
-    }, 0);
-}
-
-/* calcula total a receber DENTRO do mês (valores cuja data prevista está no mês atual) */
-function totalReceberNoMes(recebers){
-    const now = new Date();
-    return recebers.reduce((s,r)=>{
+function totalReceberMes(arr){
+    const n=new Date();
+    return arr.reduce((s,r)=>{
         if(!r.data) return s;
-        const d = new Date(r.data);
-        if(d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth()){
-            return s + Number(r.valor||0);
-        }
-        return s;
-    }, 0);
+        const d=new Date(r.data);
+        return (d.getFullYear()==n.getFullYear() && d.getMonth()==n.getMonth()) ? s+Number(r.valor||0) : s;
+    },0);
 }
 
-/* dias restantes no mês (inclui hoje) */
 function diasRestantes(){
-    const hoje = new Date();
-    const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0).getDate();
-    return Math.max(1, ultimoDia - hoje.getDate() + 1);
+    const h=new Date();
+    const u=new Date(h.getFullYear(),h.getMonth()+1,0).getDate();
+    return u-h.getDate()+1;
 }
 
-/* meta diaria = (metaMensal - totalReceberNoMes) / diasRestantes */
-function calcularMetaDiaria(metaObj, recebers){
-    const mensal = Number(metaObj.valor || 0);
-    const totalR = totalReceberNoMes(recebers);
-    const restante = mensal - totalR;
-    const dias = diasRestantes();
-    return dias>0 ? (restante / dias) : restante;
+function metaDia(meta,receber){
+    const mensal=Number(meta.valor||0);
+    const rec=totalReceberMes(receber);
+    const rest=mensal-rec;
+    return rest/diasRestantes();
 }
 
-/* CIRCULAR RENDER */
-function renderCircularDaily(pct){
-    const size = 120;
-    const stroke = 12;
-    const radius = (size - stroke)/2;
-    const circumference = 2 * Math.PI * radius;
-    const offset = circumference * (1 - Math.max(0, Math.min(pct,100))/100);
-    const svg = `
-      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+/* Criar círculo */
+function renderCircle(pct){
+    const size=140, stroke=12, radius=(size-stroke)/2;
+    const circ=2*Math.PI*radius;
+    const offset=circ*(1-(pct/100));
+
+    const svg=`
+    <svg viewBox="0 0 ${size} ${size}">
         <defs>
-          <linearGradient id="gDash" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#1DB954" />
-            <stop offset="100%" stop-color="#0ab85a" />
-          </linearGradient>
+            <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="${getComputedStyle(document.documentElement).getPropertyValue("--brand").trim()}"/>
+                <stop offset="100%" stop-color="${getComputedStyle(document.documentElement).getPropertyValue("--brand-dark").trim()}"/>
+            </linearGradient>
         </defs>
-        <circle cx="${size/2}" cy="${size/2}" r="${radius}" stroke="#0e0e0e" stroke-width="${stroke}" fill="none"></circle>
-        <circle cx="${size/2}" cy="${size/2}" r="${radius}" stroke="url(#gDash)" stroke-width="${stroke}" stroke-linecap="round"
-            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" fill="none" style="transition:stroke-dashoffset .6s ease;"></circle>
-      </svg>
-    `;
-    $('circularWrap').innerHTML = svg + `<div class="label" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+        <circle cx="${size/2}" cy="${size/2}" r="${radius}" stroke="#e2e7ec" stroke-width="${stroke}" fill="none"/>
+        <circle cx="${size/2}" cy="${size/2}" r="${radius}" 
+            stroke="url(#grad)" stroke-width="${stroke}" stroke-linecap="round"
+            stroke-dasharray="${circ}" stroke-dashoffset="${offset}"
+            style="transition:.6s"/>
+    </svg>`;
+
+    $("circularWrap").innerHTML = svg +
+    `<div class="label">
         <div class="pct">${pct}%</div>
-        <div style="font-size:12px;color:var(--muted)">da meta diária</div>
+        <div style="font-size:12px;color:var(--muted)">da meta</div>
     </div>`;
 }
 
-/* UPDATE UI */
+/* Atualizar dashboard */
 function updateDashboard(){
-    const { registros, metaObj, recebers, perfil } = loadState();
+    const {registros,metaObj,recebers,perfil}=loadState();
 
-    // greeting
-    const firstName = perfil && perfil.nome ? perfil.nome.split(' ')[0] : '';
-    $('greeting').innerText = firstName ? ('Olá, ' + firstName + '!') : '';
+    /* Nome */
+    $("greeting").innerText = "Olá, " + (perfil.nome ? perfil.nome.split(" ")[0] : "Motorista") + "!";
 
-    // gastos / faturado / lucro (top)
-    const gastos = somaGastosHoje(registros); // saídas do dia
-    const faturadoBruto = somaFaturadoHojeBruto(registros); // bruto do dia (mantido)
-    const lucro = faturadoBruto - gastos;
+    /* Valores */
+    const bruto = somaBruto(registros);
+    const liquido = somaLiq(registros);
+    const gastos = somaSaidas(registros);
+    const lucro = bruto - gastos;
 
-    $('gastosDia').innerText = brl(gastos);
-    $('totalFaturado').innerText = brl(faturadoBruto);
-    $('lucroValor').innerText = brl(lucro);
+    $("gastosDia").innerText = brl(gastos);
+    $("totalFaturado").innerText = brl(bruto);
+    $("lucroValor").innerText = brl(lucro);
 
-    // apply color & animation to lucro card
-    const card = $('cardLucro');
-    const lucroEl = $('lucroValor');
-    card.style.animation = '';
-    setTimeout(()=>{ // reset animation reflow
-        if(lucro > 0){
-            lucroEl.style.color = 'var(--accent)';
-            card.style.animation = 'glowGreen .6s ease-out';
-        } else if(lucro < 0){
-            lucroEl.style.color = 'var(--danger)';
-            card.style.animation = 'glowRed .6s ease-out';
-        } else {
-            lucroEl.style.color = '#fff';
-        }
-    }, 20);
+    /* Destaque lucro */
+    const card = $("cardLucro");
+    card.classList.remove("positivo","negativo");
 
-    // --- META DIÁRIA PANEL ---
-    const metaDiaria = calcularMetaDiaria(metaObj, recebers);
-
-    // novo cálculo: feitoHoje = entradas líquidas do dia - saídas do dia
-    const entradasLiquidasHoje = somaEntradasLiquidasHoje(registros); // soma r.valor das entradas do dia
-    const saidasHoje = somaGastosHoje(registros); // soma r.valor das saídas do dia
-    const feitoHoje = entradasLiquidasHoje - saidasHoje;
-
-    const diff = feitoHoje - metaDiaria;
-    const pct = metaDiaria > 0 ? Math.min(100, Math.round((feitoHoje / metaDiaria) * 100)) : (feitoHoje>0?100:0);
-
-    $('labelMetaDia').innerText = brl(metaDiaria);
-    $('feitoHoje').innerText = brl(feitoHoje);
-    $('diffHoje').innerText = brl(diff);
-
-    // circular
-    renderCircularDaily(Math.round(pct));
-
-    // linear fill
-    $('linearFill').style.width = pct + '%';
-
-    // mini bar chart heights relative
-    const maxVal = Math.max(Math.abs(metaDiaria)||0, Math.abs(feitoHoje)||0, 1);
-    const hMeta = Math.round((Math.abs(metaDiaria) / maxVal) * 100);
-    const hHoje = Math.round((Math.abs(feitoHoje) / maxVal) * 100);
-    $('barMeta').style.height = Math.max(6,hMeta) + '%';
-    $('barHoje').style.height = Math.max(6,hHoje) + '%';
-    // color bars
-    $('barMeta').style.background = 'linear-gradient(180deg,#e0c050,#f2d66a)';
-    $('barHoje').style.background = 'linear-gradient(180deg,#1DB954,#0fb85a)';
-
-    // alert if below
-    const alertEl = $('alertDaily');
-    if(feitoHoje < metaDiaria){
-        alertEl.style.display = 'block';
+    if(lucro > 0){
+        $("lucroValor").style.color = "var(--accent-success)";
+        card.classList.add("positivo");
+    } else if(lucro < 0){
+        $("lucroValor").style.color = "var(--accent-danger)";
+        card.classList.add("negativo");
     } else {
-        alertEl.style.display = 'none';
+        $("lucroValor").style.color = "var(--text)";
+    }
+
+    /* Meta */
+    const meta = metaDia(metaObj, recebers);
+    const feito = liquido - gastos;
+    const diff = feito - meta;
+    const pct = meta>0 ? Math.min(100, Math.round((feito/meta)*100)) : 0;
+
+    $("labelMetaDia").innerText = brl(meta);
+    $("feitoHoje").innerText = brl(feito);
+    $("diffHoje").innerText = brl(diff);
+
+    renderCircle(pct);
+
+    $("linearFill").style.width = pct+"%";
+
+    /* Mini barras */
+    const max = Math.max(Math.abs(meta),Math.abs(feito),1);
+    $("barMeta").style.height = Math.round(Math.abs(meta)/max*100)+"%";
+    $("barHoje").style.height = Math.round(Math.abs(feito)/max*100)+"%";
+
+    $("barMeta").style.background = "linear-gradient(180deg,#e8dca8,#f5ebc4)";
+    $("barHoje").style.background = "linear-gradient(180deg,var(--accent-success),#14b64a)";
+
+    $("alertDaily").style.display = feito < meta ? "block" : "none";
+}
+
+window.addEventListener("focus", updateDashboard);
+updateDashboard();
+
+/* FAB */
+document.querySelector(".fab").onclick = ()=> location.href="entradas.html";
+</script>
+
+<script>
+/* ================================
+   TEMA GLOBAL (CLARO / ESCURO)
+================================ */
+function applyTheme(theme){
+    if(theme === "dark"){
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme","dark");
+        document.getElementById("toggleTheme").innerText = "☀️";
+    } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme","light");
+        document.getElementById("toggleTheme").innerText = "🌙";
     }
 }
 
-/* boot */
-window.addEventListener('focus', updateDashboard);
-updateDashboard();
+/* Carrega tema salvo */
+const savedTheme = localStorage.getItem("theme") || "light";
+applyTheme(savedTheme);
 
+/* Alterna tema ao clicar */
+document.getElementById("toggleTheme").addEventListener("click", ()=>{
+    const isDark = document.documentElement.classList.contains("dark");
+    applyTheme(isDark ? "light" : "dark");
+});
 </script>
 </body>
 </html>

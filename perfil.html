@@ -4,778 +4,620 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Perfil - Motorista App</title>
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
-.bottom-menu{
-    position:fixed;
-    bottom:15px;
-    left:50%;
-    transform:translateX(-50%);
-    width:88%;
-    background:#1B1B1B;
-    padding:10px 0;
-    border-radius:18px;
-    display:flex;
-    justify-content:space-around;
-    box-shadow:0 6px 25px rgba(0,0,0,0.6);
-    z-index:1000;
-}
-.bottom-menu .menu-item{
-    text-align:center;
-    color:#fff;
-    text-decoration:none;
-    font-size:13px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
-.bottom-menu .menu-item .icon{
-    font-size:22px;
-    margin-bottom:4px;
-}
-.bottom-menu .menu-item.active{
-    color:var(--accent);
-}
-
 :root{
-    --bg:#121212; 
-    --card:#1E1E1E; 
-    --panel:#2A2A2A; 
-    --accent:#1DB954; 
-    --danger:#ff3b30; 
-    --muted:#bbb;
+  --bg:#ffffff;
+  --page-gap:#f3f5f8;
+
+  --card:#fafbfc;
+  --card-strong:#f0f2f5;
+  --panel:#ffffff;
+
+  --brand:#0b5bd7;
+  --brand-dark:#073f8a;
+
+  --accent-success:#1DB954;
+  --accent-danger:#ff3b30;
+
+  --text:#0b1115;
+  --muted:#65707a;
+
+  --shadow:0 6px 16px rgba(13,30,45,0.07);
+  --shadow-strong:0 10px 32px rgba(10,20,30,0.12);
+  --radius:14px;
 }
 
-*{box-sizing:border-box}
+.dark{
+  --bg:#0f1115;
+  --page-gap:#15171c;
+  --card:#181a20;
+  --card-strong:#1d1f27;
+  --panel:#1b1d25;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --shadow:0 6px 16px rgba(0,0,0,0.35);
+  --shadow-strong:0 10px 32px rgba(0,0,0,0.45);
+  --brand:#3b82f6;
+  --brand-dark:#2563eb;
+  --accent-success:#22c55e;
+  --accent-danger:#ef4444;
+}
 
+*{box-sizing:border-box; font-family:Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
 body{
-    margin:0; 
-    font-family:Arial, Helvetica, sans-serif; 
-    background:var(--bg); 
-    color:#fff; 
-    padding-bottom:160px;
+  margin:0;
+  background:linear-gradient(180deg,var(--page-gap),var(--bg) 50%);
+  color:var(--text);
+  padding-bottom:160px;
+  -webkit-font-smoothing:antialiased;
 }
 
+/* header */
 header{
-    background:var(--accent); 
-    padding:14px; 
-    text-align:center; 
-    color:#000; 
-    font-weight:700; 
-    font-size:20px;
+  padding:18px 16px;
+  max-width:980px;
+  margin:0 auto 10px auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
-
-.container{
-    max-width:980px; 
-    margin:12px auto; 
-    padding:0 16px; 
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand .logo{
+  width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+  box-shadow:var(--shadow);font-size:18px;
 }
+#toggleTheme{ background:var(--card-strong); padding:8px 12px; border-radius:10px; border:1px solid rgba(0,0,0,0.08); cursor:pointer; color:var(--text); font-weight:700; }
 
-#greeting{
-    text-align:center; 
-    color:var(--accent); 
-    margin:8px 0 14px 0; 
-    font-size:18px;
-}
+/* container + layout */
+.container{ max-width:980px; margin:16px auto; padding:0 16px; }
+.row{ display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; }
+.col-1{ flex:0 0 320px; min-width:260px; }
+.col-2{ flex:1 1 560px; min-width:280px; }
 
-.row{
-    display:flex; 
-    gap:16px; 
-    flex-wrap:wrap; 
-    align-items:flex-start;
-}
+/* cards */
+.card{ background:var(--card); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); margin-bottom:16px; border:1px solid #d7dce2; }
+.card h3{ margin:0 0 12px 0; font-size:17px; }
 
-.col-1{
-    flex:0 0 320px; 
-    min-width:260px;
-}
+/* inputs / foto */
+.foto{ width:120px; height:120px; border-radius:50%; object-fit:cover; border:3px solid var(--brand); display:block; margin:10px auto; background:var(--panel); }
+.input, input, select, textarea{ width:100%; padding:12px; border-radius:10px; border:1px solid #cfd4da; background:var(--panel); color:var(--text); margin-bottom:10px; font-size:15px; }
 
-.col-2{
-    flex:1 1 560px; 
-    min-width:280px;
-}
+/* buttons */
+.btn{ background:linear-gradient(135deg,var(--brand),var(--brand-dark)); color:#fff; padding:12px; border:none; width:100%; border-radius:12px; font-weight:700; cursor:pointer; }
+.btnGhost{ background:var(--card-strong); color:var(--text); padding:10px; border:none; border-radius:10px; cursor:pointer; }
 
-.card{
-    background:var(--card); 
-    border-radius:12px; 
-    padding:14px; 
-    box-shadow:0 6px 18px rgba(0,0,0,.5); 
-    margin-bottom:16px;
-}
-
-.card h3{
-    margin:6px 0 12px 0; 
-    font-size:16px;
-}
-
-.foto{
-    width:120px; 
-    height:120px; 
-    border-radius:50%; 
-    object-fit:cover; 
-    border:3px solid var(--accent); 
-    display:block; 
-    margin:10px auto; 
-    background:var(--panel);
-}
-
-.input, input, select, textarea{
-    width:100%; 
-    padding:10px; 
-    border-radius:8px; 
-    border:1px solid #333; 
-    background:var(--panel); 
-    color:#fff; 
-    margin-bottom:8px;
-}
-
-.btn{
-    width:100%; 
-    padding:10px; 
-    border-radius:10px; 
-    border:none; 
-    background:var(--accent); 
-    color:#000; 
-    font-weight:700; 
-    cursor:pointer;
-}
-
-.valorLinha{
-    display:flex; 
-    justify-content:space-between; 
-    align-items:center; 
-    margin-top:6px; 
-    color:var(--muted); 
-    font-size:14px;
-}
-
+/* small helpers */
 .small{ color:var(--muted); font-size:13px; }
+.valorLinha{ display:flex; justify-content:space-between; align-items:center; margin-top:6px; color:var(--muted); font-size:14px; }
 
-.receber-item{
-    display:flex; 
-    gap:8px; 
-    align-items:center; 
-    justify-content:space-between; 
-    padding:8px; 
-    border-radius:8px; 
-    background:#0f0f0f; 
-    margin-top:8px;
-}
+/* progress bar */
+.progressBar{ width:100%; height:14px; background:var(--card-strong); border-radius:10px; overflow:hidden; border:1px solid rgba(0,0,0,0.04); }
+.fill{ height:100%; background:linear-gradient(90deg,var(--brand),var(--brand-dark)); width:0%; transition:width .6s ease; }
 
-/* MENU */
-.bottom-menu{
-    position:fixed; bottom:15px; left:50%; transform:translateX(-50%);
-    width:88%; background:#1B1B1B; padding:10px 0; border-radius:18px;
-    display:flex; justify-content:space-around;
-    box-shadow:0 6px 25px rgba(0,0,0,0.6); z-index:1000;
-}
+/* chart area for "Detalhes" */
+.chartRow{ display:flex; gap:12px; align-items:end; margin-top:12px; }
+.chartCard{ flex:1; min-width:90px; background:var(--card-strong); padding:12px; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:8px; border:1px solid #e6eaef; }
+.barShell{ width:48px; height:140px; background:var(--panel); border-radius:12px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; border:1px solid rgba(0,0,0,0.03); }
+.barInner{ width:100%; display:flex; align-items:flex-end; justify-content:center; color:#fff; font-weight:800; border-radius:10px 10px 0 0; }
 
-.bottom-menu .menu-item{
-    text-align:center; color:#fff; text-decoration:none; 
-    font-size:13px; display:flex; flex-direction:column; align-items:center;
-}
+/* list receber */
+.receber-item{ display:flex; gap:8px; align-items:center; justify-content:space-between; padding:10px; border-radius:10px; background:var(--card-strong); margin-top:8px; }
 
-.bottom-menu .menu-item .icon{ font-size:22px; margin-bottom:4px; }
-.bottom-menu .menu-item.active{ color:var(--accent); }
+/* bottom menu */
+.bottom-menu{ position:fixed; bottom:18px; left:50%; transform:translateX(-50%); width:92%; max-width:980px; padding:14px 12px; border-radius:18px; display:flex; justify-content:space-around; background:linear-gradient(135deg,var(--brand),var(--brand-dark)); box-shadow:0 14px 36px rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); z-index:999; }
+.bottom-menu .menu-item{ text-decoration:none; color:#fff; font-weight:700; display:flex; flex-direction:column; gap:4px; align-items:center; font-size:13px; }
+.bottom-menu .menu-item .icon{ font-size:22px; }
+.bottom-menu .menu-item.active{ background:rgba(255,255,255,0.14); padding:6px 8px; border-radius:10px; }
 
+/* modal tutorial (simple) */
+#modalTutorial{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2000; padding-top:40px; }
+.modalInner{ background:var(--card); width:92%; max-width:520px; margin:auto; padding:18px; border-radius:12px; box-shadow:var(--shadow-strong); }
+
+/* responsive */
+@media(max-width:780px){ .col-1{ flex:1 1 100%; } .col-2{ flex:1 1 100%; } .chartRow{ gap:10px; } }
 </style>
 </head>
-<!-- MENU INFERIOR -->
-<nav class="bottom-menu" aria-label="Menu">
-    <a href="index.html" class="menu-item">
-        <span class="icon">🏠</span>
-        <span>Dashboard</span>
-    </a>
-
-    <a href="entradas.html" class="menu-item">
-        <span class="icon">💵</span>
-        <span>Entradas</span>
-    </a>
-
-    <a href="manutencao.html" class="menu-item">
-        <span class="icon">🛠️</span>
-        <span>Manutenção</span>
-    </a>
-
-    <a href="resumo.html" class="menu-item">
-        <span class="icon">📊</span>
-        <span>Resumo</span>
-    </a>
-
-    <!-- Item ativo nesta página -->
-    <a href="perfil.html" class="menu-item active">
-        <span class="icon">👤</span>
-        <span>Perfil</span>
-    </a>
-
-    <a href="calculadora.html" class="menu-item">
-        <span class="icon">📟</span>
-        <span>Calc</span>
-    </a>
-</nav>
-
 <body>
 
-<header>Perfil</header>
-<div id="greeting"></div>
+<header>
+  <div class="brand">
+    <div class="logo">RF</div>
+    <h2 style="margin:0;">Perfil</h2>
+  </div>
+  <button id="toggleTheme">🌙</button>
+</header>
 
 <div class="container">
 
-    <div class="row">
+  <div class="row">
 
-        <!-- COLUNA ESQUERDA -->
-        <div class="col-1">
+    <!-- left column -->
+    <div class="col-1">
 
-            <div class="card">
-                <h3>Dados do Motorista</h3>
+      <div class="card">
+        <h3>Dados do Motorista</h3>
+        <img id="fotoPerfil" class="foto" src="" alt="Foto do motorista">
+        <input id="fotoInput" type="file" accept="image/*">
+        <input id="nome" class="input" placeholder="Nome completo">
+        <input id="carro" class="input" placeholder="Marca do carro">
+        <input id="modelo" class="input" placeholder="Modelo do carro">
+        <input id="ano" class="input" placeholder="Ano">
+        <input id="placa" class="input" placeholder="Placa">
+        <button id="salvarPerfilBtn" class="btn">Salvar Perfil</button>
+      </div>
 
-                <img id="fotoPerfil" class="foto" src="" alt="Foto do motorista">
-                <input id="fotoInput" type="file" accept="image/*">
-
-                <input id="nome" class="input" placeholder="Primeiro nome">
-                <input id="carro" class="input" placeholder="Marca do carro">
-                <input id="modelo" class="input" placeholder="Modelo do carro">
-                <input id="ano" class="input" placeholder="Ano">
-                <input id="placa" class="input" placeholder="Placa">
-
-                <button id="salvarPerfilBtn" class="btn">Salvar Perfil</button>
-            </div>
-            <div class="card">
-                <h3>Saldo Inicial</h3>
-
-                <input id="saldoInicial" type="number" class="input" placeholder="Saldo inicial do mês (R$)" step="0.01">
-
-                <div class="valorLinha" style="margin-top:10px;">
-                    <span>Saldo atual:</span>
-                    <strong id="saldoAtualDisplay">R$ 0,00</strong>
-                </div>
-
-                <button id="salvarSaldoBtn" class="btn" style="margin-top:12px;">Salvar Saldo</button>
-            </div>
-
-
-            <div class="card">
-                <h3>Meta Mensal</h3>
-                <input id="metaMensal" type="number" class="input" placeholder="Valor da meta mensal (R$)" step="0.01">
-                <div class="valorLinha"><span>Total a receber:</span><strong id="tvReceber">R$ 0,00</strong></div>
-                <div class="valorLinha"><span>Meta líquida:</span><strong id="tvMetaLiquida">R$ 0,00</strong></div>
-                <div class="valorLinha"><span>Falta para meta:</span><strong id="tvFalta">R$ 0,00</strong></div>
-                <button id="salvarMetaBtn" class="btn">Salvar Meta</button>
-            </div>
-
-
-            <div class="card">
-                <h3>Valores a Receber</h3>
-
-                <input id="receberValor" class="input" type="number" placeholder="Valor (R$)" step="0.01">
-                <input id="receberData" class="input" type="date">
-
-                <div style="display:flex;gap:8px">
-                    <button id="addReceberBtn" class="btn">Adicionar</button>
-                    <button id="tutorialOpenBtn" class="btn" style="background:#666;color:#fff">Ajuda</button>
-                </div>
-
-                <div id="listaReceber"></div>
-
-                <div style="display:flex;gap:8px;margin-top:14px;">
-                    <button id="btnWhats" class="btn" style="background:#25D366;color:#000">Enviar WhatsApp</button>
-                    <button id="btnPdf" class="btn" style="background:#ff9f00;color:#000">Gerar PDF</button>
-                </div>
-            </div>
-
+      <div class="card">
+        <h3>Saldo Inicial</h3>
+        <input id="saldoInicial" type="number" class="input" placeholder="Saldo inicial do mês (R$)" step="0.01">
+        <div class="valorLinha"><span>Saldo atual:</span><strong id="saldoAtualDisplay">R$ 0,00</strong></div>
+        <div style="display:flex;gap:10px;margin-top:12px;">
+          <button id="salvarSaldoBtn" class="btn" style="flex:1;">Salvar Saldo</button>
+          <button id="resetSaldoBtn" class="btnGhost" style="flex:1;">Recarregar</button>
         </div>
-        <!-- COLUNA DIREITA -->
-        <div class="col-2">
+      </div>
 
-            <div class="card">
-                <h3>Progresso Mensal</h3>
+      <div class="card">
+        <h3>Meta Mensal</h3>
+        <input id="metaMensal" type="number" class="input" placeholder="Valor da meta mensal (R$)" step="0.01">
+        <div class="valorLinha"><span>Total a receber:</span><strong id="tvReceber">R$ 0,00</strong></div>
+        <div class="valorLinha"><span>Meta líquida:</span><strong id="tvMetaLiquida">R$ 0,00</strong></div>
+        <div class="valorLinha"><span>Falta para meta:</span><strong id="tvFalta">R$ 0,00</strong></div>
+        <div style="display:flex;gap:10px;margin-top:12px;">
+          <button id="salvarMetaBtn" class="btn" style="flex:1;">Salvar Meta</button>
+          <button id="limparMetaBtn" class="btnGhost" style="flex:1;">Limpar</button>
+        </div>
+      </div>
 
-                <div class="progressWrap">
+      <div class="card">
+        <h3>Valores a Receber</h3>
+        <input id="receberValor" class="input" type="number" placeholder="Valor (R$)" step="0.01">
+        <input id="receberData" class="input" type="date">
+        <div style="display:flex;gap:8px;">
+          <button id="addReceberBtn" class="btn" style="flex:1;">Adicionar</button>
+          <button id="tutorialOpenBtn" class="btnGhost" style="flex:1;">Ajuda</button>
+        </div>
 
-                    <!-- CÍRCULO -->
-                    <div class="circular" id="circularWrap"></div>
-
-                    <!-- DADOS -->
-                    <div style="flex:1; min-width:220px;">
-
-                        <div class="small">Meta mensal</div>
-                        <div id="labelMeta" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
-
-                        <div class="small" style="margin-top:8px;">Realizado (mês)</div>
-                        <div id="labelRealizado" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
-
-                        <div class="small" style="margin-top:8px;">A receber</div>
-                        <div id="labelReceber" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
-
-                        <!-- BARRA PROGRESSO -->
-                        <div style="margin-top:12px;">
-                            <div class="progressBar">
-                                <div class="fill" id="linearFill" style="width:0%"></div>
-                            </div>
-                            <div class="small" style="margin-top:6px">Progresso mensal</div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- DETALHES -->
-            <div class="card">
-                <h3>Detalhes</h3>
-
-                <div class="metrics">
-                    <div class="metric">
-                        <h4>Meta mensal</h4>
-                        <div class="big" id="metaMensalVal">R$ 0,00</div>
-                    </div>
-
-                    <div class="metric">
-                        <h4>Realizado no mês</h4>
-                        <div class="big" id="realizadoMesVal">R$ 0,00</div>
-                    </div>
-
-                    <div class="metric">
-                        <h4>Saídas no mês</h4>
-                        <div class="big" id="saidasMesVal">R$ 0,00</div>
-                    </div>
-                </div>
-
-                <!-- GRÁFICO BARRAS -->
-                <div style="margin-top:12px;">
-                    <div class="chartRow">
-
-                        <div class="bar">
-                            <div class="inner" id="barMeta" style="height:10%"></div>
-                            <div class="label">Meta</div>
-                        </div>
-
-                        <div class="bar">
-                            <div class="inner" id="barRealizado" style="height:10%"></div>
-                            <div class="label">Realizado</div>
-                        </div>
-
-                        <div class="bar">
-                            <div class="inner" id="barReceber" style="height:10%"></div>
-                            <div class="label">A Receber</div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div id="alertMonthly" class="alert">
-                    Você está abaixo da meta mensal — revise seus custos e recebíveis.
-                </div>
-
-            </div>
-
-        </div> <!-- fim col-2 -->
-    </div> <!-- fim row -->
-
-</div> <!-- fim container -->
-<!-- MODAL DE AJUDA -->
-<div id="modalTutorial" role="dialog" aria-hidden="true">
-    <div class="modalInner">
-        <h2>Como usar esta tela</h2>
-        <ol>
-            <li>Preencha seus dados de motorista.</li>
-            <li>Defina sua meta mensal.</li>
-            <li>Cadastre valores a receber.</li>
-            <li>Acompanhe o progresso mensal nos gráficos.</li>
-        </ol>
+        <div id="listaReceber" style="margin-top:12px;"></div>
 
         <div style="display:flex;gap:8px;margin-top:12px;">
-            <button id="tutorialCloseBtn" class="btn" style="flex:1">Fechar</button>
-            <button id="tutorialNeverBtn" class="btn" style="flex:1;background:#666;color:#fff">Não mostrar novamente</button>
+          <button id="btnWhats" class="btn" style="background:#25D366;color:#000;flex:1;">Enviar WhatsApp</button>
+          <button id="btnPdf" class="btn" style="background:#ff9f00;color:#000;flex:1;">Gerar PDF</button>
         </div>
+      </div>
+
     </div>
+
+    <!-- right column -->
+    <div class="col-2">
+
+      <div class="card">
+        <h3>Progresso Mensal</h3>
+
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+          <div style="flex:1; min-width:200px;">
+            <div class="small">Meta mensal</div>
+            <div id="labelMeta" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
+
+            <div class="small" style="margin-top:8px;">Realizado (mês)</div>
+            <div id="labelRealizado" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
+
+            <div class="small" style="margin-top:8px;">A receber</div>
+            <div id="labelReceber" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
+          </div>
+
+          <div style="flex:1; min-width:220px;">
+            <div class="progressBar" aria-hidden="true"><div class="fill" id="linearFill" style="width:0%"></div></div>
+            <div class="small" style="margin-top:8px;">Progresso mensal</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h3>Detalhes</h3>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div style="flex:1; min-width:140px;">
+            <div class="small">Meta mensal</div>
+            <div class="valorLinha"><strong id="metaMensalVal">R$ 0,00</strong></div>
+          </div>
+          <div style="flex:1; min-width:140px;">
+            <div class="small">Realizado no mês</div>
+            <div class="valorLinha"><strong id="realizadoMesVal">R$ 0,00</strong></div>
+          </div>
+          <div style="flex:1; min-width:140px;">
+            <div class="small">Saídas no mês</div>
+            <div class="valorLinha"><strong id="saidasMesVal">R$ 0,00</strong></div>
+          </div>
+        </div>
+
+        <!-- gráfico de barras vertical (corporate style) -->
+        <div class="chartRow" style="margin-top:12px;">
+          <div class="chartCard">
+            <div class="barShell"><div id="barMeta" class="barInner" style="height:10%;background:var(--brand);"></div></div>
+            <div class="small">Meta</div>
+            <div id="barMetaLabel" class="small">0%</div>
+          </div>
+
+          <div class="chartCard">
+            <div class="barShell"><div id="barRealizado" class="barInner" style="height:10%;background:var(--accent-success);"></div></div>
+            <div class="small">Realizado</div>
+            <div id="barRealizadoLabel" class="small">0%</div>
+          </div>
+
+          <div class="chartCard">
+            <div class="barShell"><div id="barReceber" class="barInner" style="height:10%;background:var(--card-strong);"></div></div>
+            <div class="small">A Receber</div>
+            <div id="barReceberLabel" class="small">0%</div>
+          </div>
+        </div>
+
+        <div id="alertMonthly" class="small" style="margin-top:12px;color:var(--accent-danger);display:none;">
+          Você está abaixo da meta mensal — revise seus custos e recebíveis.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
 </div>
 
+<!-- modal tutorial -->
+<div id="modalTutorial" role="dialog" aria-hidden="true">
+  <div class="modalInner">
+    <h3>Como usar esta tela</h3>
+    <ol>
+      <li>Preencha seus dados de motorista.</li>
+      <li>Defina sua meta mensal.</li>
+      <li>Cadastre valores a receber.</li>
+      <li>Acompanhe o progresso mensal na barra.</li>
+    </ol>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button id="tutorialCloseBtn" class="btn" style="flex:1">Fechar</button>
+      <button id="tutorialNeverBtn" class="btnGhost" style="flex:1;background:#666;color:#fff">Não mostrar novamente</button>
+    </div>
+  </div>
+</div>
 
-<!-- MENU INFERIOR -->
-<nav class="bottom-menu">
-    <a href="index.html" class="menu-item"><span class="icon">🏠</span><span>Dashboard</span></a>
-    <a href="entradas.html" class="menu-item"><span class="icon">💵</span><span>Entradas</span></a>
-    <a href="manutencao.html" class="menu-item"><span class="icon">🛠️</span><span>Manutenção</span></a>
-    <a href="resumo.html" class="menu-item"><span class="icon">📊</span><span>Resumo</span></a>
-    <a href="perfil.html" class="menu-item active"><span class="icon">👤</span><span>Perfil</span></a>
-    <a href="calculadora.html" class="menu-item"><span class="icon">📟</span><span>Calc</span></a>
+<!-- bottom menu -->
+<nav class="bottom-menu" aria-label="Menu">
+  <a href="index.html" class="menu-item" id="m-index"><span class="icon">🏠</span><span>Dashboard</span></a>
+  <a href="entradas.html" class="menu-item" id="m-entradas"><span class="icon">💵</span><span>Entradas</span></a>
+  <a href="manutencao.html" class="menu-item" id="m-manut"><span class="icon">🛠️</span><span>Manutenção</span></a>
+  <a href="resumo.html" class="menu-item" id="m-resumo"><span class="icon">📊</span><span>Resumo</span></a>
+  <a href="perfil.html" class="menu-item active" id="m-perfil"><span class="icon">👤</span><span>Perfil</span></a>
+  <a href="calculadora.html" class="menu-item" id="m-calc"><span class="icon">📟</span><span>Calc</span></a>
 </nav>
 
-<!-- Bibliotecas necessárias -->
+<!-- libs for PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script>
-/* Atalhos */
+/* helpers */
 const $ = id => document.getElementById(id);
-const brl = v => Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const brl = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
-/* STORAGE */
-let perfil = JSON.parse(localStorage.getItem("perfilMotorista") || "{}");
-let meta = JSON.parse(localStorage.getItem("metaMensal") || "{}");
-let valoresReceber = JSON.parse(localStorage.getItem("valoresReceber") || "[]");
-let registros = JSON.parse(localStorage.getItem("entradasSaidas") || "[]");
-let saldoInicialObj = JSON.parse(localStorage.getItem("saldoInicial") || "{}");
+/* STORAGE KEYS */
+const KEY_PROFILE = 'perfilMotorista';
+const KEY_META = 'metaMensal';
+const KEY_RECEBER = 'valoresReceber';
+const KEY_REG = 'entradasSaidas';
+const KEY_SALDO = 'saldoInicial';
+const KEY_TUTORIAL = 'hide_tutorial';
 
-/* -----------------------
-   INICIALIZAÇÃO
------------------------ */
-function init(){
-    // FOTO
-    $("fotoPerfil").src = perfil.foto || "";
+/* load/save shortcuts */
+const load = k => { try { return JSON.parse(localStorage.getItem(k) || (k===KEY_RECEBER?'[]':'{}')); } catch(e){ return (k===KEY_RECEBER?[]:{}); } };
+const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
-    // CAMPOS PERFIL
-    $("nome").value = perfil.nome || "";
-    $("carro").value = perfil.carro || "";
-    $("modelo").value = perfil.modelo || "";
-    $("ano").value = perfil.ano || "";
-    $("placa").value = perfil.placa || "";
+/* state */
+let perfil = load(KEY_PROFILE);
+let meta = load(KEY_META);
+let valoresReceber = load(KEY_RECEBER);
+let registros = load(KEY_REG) || [];
+let saldoInicialObj = load(KEY_SALDO);
 
-    // META
-    $("metaMensal").value = meta.valor || "";
-
-    // SALDO INICIAL
-    $("saldoInicial").value = saldoInicialObj.valor || "";
-    $("saldoAtualDisplay").innerText = brl(saldoInicialObj.valor || 0);
-
-    carregarNome();
-    renderReceber();
-    updateAll();
+/* THEME (light as default) */
+function applyTheme(theme){
+  if(theme === 'dark'){ document.documentElement.classList.add('dark'); localStorage.setItem('theme','dark'); $('toggleTheme').innerText='☀️'; }
+  else { document.documentElement.classList.remove('dark'); localStorage.setItem('theme','light'); $('toggleTheme').innerText='🌙'; }
 }
+(function initTheme(){
+  const saved = localStorage.getItem('theme') || 'light';
+  applyTheme(saved);
+  $('toggleTheme').addEventListener('click', ()=>{ const isDark = document.documentElement.classList.contains('dark'); applyTheme(isDark ? 'light' : 'dark'); });
+})();
 
+/* init UI */
+function init(){
+  perfil = load(KEY_PROFILE);
+  meta = load(KEY_META);
+  valoresReceber = load(KEY_RECEBER);
+  registros = load(KEY_REG) || [];
+  saldoInitial = load(KEY_SALDO);
+
+  // profile
+  $('fotoPerfil').src = perfil.foto || '';
+  $('nome').value = perfil.nome || '';
+  $('carro').value = perfil.carro || '';
+  $('modelo').value = perfil.modelo || '';
+  $('ano').value = perfil.ano || '';
+  $('placa').value = perfil.placa || '';
+
+  // meta
+  $('metaMensal').value = meta.valor || '';
+
+  // saldo
+  $('saldoInicial').value = saldoInitial.valor || '';
+  $('saldoAtualDisplay').innerText = brl(saldoInitial.valor || 0);
+
+  // tutorial
+  if(!localStorage.getItem(KEY_TUTORIAL)) {
+    // show tutorial small by default? keep hidden until user opens
+    // $('modalTutorial').style.display = 'block';
+  }
+
+  carregarNome();
+  renderReceber();
+  updateAll();
+}
 init();
 
-/* Saudação */
+/* helper name */
 function carregarNome(){
-    const n = perfil.nome ? perfil.nome.split(" ")[0] : "";
-    $("greeting").innerText = n ? `Olá, ${n}!` : "";
+  const n = perfil.nome ? perfil.nome.split(' ')[0] : '';
+  const g = $('greeting');
+  if(g) g.innerText = n ? `Olá, ${n}!` : '';
 }
 
-/* FOTO DE PERFIL */
-$("fotoInput").addEventListener("change", e => {
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-        perfil.foto = ev.target.result;
-        $("fotoPerfil").src = perfil.foto;
-        localStorage.setItem("perfilMotorista", JSON.stringify(perfil));
-    };
-    reader.readAsDataURL(file);
+/* photo */
+$('fotoInput').addEventListener('change', e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    perfil.foto = ev.target.result;
+    $('fotoPerfil').src = perfil.foto;
+    save(KEY_PROFILE, perfil);
+  };
+  reader.readAsDataURL(file);
 });
 
-/* SALVAR PERFIL */
-$("salvarPerfilBtn").addEventListener("click", () => {
-    perfil.nome = $("nome").value;
-    perfil.carro = $("carro").value;
-    perfil.modelo = $("modelo").value;
-    perfil.ano = $("ano").value;
-    perfil.placa = $("placa").value;
-
-    localStorage.setItem("perfilMotorista", JSON.stringify(perfil));
-    carregarNome();
-    alert("Perfil salvo!");
+/* salvar perfil */
+$('salvarPerfilBtn').addEventListener('click', ()=>{
+  perfil.nome = $('nome').value.trim();
+  perfil.carro = $('carro').value.trim();
+  perfil.modelo = $('modelo').value.trim();
+  perfil.ano = $('ano').value.trim();
+  perfil.placa = $('placa').value.trim();
+  save(KEY_PROFILE, perfil);
+  carregarNome();
+  alert('Perfil salvo!');
 });
 
-/* SALVAR SALDO INICIAL */
-$("salvarSaldoBtn").addEventListener("click", () => {
-    const v = Number($("saldoInicial").value) || 0;
-    saldoInicialObj = { valor: v };
-
-    localStorage.setItem("saldoInicial", JSON.stringify(saldoInicialObj));
-
-    $("saldoAtualDisplay").innerText = brl(v);
-
-    updateAll();
-
-    alert("Saldo inicial salvo!");
+/* saldo inicial */
+$('salvarSaldoBtn').addEventListener('click', ()=>{
+  const v = Number($('saldoInicial').value) || 0;
+  saldoInicialObj = { valor: v };
+  save(KEY_SALDO, saldoInicialObj);
+  $('saldoAtualDisplay').innerText = brl(v);
+  updateAll();
+  alert('Saldo inicial salvo!');
+});
+$('resetSaldoBtn').addEventListener('click', ()=>{
+  // reload displayed values from storage
+  init();
 });
 
-/* META MENSAL */
-$("salvarMetaBtn").addEventListener("click",()=>{
-    meta.valor = Number($("metaMensal").value)||0;
-    localStorage.setItem("metaMensal",JSON.stringify(meta));
-    updateAll();
-    alert("Meta salva!");
+/* meta mensal */
+$('salvarMetaBtn').addEventListener('click', ()=>{
+  meta = { valor: Number($('metaMensal').value) || 0 };
+  save(KEY_META, meta);
+  updateAll();
+  alert('Meta salva!');
+});
+$('limparMetaBtn').addEventListener('click', ()=>{
+  meta = {}; save(KEY_META, meta); $('metaMensal').value=''; updateAll();
 });
 
-/* -----------------------
-   VALORES A RECEBER
------------------------ */
-$("addReceberBtn").addEventListener("click", ()=>{
-    const valor = Number($("receberValor").value);
-    const data  = $("receberData").value;
-
-    if(!valor || !data){
-        alert("Preencha valor e data.");
-        return;
-    }
-
-    valoresReceber.push({valor,data});
-    localStorage.setItem("valoresReceber",JSON.stringify(valoresReceber));
-
-    $("receberValor").value = "";
-    $("receberData").value = "";
-
-    renderReceber();
-    updateAll();
+/* valores a receber */
+$('addReceberBtn').addEventListener('click', ()=>{
+  const valor = Number($('receberValor').value) || 0;
+  const data = $('receberData').value;
+  if(!valor || !data) return alert('Preencha valor e data.');
+  valoresReceber.push({valor,data});
+  save(KEY_RECEBER, valoresReceber);
+  $('receberValor').value=''; $('receberData').value='';
+  renderReceber();
+  updateAll();
 });
 
 function renderReceber(){
-    const el = $("listaReceber");
-    if(!valoresReceber.length){
-        el.innerHTML = `<div class="small">Nenhum valor a receber.</div>`;
-        return;
-    }
-
-    let html = "";
-    valoresReceber.forEach((r,i)=>{
-        html += `
-        <div class="receber-item">
-            <div style="flex:1">
-                <div style="font-weight:700">${r.data} — ${brl(r.valor)}</div>
-                <div class="small">Previsto</div>
-            </div>
-
-            <div style="display:flex;gap:6px">
-                <button 
-                    onclick="marcarComoRecebido(${i})"
-                    style="background:#0b74ff;color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer">
-                    Recebido
-                </button>
-
-                <button 
-                    onclick="removerReceber(${i})"
-                    style="background:#ff3b30;color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer">
-                    Remover
-                </button>
-            </div>
-        </div>`;
-    });
-
-    el.innerHTML = html;
+  const el = $('listaReceber');
+  if(!valoresReceber || !valoresReceber.length){
+    el.innerHTML = `<div class="small">Nenhum valor a receber.</div>`;
+    return;
+  }
+  let html = '';
+  valoresReceber.forEach((r,i)=>{
+    html += `<div class="receber-item">
+      <div style="flex:1">
+        <div style="font-weight:700">${r.data} — ${brl(r.valor)}</div>
+        <div class="small">Previsto</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="marcarComoRecebido(${i})" style="background:var(--brand);color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer">Recebido</button>
+        <button onclick="removerReceber(${i})" style="background:var(--accent-danger);color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer">Remover</button>
+      </div>
+    </div>`;
+  });
+  el.innerHTML = html;
 }
 
 function removerReceber(i){
-    valoresReceber.splice(i,1);
-    localStorage.setItem("valoresReceber",JSON.stringify(valoresReceber));
-    renderReceber();
-    updateAll();
+  valoresReceber.splice(i,1);
+  save(KEY_RECEBER, valoresReceber);
+  renderReceber();
+  updateAll();
 }
 
 function marcarComoRecebido(i){
-    const r = valoresReceber[i];
-    if(!confirm("Confirmar recebimento?")) return;
-
-    // adiciona como entrada no financeiro
-    registros.push({
-        id: Date.now(),
-        tipo:"entrada",
-        valor: r.valor,
-        criadoEm: new Date().toISOString(),
-        subtipo:"extra",
-        formaPag:"a_receber"
-    });
-
-    localStorage.setItem("entradasSaidas", JSON.stringify(registros));
-
-    valoresReceber.splice(i,1);
-    localStorage.setItem("valoresReceber", JSON.stringify(valoresReceber));
-
-    renderReceber();
-    updateAll();
+  const r = valoresReceber[i];
+  if(!confirm('Confirmar recebimento?')) return;
+  registros.push({
+    id: Date.now(),
+    tipo:'entrada',
+    valor: r.valor,
+    criadoEm: new Date().toISOString(),
+    subtipo:'a_receber',
+    formaPag:'a_receber'
+  });
+  save(KEY_REG, registros);
+  valoresReceber.splice(i,1);
+  save(KEY_RECEBER, valoresReceber);
+  renderReceber();
+  updateAll();
 }
 
-/* -----------------------
-    CÁLCULOS MENSAIS
------------------------ */
+/* date helpers for month */
 function isSameMonthISO(iso){
-    const d = new Date(iso);
-    const now = new Date();
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  const d = new Date(iso);
+  const now = new Date();
+  return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
 }
 
+/* calculations */
 function entradasLiquidasMes(){
-    return registros.reduce((s,r)=>{
-        if(r.tipo==="entrada" && isSameMonthISO(r.criadoEm)) 
-            return s + Number(r.valor||0);
-        return s;
-    },0);
+  registros = load(KEY_REG) || [];
+  return registros.reduce((s,r)=>{
+    if(r.tipo==='entrada' && isSameMonthISO(r.criadoEm)) return s + Number(r.valor||0);
+    return s;
+  },0);
 }
-
 function saidasMes(){
-    return registros.reduce((s,r)=>{
-        if(r.tipo==="saida" && isSameMonthISO(r.criadoEm)) 
-            return s + Number(r.valor||0);
-        return s;
-    },0);
+  registros = load(KEY_REG) || [];
+  return registros.reduce((s,r)=>{
+    if(r.tipo==='saida' && isSameMonthISO(r.criadoEm)) return s + Number(r.valor||0);
+    return s;
+  },0);
 }
-
 function totalReceberNoMes(){
-    const now = new Date();
-    return valoresReceber.reduce((s,r)=>{
-        const d = new Date(r.data);
-        if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear())
-            return s + Number(r.valor||0);
-        return s;
-    },0);
+  const now = new Date();
+  return (valoresReceber||[]).reduce((s,r)=>{
+    const d = new Date(r.data);
+    if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) return s + Number(r.valor||0);
+    return s;
+  },0);
 }
-
 function realizadoMes(){
-    return entradasLiquidasMes() - saidasMes() + (saldoInicialObj.valor||0);
+  const entradas = entradasLiquidasMes();
+  const saidas = saidasMes();
+  const saldo = (saldoInicialObj && Number(saldoInicialObj.valor)) || 0;
+  return entradas - saidas + saldo;
 }
 
+/* days left */
 function diasRestantes(){
-    const hoje = new Date();
-    const ultimo = new Date(hoje.getFullYear(),hoje.getMonth()+1,0).getDate();
-    return ultimo - hoje.getDate() + 1;
+  const hoje = new Date();
+  const ultimo = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0).getDate();
+  return ultimo - hoje.getDate() + 1;
 }
 
-/* -----------------------
-   ATUALIZA TODA A TELA
------------------------ */
+/* update UI (main) */
 function updateAll(){
+  registros = load(KEY_REG) || [];
+  const metaMensal = Number((meta && meta.valor) || 0);
+  const receb = totalReceberNoMes();
+  const entradas = entradasLiquidasMes();
+  const saidas = saidasMes();
+  const realizado = realizadoMes();
+  const metaLiquida = Math.max(0, metaMensal - receb);
 
-    const metaMensal = Number(meta.valor||0);
-    const receb = totalReceberNoMes();
-    const entradas = entradasLiquidasMes();
-    const saidas = saidasMes();
-    const realizado = realizadoMes();
+  // labels
+  $('labelMeta').innerText = brl(metaMensal);
+  $('labelReceber').innerText = brl(receb);
+  $('labelRealizado').innerText = brl(realizado);
 
-    const metaLiquida = metaMensal - receb;
+  $('metaMensalVal').innerText = brl(metaMensal);
+  $('realizadoMesVal').innerText = brl(realizado);
+  $('saidasMesVal').innerText = brl(saidas);
 
-    // LABELS
-    $("labelMeta").innerText = brl(metaMensal);
-    $("labelReceber").innerText = brl(receb);
-    $("labelRealizado").innerText = brl(realizado);
+  $('tvReceber').innerText = brl(receb);
+  $('tvMetaLiquida').innerText = brl(metaLiquida);
+  $('tvFalta').innerText = brl(Math.max(0, metaLiquida - realizado));
 
-    $("metaMensalVal").innerText = brl(metaMensal);
-    $("realizadoMesVal").innerText = brl(realizado);
-    $("saidasMesVal").innerText = brl(saidas);
+  // progress linear
+  const pct = metaLiquida>0 ? Math.min(100, Math.round((realizado/metaLiquida)*100)) : 100;
+  $('linearFill').style.width = pct + '%';
 
-    $("tvMetaLiquida").innerText = brl(metaLiquida);
-    $("tvFalta").innerText = brl(Math.max(0, metaLiquida - realizado));
+  // chart bars relative
+  const max = Math.max(metaLiquida, Math.abs(realizado), receb, 1);
+  const pctMeta = Math.round((metaLiquida/max)*100);
+  const pctReal = Math.round((realizado/max)*100);
+  const pctRec = Math.round((receb/max)*100);
 
-    // CÍRCULO
-    const pct = metaLiquida>0 ? Math.min(100, Math.round((realizado/metaLiquida)*100)) : 100;
-    renderCircular(pct);
+  $('barMeta').style.height = Math.max(6, pctMeta) + '%';
+  $('barRealizado').style.height = Math.max(6, pctReal) + '%';
+  $('barReceber').style.height = Math.max(6, pctRec) + '%';
 
-    $("linearFill").style.width = pct + "%";
+  $('barMetaLabel').innerText = pctMeta + '%';
+  $('barRealizadoLabel').innerText = pctReal + '%';
+  $('barReceberLabel').innerText = pctRec + '%';
 
-    // GRÁFICOS
-    const max = Math.max(metaLiquida, realizado, receb, 1);
-
-    $("barMeta").style.height = `${(metaLiquida/max)*100}%`;
-    $("barRealizado").style.height = `${(realizado/max)*100}%`;
-    $("barReceber").style.height = `${(receb/max)*100}%`;
-
-    // ALERTA
-    $("alertMonthly").style.display = realizado < metaLiquida ? "block" : "none";
+  // alert
+  $('alertMonthly').style.display = (realizado < metaLiquida) ? 'block' : 'none';
 }
 
-/* GRÁFICO CIRCULAR */
-function renderCircular(pct){
-  const size = 140;
-  const stroke = 12;
-  const radius = (size - stroke)/2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference * (1 - Math.max(0, Math.min(pct,100))/100);
-
-  $('circularWrap').innerHTML = `
-    <div style="
-      position:relative;
-      width:${size}px;
-      height:${size}px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    ">
-      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="position:absolute;top:0;left:0;">
-        <defs>
-          <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#1DB954"/>
-            <stop offset="100%" stop-color="#0ab85a"/>
-          </linearGradient>
-        </defs>
-
-        <circle cx="${size/2}" cy="${size/2}" r="${radius}" 
-          stroke="#0e0e0e" stroke-width="${stroke}" fill="none"/>
-        
-        <circle cx="${size/2}" cy="${size/2}" r="${radius}"
-          stroke="url(#g1)" stroke-width="${stroke}" stroke-linecap="round"
-          stroke-dasharray="${circumference}"
-          stroke-dashoffset="${offset}"
-          fill="none" style="transition: stroke-dashoffset .6s ease;"/>
-      </svg>
-
-      <div style="
-        position:absolute;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        text-align:center;
-        color:#fff;
-      ">
-        <div style="font-size:24px;font-weight:800;">${pct}%</div>
-        <div style="font-size:12px;color:#bbb;">da meta</div>
-      </div>
-    </div>`;
-}
-
-/* -----------------------
-   WHATSAPP
------------------------ */
-$("btnWhats").addEventListener("click", ()=>{
-
-    const msg = 
-`📊 *Relatório do Mês*
-
-🎯 Meta: ${brl(meta.valor)}
+/* WhatsApp export */
+$('btnWhats').addEventListener('click', ()=>{
+  const msg = `📊 Relatório do Mês
+🎯 Meta: ${brl((meta && meta.valor)||0)}
 📥 A receber: ${brl(totalReceberNoMes())}
 💰 Realizado: ${brl(realizadoMes())}
 📤 Saídas: ${brl(saidasMes())}
 💵 Entradas: ${brl(entradasLiquidasMes())}
-🏦 Saldo inicial: ${brl(saldoInicialObj.valor||0)}
+🏦 Saldo inicial: ${brl((saldoInicialObj && saldoInicialObj.valor)||0)}
 ⏳ Dias restantes: ${diasRestantes()}`;
-
-    const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-    window.open(url, "_blank");
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 });
 
-/* -----------------------
-   PDF
------------------------ */
-$("btnPdf").addEventListener("click", async ()=>{
-
-    const container = document.querySelector(".container");
-
+/* PDF export */
+$('btnPdf').addEventListener('click', async ()=>{
+  const container = document.querySelector('.container');
+  try{
     const canvas = await html2canvas(container,{scale:2});
-
-    const img = canvas.toDataURL("image/png");
-
+    const img = canvas.toDataURL('image/png');
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p","mm","a4");
-
+    const pdf = new jsPDF('p','mm','a4');
     const pageWidth = pdf.internal.pageSize.getWidth();
     const imgProps = pdf.getImageProperties(img);
     const imgHeight = (imgProps.height * pageWidth) / imgProps.width;
-
-    pdf.addImage(img,"PNG",0,0,pageWidth,imgHeight);
-    pdf.save("relatorio_perfil.pdf");
+    pdf.addImage(img,'PNG',0,0,pageWidth,imgHeight);
+    pdf.save('perfil_relatorio.pdf');
+  }catch(e){ console.error(e); alert('Falha ao gerar PDF.'); }
 });
 
-/* -----------------------
-   MODAL
------------------------ */
-$("tutorialOpenBtn").onclick = ()=> $("modalTutorial").style.display="block";
-$("tutorialCloseBtn").onclick = ()=> $("modalTutorial").style.display="none";
-$("tutorialNeverBtn").onclick = ()=>{
-    localStorage.setItem("hide_tutorial","1");
-    $("modalTutorial").style.display="none";
-};
+/* modal tutorial */
+$('tutorialOpenBtn').addEventListener('click', ()=> $('modalTutorial').style.display='block');
+$('tutorialCloseBtn').addEventListener('click', ()=> $('modalTutorial').style.display='none');
+$('tutorialNeverBtn').addEventListener('click', ()=>{ localStorage.setItem(KEY_TUTORIAL,'1'); $('modalTutorial').style.display='none'; });
 
+/* helpers: remove localStorage tutorial on load if set */
+if(localStorage.getItem(KEY_TUTORIAL)) $('modalTutorial').style.display='none';
+
+/* boot */
+window.addEventListener('load', ()=>{
+  renderReceber();
+  updateAll();
+  // bottom menu active
+  document.querySelectorAll('.bottom-menu .menu-item').forEach(el=>{
+    el.classList.remove('active');
+    const href = el.getAttribute('href') || '';
+    if(location.pathname && location.pathname.indexOf(href) !== -1) el.classList.add('active');
+  });
+});
 </script>
-
 </body>
 </html>

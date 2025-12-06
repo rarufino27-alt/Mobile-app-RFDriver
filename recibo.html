@@ -91,12 +91,6 @@ header{
     max-width:980px;margin:0 auto;padding:0 16px;
 }
 
-h2{
-    margin:8px 0 10px;
-    font-size:20px;
-    font-weight:800;
-}
-
 /* CARD */
 .card{
     background:var(--card);
@@ -106,17 +100,69 @@ h2{
     border:1px solid #d7dce2;
     box-shadow:var(--shadow);
 }
+.card h3{
+    margin-top:0;
+    margin-bottom:10px;
+    font-size:17px;
+}
 .card label{
     display:block;margin:8px 0 4px;font-size:14px;color:var(--muted);
 }
-.card input{
-    width:100%;padding:10px 12px;border-radius:10px;
+.card input,
+.card textarea,
+.card select{
+    width:100%;padding:12px;border-radius:10px;
     border:1px solid #cfd4da;background:var(--panel);
-    font-size:14px;margin-bottom:8px;
+    font-size:15px;margin-bottom:8px;
+    color:var(--text);
 }
-.card h3{
-    margin:0 0 8px;
-    font-size:16px;
+.card textarea{resize:vertical;min-height:70px;}
+
+/* LINHAS / GRID */
+.row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+.col{
+    flex:1;
+    min-width:150px;
+}
+
+/* RESUMO LATERAL (totais) */
+.resumo-linha{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:14px;
+    color:var(--muted);
+    margin-top:4px;
+}
+.resumo-linha strong{color:var(--text);}
+
+/* FUNCIONÁRIOS */
+.funcionario-block{
+    background:var(--card-strong);
+    border-radius:12px;
+    padding:12px;
+    border:1px solid #d7dce2;
+    margin-top:10px;
+}
+.tag-func{
+    display:inline-block;
+    padding:2px 10px;
+    border-radius:999px;
+    background:rgba(11,91,215,0.08);
+    color:var(--brand-dark);
+    font-size:12px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+.dark .funcionario-block{
+    border-color:#292c33;
+}
+.atraso-extra{
+    margin-top:4px;
 }
 
 /* BOTÕES */
@@ -126,66 +172,35 @@ h2{
     background:linear-gradient(135deg,var(--brand),var(--brand-dark));
     color:#fff;cursor:pointer;margin-top:10px;
 }
-
-.btn-secondary{
-    background:#128c7e !important;
-    color:#fff !important;
-}
-
-.small{
-    font-size:12px;
-    color:var(--muted);
-}
-
-/* BLOCO DE FUNCIONÁRIO */
-.func-block{
-    border-radius:10px;
-    background:var(--card-strong);
-    padding:10px;
-    margin-bottom:10px;
-    border:1px solid #d2d7e0;
-}
-.func-block-title{
-    font-weight:700;
+.card .btn-inline{
+    width:auto;
+    flex:1;
+    padding:10px 12px;
     font-size:13px;
-    margin-bottom:4px;
+}
+.card .btn-secondary{
+    background:#9ca3af;
+    color:#111827;
+}
+.card .btn-sm{
+    width:auto;
+    padding:8px 10px;
+    font-size:13px;
 }
 
 /* HISTÓRICO */
-.historico-item{
-    background:var(--card-strong);
-    border-radius:10px;
-    padding:10px;
-    margin-bottom:8px;
+.hist-item{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:10px;
+    padding:10px;
+    margin-top:8px;
+    border-radius:10px;
+    background:var(--card-strong);
 }
-.hist-title{
-    font-size:14px;
-    font-weight:700;
-}
-.hist-sub{
-    font-size:12px;
-    color:var(--muted);
-}
-.hist-actions{
+.hist-item .actions{
     display:flex;
     gap:6px;
-}
-.btn-mini{
-    padding:6px 10px;
-    border-radius:8px;
-    border:none;
-    font-size:11px;
-    font-weight:600;
-    cursor:pointer;
-    background:var(--brand);
-    color:#fff;
-}
-.btn-mini.danger{
-    background:#ff3b30;
 }
 
 /* MENU NEO */
@@ -207,8 +222,13 @@ h2{
   font-size:12px;display:flex;flex-direction:column;
   align-items:center;gap:3px;opacity:.75;transition:.25s;
 }
+.neo-menu .menu-item .icon{font-size:20px;}
 .neo-menu .menu-item.active{
   opacity:1;transform:scale(1.15);
+}
+body.dark .neo-menu{
+  background:rgba(25,25,30,0.65);
+  border-color:rgba(255,255,255,0.05);
 }
 </style>
 </head>
@@ -227,9 +247,10 @@ h2{
 
 <div class="container">
 
+  <!-- CADASTRO FIXO PARA RECIBO (EMPRESA + MOTORISTA) -->
   <h2>Cadastro para Recibo</h2>
-
   <div class="card">
+    <h3>Dados da empresa / motorista</h3>
     <label>Empresa (opcional)</label><input id="empresa">
     <label>CNPJ (opcional)</label><input id="cnpj">
     <label>Nome do Motorista *</label><input id="motorista">
@@ -239,92 +260,111 @@ h2{
     <label>Placa *</label><input id="placa">
     <label>Cor *</label><input id="cor">
     <button id="savePerfil">Salvar Dados</button>
-    <div class="small">Esses dados ficam salvos e serão usados em todos os recibos.</div>
   </div>
 
+  <!-- EMISSÃO DO RECIBO -->
   <h2>Emitir Recibo</h2>
-
   <div class="card">
 
-    <h3>Dados Básicos da Viagem</h3>
-    <label>Passageiro / Contato</label><input id="passageiro">
-    <label>Serviço</label><input id="servico">
-    <label>Valor (R$)</label><input id="valor" type="number" step="0.01">
-    <label>Data da Viagem</label><input id="dataViagem" type="date">
+    <h3>Dados básicos da viagem</h3>
+    <label>Empresa de destino</label>
+    <input id="empresaDestino">
 
-    <h3 style="margin-top:14px;">Empresas Envolvidas</h3>
-    <label>Empresa de destino</label><input id="empresaDestino">
-    <label>Empresa responsável pelos funcionários</label><input id="empresaResponsavel">
-    <label>Nome do solicitante da viagem</label><input id="solicitante">
+    <label>Empresa responsável pelos funcionários</label>
+    <input id="empresaResponsavel">
 
-    <h3 style="margin-top:14px;">Funcionários</h3>
-    <div class="small" style="margin-bottom:6px;">Preencha somente os funcionários que estiverem na viagem.</div>
+    <label>Solicitante da Viagem</label>
+    <input id="solicitante">
 
-    <div class="func-block">
-      <div class="func-block-title">Funcionário 1</div>
-      <label>Nome</label><input id="func1Nome">
-      <label>Empresa</label><input id="func1Empresa">
-      <label>Destino</label><input id="func1Destino">
-      <label>Horário de Embarque</label><input id="func1Horario" type="time">
+    <label>Horário de chegada no ponto de embarque / coleta</label>
+    <input id="horaChegada" type="time">
+
+    <label>Descrição sobre a viagem / Tipo de serviço</label>
+    <textarea id="descricao"></textarea>
+
+    <hr style="margin:18px 0;border:none;border-top:1px solid #d7dce2;"/>
+
+    <h3>Funcionários</h3>
+    <div id="funcionariosContainer"></div>
+    <div class="row" style="margin-top:6px;">
+      <button type="button" id="addFuncionarioBtn" class="btn-inline">➕ Adicionar funcionário</button>
+      <button type="button" id="removerFuncionarioBtn" class="btn-inline btn-secondary">➖ Remover funcionário</button>
     </div>
 
-    <div class="func-block">
-      <div class="func-block-title">Funcionário 2</div>
-      <label>Nome</label><input id="func2Nome">
-      <label>Empresa</label><input id="func2Empresa">
-      <label>Destino</label><input id="func2Destino">
-      <label>Horário de Embarque</label><input id="func2Horario" type="time">
+    <hr style="margin:18px 0;border:none;border-top:1px solid #d7dce2;"/>
+
+    <h3>Horários & Quilometragem</h3>
+    <div class="row">
+      <div class="col">
+        <label>Horário inicial</label>
+        <input id="horaInicio" type="time">
+      </div>
+      <div class="col">
+        <label>KM inicial</label>
+        <input id="kmInicial" type="number" step="0.1">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Horário final</label>
+        <input id="horaFim" type="time">
+      </div>
+      <div class="col">
+        <label>KM final</label>
+        <input id="kmFinal" type="number" step="0.1">
+      </div>
     </div>
 
-    <div class="func-block">
-      <div class="func-block-title">Funcionário 3</div>
-      <label>Nome</label><input id="func3Nome">
-      <label>Empresa</label><input id="func3Empresa">
-      <label>Destino</label><input id="func3Destino">
-      <label>Horário de Embarque</label><input id="func3Horario" type="time">
+    <div style="margin-top:8px;">
+      <div class="resumo-linha">
+        <span>Total de KM</span>
+        <strong id="totalKmDisplay">-</strong>
+      </div>
+      <div class="resumo-linha">
+        <span>Tempo de espera</span>
+        <strong id="tempoEsperaDisplay">0 min</strong>
+      </div>
+      <div class="resumo-linha">
+        <span>Tempo de viagem</span>
+        <strong id="tempoViagemDisplay">0 min</strong>
+      </div>
     </div>
 
-    <div class="func-block">
-      <div class="func-block-title">Funcionário 4</div>
-      <label>Nome</label><input id="func4Nome">
-      <label>Empresa</label><input id="func4Empresa">
-      <label>Destino</label><input id="func4Destino">
-      <label>Horário de Embarque</label><input id="func4Horario" type="time">
-    </div>
+    <hr style="margin:18px 0;border:none;border-top:1px solid #d7dce2;"/>
 
-    <h3 style="margin-top:14px;">Horários & Quilometragem</h3>
-    <label>Horário de chegada ao 1º ponto de embarque</label><input id="horaChegadaPonto" type="time">
-    <label>Horário de início da viagem</label><input id="horaInicioViagem" type="time">
-    <label>Horário final da viagem</label><input id="horaFimViagem" type="time">
+    <h3>Resumo financeiro</h3>
+    <label>Valor total da viagem (R$)</label>
+    <input id="valor" type="number" step="0.01">
 
-    <label>KM inicial</label><input id="kmInicial" type="number" step="0.1">
-    <label>KM final</label><input id="kmFinal" type="number" step="0.1">
-    <label>KM rodado (calculado)</label><input id="kmRodado" type="number" step="0.1" readonly>
+    <label>Data da viagem</label>
+    <input id="dataViagem" type="date">
 
     <button id="emitirPdf">Gerar PDF</button>
-    <button id="enviarWa" class="btn-secondary">Enviar WhatsApp</button>
+    <button id="enviarWa" style="background:#128c7e">Enviar WhatsApp</button>
   </div>
 
-  <h2>Histórico de Recibos</h2>
+  <!-- HISTÓRICO DE RECIBOS -->
   <div class="card">
-    <div id="listaHistorico"></div>
+    <h3>Histórico de recibos</h3>
+    <div id="listaRecibos" class="small"></div>
   </div>
 
 </div>
 
+<!-- MENU INFERIOR -->
 <nav class="neo-menu">
   <a href="planos.html" class="menu-item"><span class="icon">⭐</span><span>Planos</span></a>
   <a href="index.html" class="menu-item"><span class="icon">🏠</span><span>Dashboard</span></a>
   <a href="entradas.html" class="menu-item"><span class="icon">💵</span><span>Entradas</span></a>
   <a href="recibo.html" class="menu-item active"><span class="icon">🧾</span><span>Recibo</span></a>
-  <a href="manutencao.html" class="menu-item"><span class="icon">🛠️</span><span>Manut.</span></a>
+  <a href="manutencao.html" class="menu-item"><span class="icon">🛠</span><span>Manut.</span></a>
   <a href="resumo.html" class="menu-item"><span class="icon">📊</span><span>Resumo</span></a>
   <a href="perfil.html" class="menu-item"><span class="icon">👤</span><span>Perfil</span></a>
   <a href="calculadora.html" class="menu-item"><span class="icon">📟</span><span>Calc</span></a>
 </nav>
 
 <script>
-/* TEMA */
+/* THEME */
 function applyTheme(theme){
     if(theme === "dark"){
         document.documentElement.classList.add("dark");
@@ -342,7 +382,7 @@ document.getElementById("toggleTheme").onclick = ()=>{
     applyTheme(isDark?"light":"dark");
 };
 
-/* PERMISSÃO DO PLANO */
+/* PERMISSÃO */
 if(!planoTem("reciboComMotorista")){
     alert("Este recurso está disponível apenas no Plano PRO.");
     location.href="planos.html";
@@ -350,369 +390,490 @@ if(!planoTem("reciboComMotorista")){
 </script>
 
 <script>
-/* PERFIL (EMPRESA / MOTORISTA) */
-const PERFIL_KEY = "perfilRecibo";
-const HIST_KEY   = "historicoRecibos_v1";
-
-function getPerfil(){
-  return JSON.parse(localStorage.getItem(PERFIL_KEY) || "{}");
-}
-function savePerfil(p){
-  localStorage.setItem(PERFIL_KEY, JSON.stringify(p));
-}
-
-/* Carregar perfil nos campos ao abrir */
-(function carregarPerfilNosCampos(){
-  const d = getPerfil();
-  if(d.empresa)  document.getElementById("empresa").value  = d.empresa;
-  if(d.cnpj)     document.getElementById("cnpj").value     = d.cnpj;
-  if(d.motorista)document.getElementById("motorista").value= d.motorista;
-  if(d.cpf)      document.getElementById("cpf").value      = d.cpf;
-  if(d.marca)    document.getElementById("marca").value    = d.marca;
-  if(d.modelo)   document.getElementById("modelo").value   = d.modelo;
-  if(d.placa)    document.getElementById("placa").value    = d.placa;
-  if(d.cor)      document.getElementById("cor").value      = d.cor;
-})();
-
-/* Salvar perfil */
+/* PERFIL FIXO (empresa + motorista) */
 document.getElementById("savePerfil").onclick = ()=>{
     const data={
-        empresa:empresa.value.trim(),
-        cnpj:cnpj.value.trim(),
-        motorista:motorista.value.trim(),
-        cpf:cpf.value.trim(),
-        marca:marca.value.trim(),
-        modelo:modelo.value.trim(),
-        placa:placa.value.trim(),
-        cor:cor.value.trim()
+        empresa:empresa.value,
+        cnpj:cnpj.value,
+        motorista:motorista.value,
+        cpf:cpf.value,
+        marca:marca.value,
+        modelo:modelo.value,
+        placa:placa.value,
+        cor:cor.value
     };
-    savePerfil(data);
+    localStorage.setItem("perfilRecibo",JSON.stringify(data));
     alert("Dados salvos!");
 };
+function getPerfil(){return JSON.parse(localStorage.getItem("perfilRecibo")||"{}");}
 
-/* KM RODADO */
-function atualizarKmRodado(){
-  const kmIni = parseFloat(document.getElementById("kmInicial").value);
-  const kmFim = parseFloat(document.getElementById("kmFinal").value);
-  const campoRodado = document.getElementById("kmRodado");
+/* HELPERS GERAIS */
+const $ = id => document.getElementById(id);
+const RECIBOS_KEY = 'recibosViagem';
 
-  if(!isNaN(kmIni) && !isNaN(kmFim) && kmFim >= kmIni){
-    const rodado = kmFim - kmIni;
-    campoRodado.value = rodado.toFixed(1);
-  }else{
-    campoRodado.value = "";
+function loadRecibos(){
+  try{return JSON.parse(localStorage.getItem(RECIBOS_KEY)||'[]');}
+  catch(e){return [];}
+}
+function saveRecibos(list){
+  localStorage.setItem(RECIBOS_KEY, JSON.stringify(list));
+}
+function formatDateBr(iso){
+  if(!iso) return '-';
+  const d = new Date(iso);
+  if(!isNaN(d)){
+    const dd=String(d.getDate()).padStart(2,'0');
+    const mm=String(d.getMonth()+1).padStart(2,'0');
+    const yy=d.getFullYear();
+    return dd+'/'+mm+'/'+yy;
+  }
+  if(/^\d{4}-\d{2}-\d{2}$/.test(iso)){
+    const [y,m,da]=iso.split('-');
+    return da+'/'+m+'/'+y;
+  }
+  return iso;
+}
+function timeToMin(str){
+  if(!str) return null;
+  const parts=str.split(':');
+  if(parts.length<2) return null;
+  const h=parseInt(parts[0],10), m=parseInt(parts[1],10);
+  if(isNaN(h)||isNaN(m)) return null;
+  return h*60+m;
+}
+function formatMin(min){
+  if(!min || min<=0) return '0 min';
+  const h=Math.floor(min/60);
+  const m=min%60;
+  let out='';
+  if(h>0) out+=h+'h';
+  if(h>0 && m>0) out+=' ';
+  if(m>0) out+=m+'min';
+  return out;
+}
+
+/* FUNCIONÁRIOS DINÂMICOS */
+const funcionariosContainer = $('funcionariosContainer');
+
+function criarBlocoFuncionario(indice){
+  const div=document.createElement('div');
+  div.className='funcionario-block';
+  div.innerHTML = `
+    <div class="tag-func">Funcionário ${indice}</div>
+    <label>Nome</label>
+    <input type="text" data-field="nome">
+    <label>Empresa</label>
+    <input type="text" data-field="empresa">
+    <label>Local de embarque</label>
+    <input type="text" data-field="local">
+    <label>Horário de embarque</label>
+    <input type="time" data-field="hora">
+    <label>Houve atraso?</label>
+    <select data-field="atraso">
+      <option value="nao">Não</option>
+      <option value="sim">Sim</option>
+    </select>
+    <div class="atraso-extra" style="display:none;">
+      <label>Minutos de atraso</label>
+      <input type="number" data-field="minAtraso" min="0" step="1">
+    </div>
+  `;
+  const selectAtraso = div.querySelector('select[data-field="atraso"]');
+  const caixaAtraso = div.querySelector('.atraso-extra');
+  const horaEmb = div.querySelector('input[data-field="hora"]');
+  const minAtraso = div.querySelector('input[data-field="minAtraso"]');
+
+  selectAtraso.addEventListener('change',()=>{
+    caixaAtraso.style.display = selectAtraso.value==='sim' ? 'block':'none';
+    recomputeDerivedUI();
+  });
+  horaEmb.addEventListener('change',recomputeDerivedUI);
+  minAtraso.addEventListener('input',recomputeDerivedUI);
+
+  return div;
+}
+function atualizarIndicesFuncionarios(){
+  document.querySelectorAll('.funcionario-block').forEach((block,idx)=>{
+    const tag=block.querySelector('.tag-func');
+    if(tag) tag.textContent='Funcionário '+(idx+1);
+  });
+}
+function adicionarFuncionario(){
+  const count=document.querySelectorAll('.funcionario-block').length;
+  const block=criarBlocoFuncionario(count+1);
+  funcionariosContainer.appendChild(block);
+  atualizarIndicesFuncionarios();
+}
+function removerFuncionario(){
+  const blocks=document.querySelectorAll('.funcionario-block');
+  if(blocks.length>1){
+    blocks[blocks.length-1].remove();
+    atualizarIndicesFuncionarios();
+    recomputeDerivedUI();
   }
 }
-document.getElementById("kmInicial").addEventListener("input", atualizarKmRodado);
-document.getElementById("kmFinal").addEventListener("input", atualizarKmRodado);
 
-/* HISTÓRICO */
-function loadHistorico(){
-  try{
-    return JSON.parse(localStorage.getItem(HIST_KEY) || "[]");
-  }catch(e){
-    return [];
-  }
-}
-function saveHistorico(arr){
-  localStorage.setItem(HIST_KEY, JSON.stringify(arr));
-}
-let historico = loadHistorico();
-
-/* Montar objeto de dados do recibo atual */
-function montarDadosReciboAtual(){
-  const perfil = getPerfil();
-  const valorNum = Number(document.getElementById("valor").value) || 0;
-
-  const kmIni = parseFloat(document.getElementById("kmInicial").value) || 0;
-  const kmFim = parseFloat(document.getElementById("kmFinal").value) || 0;
-  const kmRodCampo = document.getElementById("kmRodado").value;
-  const kmRodado = kmRodCampo ? Number(kmRodCampo) : (kmFim && kmIni && kmFim >= kmIni ? kmFim - kmIni : 0);
-
+/* LER DADOS DO FORMULÁRIO */
+function readDadosFromDOM(){
   const dados = {
-    id: Date.now().toString(),
-    dataEmissao: new Date().toISOString(),
-    // empresa / motorista
-    empresa: perfil.empresa || "",
-    cnpj: perfil.cnpj || "",
-    motorista: perfil.motorista || "",
-    cpf: perfil.cpf || "",
-    marca: perfil.marca || "",
-    modelo: perfil.modelo || "",
-    placa: perfil.placa || "",
-    cor: perfil.cor || "",
-    // dados básicos
-    passageiro: document.getElementById("passageiro").value.trim(),
-    servico: document.getElementById("servico").value.trim(),
-    valor: valorNum,
-    dataViagem: document.getElementById("dataViagem").value,
-    // empresas
-    empresaDestino: document.getElementById("empresaDestino").value.trim(),
-    empresaResponsavel: document.getElementById("empresaResponsavel").value.trim(),
-    solicitante: document.getElementById("solicitante").value.trim(),
-    // funcionarios
-    funcionarios: [
-      {
-        nome:document.getElementById("func1Nome").value.trim(),
-        empresa:document.getElementById("func1Empresa").value.trim(),
-        destino:document.getElementById("func1Destino").value.trim(),
-        horario:document.getElementById("func1Horario").value
-      },
-      {
-        nome:document.getElementById("func2Nome").value.trim(),
-        empresa:document.getElementById("func2Empresa").value.trim(),
-        destino:document.getElementById("func2Destino").value.trim(),
-        horario:document.getElementById("func2Horario").value
-      },
-      {
-        nome:document.getElementById("func3Nome").value.trim(),
-        empresa:document.getElementById("func3Empresa").value.trim(),
-        destino:document.getElementById("func3Destino").value.trim(),
-        horario:document.getElementById("func3Horario").value
-      },
-      {
-        nome:document.getElementById("func4Nome").value.trim(),
-        empresa:document.getElementById("func4Empresa").value.trim(),
-        destino:document.getElementById("func4Destino").value.trim(),
-        horario:document.getElementById("func4Horario").value
-      }
-    ],
-    // horários
-    horaChegadaPonto: document.getElementById("horaChegadaPonto").value,
-    horaInicioViagem: document.getElementById("horaInicioViagem").value,
-    horaFimViagem: document.getElementById("horaFimViagem").value,
-    // km
-    kmInicial: kmIni,
-    kmFinal: kmFim,
-    kmRodado: kmRodado
+    empresaDestino: $('empresaDestino').value.trim(),
+    empresaResponsavel: $('empresaResponsavel').value.trim(),
+    solicitante: $('solicitante').value.trim(),
+    horaChegada: $('horaChegada').value,
+    descricao: $('descricao').value.trim(),
+    valor: $('valor').value,
+    dataViagem: $('dataViagem').value,
+    horaInicio: $('horaInicio').value,
+    kmInicial: $('kmInicial').value,
+    horaFim: $('horaFim').value,
+    kmFinal: $('kmFinal').value,
+    funcionarios: []
   };
-
+  document.querySelectorAll('.funcionario-block').forEach(block=>{
+    const get = f => (block.querySelector('[data-field="'+f+'"]')||{}).value || '';
+    dados.funcionarios.push({
+      nome: get('nome').trim(),
+      empresa: get('empresa').trim(),
+      local: get('local').trim(),
+      horaEmbarque: get('hora').trim(),
+      atraso: get('atraso'),
+      minutosAtraso: Number(get('minAtraso')) || 0
+    });
+  });
   return dados;
 }
 
-/* GERAR PDF PROFISSIONAL */
-function gerarPdfRecibo(dados){
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+/* CÁLCULOS DERIVADOS */
+function computeDerivedFromData(d){
+  const ini = timeToMin(d.horaInicio);
+  const fim = timeToMin(d.horaFim);
+  const chegada = timeToMin(d.horaChegada);
 
-  let y = 18;
-
-  // TÍTULO
-  doc.setFont("helvetica","bold");
-  doc.setFontSize(16);
-  doc.text("RECIBO DE VIAGEM", 105, y, {align:"center"});
-  y += 8;
-
-  // EMPRESA (linha abaixo do título)
-  doc.setFontSize(11);
-  doc.setFont("helvetica","normal");
-  if(dados.empresa){
-    let linhaEmpresa = dados.empresa;
-    if(dados.cnpj){
-      linhaEmpresa += " • CNPJ: " + dados.cnpj;
-    }
-    doc.text(linhaEmpresa, 105, y, {align:"center"});
-    y += 6;
+  let tempoViagemMin = 0;
+  if(ini!=null && fim!=null){
+    let diff = fim - ini;
+    if(diff<0) diff += 24*60;
+    tempoViagemMin = diff;
   }
 
-  // LINHA RESUMO (data + valor)
-  const valorFormat = "R$ " + (Number(dados.valor||0)).toFixed(2).replace(".",",");
-  const dataStr = dados.dataViagem || "";
-  doc.text(`Data da viagem: ${dataStr}  •  Valor: ${valorFormat}`, 105, y, {align:"center"});
-  y += 10;
+  let baseEspera = 0;
+  if(ini!=null && chegada!=null){
+    let diff = ini - chegada;
+    if(diff<0) diff += 24*60;
+    baseEspera = diff;
+  }
 
-  // DADOS DO MOTORISTA
-  doc.setFont("helvetica","bold");
-  doc.text("Dados do motorista e veículo", 14, y);
-  y += 6;
-  doc.setFont("helvetica","normal");
-  doc.text(`Motorista: ${dados.motorista||""}`, 14, y); y+=6;
-  doc.text(`CPF/RG: ${dados.cpf||""}`, 14, y); y+=6;
-  doc.text(`Veículo: ${dados.marca||""} ${dados.modelo||""}  •  Cor: ${dados.cor||""}`, 14, y); y+=6;
-  doc.text(`Placa: ${dados.placa||""}`, 14, y); y+=8;
+  let atrasoMin = 0;
+  if(Array.isArray(d.funcionarios)){
+    atrasoMin = d.funcionarios.reduce((acc,f)=>{
+      if(f.atraso==='sim' && f.minutosAtraso>0) return acc + f.minutosAtraso;
+      return acc;
+    },0);
+  }
 
-  // DADOS DAS EMPRESAS
-  doc.setFont("helvetica","bold");
-  doc.text("Dados da viagem e empresas", 14, y);
-  y += 6;
-  doc.setFont("helvetica","normal");
-  if(dados.empresaDestino)      { doc.text(`Empresa de destino: ${dados.empresaDestino}`, 14, y); y+=6; }
-  if(dados.empresaResponsavel)  { doc.text(`Empresa responsável: ${dados.empresaResponsavel}`, 14, y); y+=6; }
-  if(dados.solicitante)         { doc.text(`Solicitante da viagem: ${dados.solicitante}`, 14, y); y+=6; }
-  if(dados.passageiro)          { doc.text(`Contato / Passageiro: ${dados.passageiro}`, 14, y); y+=6; }
-  if(dados.servico)             { doc.text(`Serviço: ${dados.servico}`, 14, y); y+=8; }
+  const tempoEsperaMin = baseEspera + atrasoMin;
 
-  // FUNCIONÁRIOS
-  doc.setFont("helvetica","bold");
-  doc.text("Funcionários", 14, y);
-  y += 6;
-  doc.setFont("helvetica","normal");
+  let totalKm = null;
+  const ki = parseFloat(d.kmInicial);
+  const kf = parseFloat(d.kmFinal);
+  if(!isNaN(ki) && !isNaN(kf)){
+    const diff = kf - ki;
+    totalKm = diff >= 0 ? +diff.toFixed(1) : 0;
+  }
 
-  (dados.funcionarios || []).forEach((f, idx)=>{
-    if(!(f.nome || f.empresa || f.destino || f.horario)) return; // pula se tudo vazio
-    doc.setFont("helvetica","bold");
-    doc.text(`Funcionário ${idx+1}`, 14, y);
-    y += 5;
-    doc.setFont("helvetica","normal");
-    if(f.nome)    { doc.text(`Nome: ${f.nome}`, 18, y); y+=5; }
-    if(f.empresa) { doc.text(`Empresa: ${f.empresa}`, 18, y); y+=5; }
-    if(f.destino) { doc.text(`Destino: ${f.destino}`, 18, y); y+=5; }
-    if(f.horario) { doc.text(`Horário de embarque: ${f.horario}`, 18, y); y+=6; }
-    y += 2;
+  return {
+    tempoViagemMin,
+    tempoEsperaMin,
+    tempoViagemStr: formatMin(tempoViagemMin),
+    tempoEsperaStr: formatMin(tempoEsperaMin),
+    totalKm
+  };
+}
+
+/* ATUALIZAR UI DOS TOTAIS */
+function recomputeDerivedUI(){
+  const dados = readDadosFromDOM();
+  const d = computeDerivedFromData(dados);
+  $('totalKmDisplay').innerText = d.totalKm!=null ? d.totalKm+' km' : '-';
+  $('tempoEsperaDisplay').innerText = d.tempoEsperaStr;
+  $('tempoViagemDisplay').innerText = d.tempoViagemStr;
+}
+
+/* HISTÓRICO */
+function renderHistorico(){
+  const lista = $('listaRecibos');
+  const recs = loadRecibos();
+  if(!recs.length){
+    lista.innerHTML = '<div class="small">Nenhum recibo emitido até agora.</div>';
+    return;
+  }
+  let html='';
+  recs.forEach(r=>{
+    const dataLabel = formatDateBr(r.dataViagem || r.createdAt);
+    const empresaLabel = r.empresaDestino || '-';
+    const kmLabel = (r.resumoKm!=null ? r.resumoKm+' km' : '');
+    html += `
+      <div class="hist-item">
+        <div>
+          <div style="font-weight:700;">${dataLabel} — ${empresaLabel}</div>
+          <div class="small">${kmLabel}</div>
+        </div>
+        <div class="actions">
+          <button class="btn-sm" data-id="${r.id}" data-action="pdf">PDF</button>
+          <button class="btn-sm" data-id="${r.id}" data-action="del" style="background:#e11d48;color:#fff;border:none;">Excluir</button>
+        </div>
+      </div>
+    `;
   });
+  lista.innerHTML = html;
+  lista.querySelectorAll('button[data-action]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id = Number(btn.getAttribute('data-id'));
+      const action = btn.getAttribute('data-action');
+      if(action==='pdf') baixarRecibo(id);
+      if(action==='del') excluirRecibo(id);
+    });
+  });
+}
+function excluirRecibo(id){
+  if(!confirm('Excluir este recibo do histórico?')) return;
+  let recs=loadRecibos();
+  recs = recs.filter(r=>r.id!==id);
+  saveRecibos(recs);
+  renderHistorico();
+}
+function baixarRecibo(id){
+  const recs=loadRecibos();
+  const rec=recs.find(r=>r.id===id);
+  if(!rec) return;
+  const perfil=getPerfil();
+  const derived=computeDerivedFromData(rec.dados);
+  gerarPdf(rec.dados, perfil, derived);
+}
 
-  // HORÁRIOS E KM
-  doc.setFont("helvetica","bold");
-  doc.text("Horários e quilometragem", 14, y);
-  y += 6;
-  doc.setFont("helvetica","normal");
-  if(dados.horaChegadaPonto){ doc.text(`Chegada ao 1º ponto de embarque: ${dados.horaChegadaPonto}`, 14, y); y+=6; }
-  if(dados.horaInicioViagem){ doc.text(`Início da viagem: ${dados.horaInicioViagem}`, 14, y); y+=6; }
-  if(dados.horaFimViagem)   { doc.text(`Término da viagem: ${dados.horaFimViagem}`, 14, y); y+=6; }
+/* GERAR PDF ESTRUTURADO */
+function gerarPdf(dados, perfil, derived){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const marginX = 15;
 
-  if(dados.kmInicial || dados.kmFinal || dados.kmRodado){
-    const kmIni = dados.kmInicial ? dados.kmInicial.toFixed(1) : "";
-    const kmFim = dados.kmFinal ? dados.kmFinal.toFixed(1) : "";
-    const kmRod = dados.kmRodado ? dados.kmRodado.toFixed(1) : "";
-    doc.text(`KM inicial: ${kmIni}   •   KM final: ${kmFim}   •   KM rodado: ${kmRod}`, 14, y);
-    y += 10;
+  let y = 15;
+
+  // TÍTULO
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.text('RECIBO DE VIAGEM', pageWidth/2, y, {align:'center'});
+  y += 8;
+
+  if(perfil.empresa){
+    doc.setFontSize(11);
+    doc.setFont('helvetica','normal');
+    doc.text(perfil.empresa, pageWidth/2, y, {align:'center'});
+    y += 5;
+  }
+  if(perfil.cnpj){
+    doc.setFontSize(10);
+    doc.text('CNPJ: '+perfil.cnpj, pageWidth/2, y, {align:'center'});
+    y += 6;
   } else {
     y += 4;
   }
 
-  // TEXTO PADRÃO
-  doc.setFont("helvetica","normal");
-  const texto = "Declaro para os devidos fins que os serviços de transporte acima descritos foram prestados conforme informações registradas neste recibo.";
-  const split = doc.splitTextToSize(texto, 180);
-  doc.text(split, 14, y);
-  y += split.length * 5 + 14;
-
-  // ASSINATURA
-  doc.text("__________________________________", 105, y, {align:"center"});
-  y += 5;
-  doc.text("Assinatura do responsável", 105, y, {align:"center"});
-
-  // NOME DO ARQUIVO: data + empresaDestino
-  const dataNome = (dados.dataViagem || "").replace(/-/g,"");
-  const empresaNome = (dados.empresaDestino || "recibo").toLowerCase().replace(/[^a-z0-9]+/gi,"-");
-  const fileName = `recibo-${dataNome || "viagem"}-${empresaNome || "destino"}.pdf`;
-
-  doc.save(fileName);
-}
-
-/* RENDER HISTÓRICO */
-function renderHistorico(){
-  const lista = document.getElementById("listaHistorico");
-  if(!historico.length){
-    lista.innerHTML = '<div class="small">Nenhum recibo emitido ainda.</div>';
-    return;
+  function drawSection(title, lines){
+    const boxWidth = pageWidth - marginX*2;
+    const lineHeight = 5;
+    const innerHeight = 8 + lines.length*lineHeight + 4;
+    const boxY = y;
+    doc.setDrawColor(150);
+    doc.roundedRect(marginX, boxY, boxWidth, innerHeight, 2, 2);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(12);
+    doc.text(title, marginX+3, boxY+6);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+    let ty = boxY+12;
+    lines.forEach(line=>{
+      if(line){ doc.text(line, marginX+4, ty); }
+      ty += lineHeight;
+    });
+    y = boxY + innerHeight + 4;
   }
-  lista.innerHTML = "";
-  // mais recentes primeiro
-  const ordenado = historico.slice().sort((a,b)=> (a.dataEmissao < b.dataEmissao ? 1 : -1));
-  ordenado.forEach(rec=>{
-    const div = document.createElement("div");
-    div.className = "historico-item";
 
-    const dataViagem = rec.dataViagem || rec.dataEmissao?.substring(0,10) || "";
-    const empresaDest = rec.empresaDestino || "Destino não informado";
-    const valor = "R$ " + (Number(rec.valor||0)).toFixed(2).replace(".",",");
+  // SEÇÃO 1 - EMPRESA / MOTORISTA
+  drawSection('Dados da Empresa / Motorista', [
+    'Empresa: ' + (perfil.empresa||'-'),
+    'CNPJ: ' + (perfil.cnpj||'-'),
+    'Motorista: ' + (perfil.motorista||'-'),
+    'CPF/RG: ' + (perfil.cpf||'-'),
+    'Veículo: ' + ((perfil.marca||'') + ' ' + (perfil.modelo||'') + ' - ' + (perfil.cor||'')),
+    'Placa: ' + (perfil.placa||'-')
+  ]);
 
-    div.innerHTML = `
-      <div>
-        <div class="hist-title">${dataViagem} - ${empresaDest}</div>
-        <div class="hist-sub">Valor: ${valor} • Motorista: ${rec.motorista || ""}</div>
-      </div>
-      <div class="hist-actions">
-        <button class="btn-mini" onclick="baixarRecibo('${rec.id}')">PDF</button>
-        <button class="btn-mini danger" onclick="excluirRecibo('${rec.id}')">Excluir</button>
-      </div>
-    `;
-    lista.appendChild(div);
+  // SEÇÃO 2 - VIAGEM & EMPRESAS
+  drawSection('Dados da Viagem & Empresa', [
+    'Empresa de destino: ' + (dados.empresaDestino||'-'),
+    'Empresa responsável pelos funcionários: ' + (dados.empresaResponsavel||'-'),
+    'Solicitante da viagem: ' + (dados.solicitante||'-'),
+    'Data da viagem: ' + formatDateBr(dados.dataViagem),
+    'Horário de chegada no ponto: ' + (dados.horaChegada||'-'),
+    'Descrição / tipo de serviço: ' + (dados.descricao||'-')
+  ]);
+
+  // SEÇÃO 3 - FUNCIONÁRIOS
+  const funcLines = [];
+  (dados.funcionarios||[]).forEach((f,i)=>{
+    if(!f.nome && !f.empresa && !f.local && !f.horaEmbarque) return;
+    funcLines.push(`Funcionário ${i+1}: ${f.nome||'-'}`);
+    funcLines.push('Empresa: ' + (f.empresa||'-') + '  |  Local: ' + (f.local||'-'));
+    const atrasoTxt = f.atraso==='sim'
+      ? 'Sim' + (f.minutosAtraso>0 ? ' ('+f.minutosAtraso+' min)' : '')
+      : 'Não';
+    funcLines.push('Horário de embarque: ' + (f.horaEmbarque||'-') + '  |  Atraso: ' + atrasoTxt);
+    funcLines.push('');
   });
+  if(!funcLines.length){
+    funcLines.push('Nenhum funcionário informado.');
+  }
+  drawSection('Funcionários', funcLines);
+
+  // SEÇÃO 4 - HORÁRIOS & KM
+  drawSection('Horários & Quilometragem', [
+    'Horário inicial: ' + (dados.horaInicio||'-'),
+    'KM inicial: ' + (dados.kmInicial||'-'),
+    'Horário final: ' + (dados.horaFim||'-'),
+    'KM final: ' + (dados.kmFinal||'-'),
+    'Total de KM: ' + (derived.totalKm!=null ? derived.totalKm+' km' : '-'),
+    'Tempo de espera total: ' + derived.tempoEsperaStr,
+    'Tempo de viagem: ' + derived.tempoViagemStr
+  ]);
+
+  // SEÇÃO 5 - ASSINATURAS
+  y += 6;
+  doc.setFontSize(10);
+  doc.text('____________________________________', marginX, y);
+  y += 5;
+  doc.text('Motorista: ' + (perfil.motorista||''), marginX, y);
+  y += 10;
+  doc.text('____________________________________', marginX, y);
+  y += 5;
+  doc.text('Responsável: ' + (dados.solicitante||''), marginX, y);
+
+  doc.save('recibo_viagem.pdf');
 }
 
-/* Funções globais para botões inline */
-function baixarRecibo(id){
-  const rec = historico.find(r => r.id === id);
-  if(!rec){ alert("Recibo não encontrado."); return; }
-  gerarPdfRecibo(rec);
-}
-function excluirRecibo(id){
-  if(!confirm("Deseja realmente excluir este recibo do histórico?")) return;
-  historico = historico.filter(r => r.id !== id);
-  saveHistorico(historico);
-  renderHistorico();
-}
-window.baixarRecibo = baixarRecibo;
-window.excluirRecibo = excluirRecibo;
-
-/* BOTÃO GERAR PDF (RECIBO ATUAL) */
-document.getElementById("emitirPdf").onclick = ()=>{
-  const perfil = getPerfil();
+/* EMITIR PDF (BOTÃO) */
+$('emitirPdf').addEventListener('click', ()=>{
+  const perfil=getPerfil();
   if(!perfil.motorista || !perfil.cpf || !perfil.marca || !perfil.modelo || !perfil.placa || !perfil.cor){
-    alert("Preencha e salve primeiro o cadastro do motorista e veículo.");
+    alert('Preencha e salve o cadastro do recibo (motorista e veículo) antes de emitir.');
+    return;
+  }
+  const dados = readDadosFromDOM();
+
+  if(!dados.empresaDestino){
+    alert('Informe a empresa de destino.');
+    return;
+  }
+  if(!dados.solicitante){
+    alert('Informe o solicitante da viagem.');
     return;
   }
 
-  const dados = montarDadosReciboAtual();
-
-  // validação básica de KM
-  if(dados.kmFinal && dados.kmInicial && dados.kmFinal < dados.kmInicial){
-    alert("KM final não pode ser menor que o KM inicial.");
+  const temFunc = (dados.funcionarios||[]).some(f=>f.nome);
+  if(!temFunc){
+    alert('Informe pelo menos um funcionário.');
     return;
   }
 
-  gerarPdfRecibo(dados);
+  const derived = computeDerivedFromData(dados);
+  gerarPdf(dados, perfil, derived);
 
-  // salvar no histórico
-  historico.push(dados);
-  saveHistorico(historico);
+  // salva histórico
+  let recs = loadRecibos();
+  recs.unshift({
+    id: Date.now(),
+    createdAt: new Date().toISOString(),
+    empresaDestino: dados.empresaDestino,
+    dataViagem: dados.dataViagem,
+    resumoKm: derived.totalKm,
+    dados
+  });
+  saveRecibos(recs);
   renderHistorico();
-};
+});
 
-/* WHATSAPP (RESUMO PROFISSIONAL) */
-document.getElementById("enviarWa").onclick = ()=>{
-  const perfil = getPerfil();
-  if(!perfil.motorista){
-    alert("Preencha e salve o cadastro primeiro.");
-    return;
+/* WHATSAPP */
+$('enviarWa').addEventListener('click', ()=>{
+  const perfil=getPerfil();
+  const dados=readDadosFromDOM();
+  const derived=computeDerivedFromData(dados);
+
+  const funcsTxt = (dados.funcionarios||[])
+    .filter(f=>f.nome)
+    .map((f,i)=>{
+      const atrasoTxt = f.atraso==='sim'
+        ? 'Sim' + (f.minutosAtraso>0 ? ' ('+f.minutosAtraso+' min)' : '')
+        : 'Não';
+      return `Funcionário ${i+1}: ${f.nome}
+Empresa: ${f.empresa||'-'}
+Local de embarque: ${f.local||'-'}
+Horário de embarque: ${f.horaEmbarque||'-'}
+Atraso: ${atrasoTxt}`;
+    }).join('\n\n') || 'Nenhum informado';
+
+  const msg = 
+`RECIBO DE VIAGEM
+
+Empresa: ${perfil.empresa||'-'}
+CNPJ: ${perfil.cnpj||'-'}
+Motorista: ${perfil.motorista||'-'}
+CPF/RG: ${perfil.cpf||'-'}
+Veículo: ${perfil.marca||''} ${perfil.modelo||''} - ${perfil.cor||''}
+Placa: ${perfil.placa||''}
+
+Destino: ${dados.empresaDestino||'-'}
+Responsável pelos funcionários: ${dados.empresaResponsavel||'-'}
+Solicitante da viagem: ${dados.solicitante||'-'}
+Data da viagem: ${formatDateBr(dados.dataViagem)}
+Chegada no ponto: ${dados.horaChegada||'-'}
+Descrição / serviço: ${dados.descricao||'-'}
+
+--- Funcionários ---
+${funcsTxt}
+
+Horário inicial: ${dados.horaInicio||'-'}
+KM inicial: ${dados.kmInicial||'-'}
+Horário final: ${dados.horaFim||'-'}
+KM final: ${dados.kmFinal||'-'}
+Total de KM: ${derived.totalKm!=null ? derived.totalKm+' km' : '-'}
+
+Tempo de espera total: ${derived.tempoEsperaStr}
+Tempo de viagem: ${derived.tempoViagemStr}
+
+Motorista: ${perfil.motorista||'-'}
+Responsável: ${dados.solicitante||'-'}`;
+
+  window.open('https://wa.me/?text='+encodeURIComponent(msg));
+});
+
+/* EVENTOS DE INPUT PARA RECALCULAR TOTAIS */
+['horaChegada','horaInicio','horaFim','kmInicial','kmFinal'].forEach(id=>{
+  const el=$(id); if(el) el.addEventListener('input',recomputeDerivedUI);
+});
+
+/* BOTÕES FUNCIONÁRIOS & BOOT */
+$('addFuncionarioBtn').addEventListener('click', adicionarFuncionario);
+$('removerFuncionarioBtn').addEventListener('click', removerFuncionario);
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  // pelo menos 1 funcionário
+  if(!document.querySelector('.funcionario-block')){
+    adicionarFuncionario();
   }
-
-  const dados = montarDadosReciboAtual();
-  const valorFormat = "R$ " + (Number(dados.valor||0)).toFixed(2).replace(".",",");
-  const kmIni = dados.kmInicial ? dados.kmInicial.toFixed(1) : "";
-  const kmFim = dados.kmFinal ? dados.kmFinal.toFixed(1) : "";
-  const kmRod = dados.kmRodado ? dados.kmRodado.toFixed(1) : "";
-
-  let msg = `RECIBO DE VIAGEM
-
-Empresa de destino: ${dados.empresaDestino || "-"}
-Empresa responsável: ${dados.empresaResponsavel || "-"}
-Solicitante: ${dados.solicitante || "-"}
-
-Data da viagem: ${dados.dataViagem || "-"}
-Serviço: ${dados.servico || "-"}
-Valor: ${valorFormat}
-
-Motorista: ${dados.motorista || "-"}
-CPF/RG: ${dados.cpf || "-"}
-Veículo: ${dados.marca || ""} ${dados.modelo || ""} - Cor: ${dados.cor || ""}
-Placa: ${dados.placa || ""}
-
-Horário chegada 1º ponto: ${dados.horaChegadaPonto || "-"}
-Início da viagem: ${dados.horaInicioViagem || "-"}
-Término da viagem: ${dados.horaFimViagem || "-"}
-
-KM inicial: ${kmIni || "-"}
-KM final: ${kmFim || "-"}
-KM rodado: ${kmRod || "-"}`;
-
-  window.open("https://wa.me/?text="+encodeURIComponent(msg));
-};
-
-/* Inicializar histórico na tela */
-renderHistorico();
+  recomputeDerivedUI();
+  renderHistorico();
+});
 </script>
 
 </body>

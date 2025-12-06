@@ -132,6 +132,50 @@ button{
     header{padding:12px}
     .tab-button{font-size:14px}
 }
+/* === NOVO BOTTOM MENU - MODERNO === */
+.neo-menu{
+  backdrop-filter: blur(10px);
+  background: rgba(10,20,35,0.55);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:12px 0;
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:92%;
+  max-width:980px;
+  display:flex;
+  justify-content:space-around;
+  box-shadow:0 18px 40px rgba(0,0,0,0.35);
+  z-index:2000;
+}
+
+.neo-menu .menu-item{
+  text-decoration:none;
+  color:#fff;
+  font-weight:700;
+  font-size:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  opacity:.75;
+  transition:.25s;
+}
+
+.neo-menu .menu-item .icon{ font-size:20px; }
+
+.neo-menu .menu-item.active{
+  opacity:1;
+  transform:scale(1.15);
+}
+
+body.dark .neo-menu{
+  background: rgba(25,25,30,0.65);
+  border-color:rgba(255,255,255,0.05);
+}
+
 </style>
 
 </head>
@@ -272,15 +316,31 @@ button{
 
 <div style="height:120px"></div>
 
-<nav class="bottom-menu">
+<nav class="neo-menu">
+  <a href="planos.html" class="menu-item"><span class="icon">⭐</span><span>Planos</span></a>
   <a href="index.html" class="menu-item"><span class="icon">🏠</span>Dashboard</a>
-  <a href="entradas.html" class="menu-item"><span class="icon">💵</span>Entradas</a>
-  <a href="manutencao.html" class="menu-item"><span class="icon">🛠️</span>Manutenção</a>
-  <a href="resumo.html" class="menu-item"><span class="icon">📊</span>Resumo</a>
-  <a href="perfil.html" class="menu-item"><span class="icon">👤</span>Perfil</a>
-  <a href="calculadora.html" class="menu-item active"><span class="icon">📟</span>Calc</a>
+  <a href="entradas.html" class="menu-item"><span class="icon">💵</span>Entradas</span></a>
+  <a href="recibo.html" class="menu-item"><span class="icon">🧾</span>Recibo</span></a>
+  <a href="manutencao.html" class="menu-item"><span class="icon">🛠️</span>Manut.</span></a>
+  <a href="resumo.html" class="menu-item"><span class="icon">📊</span>Resumo</span></a>
+  <a href="perfil.html" class="menu-item"><span class="icon">👤</span>Perfil</span></a>
+  <a href="calculadora.html" class="menu-item active"><span class="icon">📟</span>Calc</span></a>
 </nav>
 
+<script src="planos.js"></script>
+
+<script>
+// pegar o elemento da aba premium
+const tabPremiumCalc = document.getElementById("tabPremium");
+
+tabPremiumCalc.addEventListener("click", ()=>{
+    if(!planoTem("calculadoraPremium")){
+        alert("A calculadora Premium está disponível apenas nos planos Premium e Pro.");
+        location.href = "planos.html"; // opcional
+        return;
+    }
+});
+</script>
 <!-- ---------------------------- JS CORRIGIDO ---------------------------- -->
 <script>
 

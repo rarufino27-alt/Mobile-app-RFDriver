@@ -1,204 +1,452 @@
-// reciboPdf.js
-// Gera o PDF profissional do Recibo de Viagem
+// recibo.js
+// Lógica da página de recibo: tema, formulário, cálculos, histórico
 
-function gerarReciboPdf(dados) {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF("p", "mm", "a4");
+(function () {
+  const $ = (id) => document.getElementById(id);
 
-  const marginLeft = 14;
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const centerX = pageWidth / 2;
+  const KEY_PERFIL = "perfilRecibo";
+  const KEY_HISTORICO = "recibosHistorico";
 
-  // ===== TÍTULO =====
-  doc.setFont("Helvetica", "bold");
-  doc.setFontSize(16);
-  doc.text("RECIBO DE VIAGEM", centerX, 18, { align: "center" });
-
-  // Empresa / cabeçalho pequeno
-  doc.setFontSize(11);
-  doc.setFont("Helvetica", "normal");
-
-  let headerY = 24;
-  if (dados.empresa) {
-    doc.text(dados.empresa, centerX, headerY, { align: "center" });
-    headerY += 5;
-  }
-  if (dados.cnpj) {
-    doc.text("CNPJ: " + dados.cnpj, centerX, headerY, { align: "center" });
-    headerY += 5;
+  // =============== THEME ===============
+  function applyTheme(theme) {
+    const btn = $("toggleTheme");
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+      if (btn) btn.innerText = "☀️";
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+      if (btn) btn.innerText = "🌙";
+    }
   }
 
-  let y = headerY + 6;
+  function initTheme() {
+    const saved = localStorage.getItem("theme") || "light";
+    applyTheme(saved);
+    const btn = $("toggleTheme");
+    if (btn) {
+      btn.onclick = () => {
+        const isDark = document.documentElement.classList.contains("dark");
+        applyTheme(isDark ? "light" : "dark");
+      };
+    }
+  }
 
-  // Helper para seções com quadrante pontilhado
-  function desenharQuadrante(titulo, linhasFn) {
-    const top = y;
-    const left = 10;
-    const width = pageWidth - 20;
+  // =============== PERMISSÃO DO PLANO ===============
+  function checkPlano() {
+    if (typeof planoTem === "function") {
+      if (!planoTem("reciboComMotorista")) {
+        alert("Este recurso está disponível apenas no Plano PRO.");
+        location.href = "planos.html";
+      }
+    }
+  }
 
-    // título dentro
-    let cursorY = top + 8;
-    doc.setLineWidth(0.2);
+  // =============== PERFIL EMPRESA/MOTORISTA ===============
+  function loadPerfil() {
     try {
-      if (doc.setLineDash) doc.setLineDash([1, 1], 0); // linhas pontilhadas
-    } catch (e) {}
-
-    // desenha retângulo depois, quando souber altura
-    doc.setFont("Helvetica", "bold");
-    doc.setFontSize(12);
-    doc.text(titulo, left + 2, cursorY);
-    cursorY += 6;
-
-    // conteúdo do quadrante
-    cursorY = linhasFn(left + 2, cursorY);
-
-    const height = cursorY - top + 4;
-    doc.rect(left, top, width, height);
-
-    // volta para linha normal
-    try {
-      if (doc.setLineDash) doc.setLineDash([], 0);
-    } catch (e) {}
-
-    y = top + height + 6;
+      return JSON.parse(localStorage.getItem(KEY_PERFIL) || "{}");
+    } catch (e) {
+      return {};
+    }
   }
 
-  function linhaLabelValor(x, yLine, label, valor) {
-    doc.setFontSize(10);
-    doc.setFont("Helvetica", "bold");
-    doc.text(label, x, yLine);
-    doc.setFont("Helvetica", "normal");
-    const maxWidth = pageWidth - x - 12;
-    const texto = (valor && String(valor).trim()) ? String(valor) : "-";
-    const linhas = doc.splitTextToSize(texto, maxWidth);
-    doc.text(linhas, x + 32, yLine);
-    return yLine + (linhas.length * 5);
+  function savePerfil(perfil) {
+    localStorage.setItem(KEY_PERFIL, JSON.stringify(perfil));
   }
 
-  // ===== QUADRANTE 1 - DADOS EMPRESA / MOTORISTA =====
-  desenharQuadrante("Dados da empresa / motorista", (x, cy) => {
-    cy = linhaLabelValor(x, cy, "Empresa:", dados.empresa);
-    cy = linhaLabelValor(x, cy, "CNPJ:", dados.cnpj);
-    cy = linhaLabelValor(x, cy, "Motorista:", dados.motorista);
-    cy = linhaLabelValor(x, cy, "CPF/RG:", dados.cpf);
-    cy = linhaLabelValor(
-      x,
-      cy,
-      "Veículo:",
-      `${dados.marca || ""} ${dados.modelo || ""}`.trim()
-    );
-    cy = linhaLabelValor(
-      x,
-      cy,
-      "Placa / Cor:",
-      `${dados.placa || ""} • ${dados.cor || ""}`.trim()
-    );
-    return cy;
-  });
+  function preencherPerfil() {
+    const p = loadPerfil();
+    $("empresa").value = p.empresa || "";
+    $("cnpj").value = p.cnpj || "";
+    $("motorista").value = p.motorista || "";
+    $("cpf").value = p.cpf || "";
+    $("marca").value = p.marca || "";
+    $("modelo").value = p.modelo || "";
+    $("placa").value = p.placa || "";
+    $("cor").value = p.cor || "";
+  }
 
-  // ===== QUADRANTE 2 - DADOS DA VIAGEM / EMPRESA =====
-  desenharQuadrante("Dados da viagem e empresas", (x, cy) => {
-    cy = linhaLabelValor(x, cy, "Empresa de destino:", dados.empresaDestino);
-    cy = linhaLabelValor(
-      x,
-      cy,
-      "Empresa responsável pelos funcionários:",
-      dados.empresaResponsavel
-    );
-    cy = linhaLabelValor(x, cy, "Solicitante / responsável:", dados.solicitante);
-    cy = linhaLabelValor(
-      x,
-      cy,
-      "Horário de chegada ao ponto:",
-      dados.horaChegadaPonto || "-"
-    );
-    cy = linhaLabelValor(x, cy, "Descrição da viagem:", dados.descricaoServico);
-    return cy;
-  });
+  function initPerfil() {
+    preencherPerfil();
+    $("savePerfil").onclick = () => {
+      const perfil = {
+        empresa: $("empresa").value.trim(),
+        cnpj: $("cnpj").value.trim(),
+        motorista: $("motorista").value.trim(),
+        cpf: $("cpf").value.trim(),
+        marca: $("marca").value.trim(),
+        modelo: $("modelo").value.trim(),
+        placa: $("placa").value.trim(),
+        cor: $("cor").value.trim(),
+      };
 
-  // ===== QUADRANTE 3 - FUNCIONÁRIOS =====
-  desenharQuadrante("Funcionários transportados", (x, cy) => {
-    if (!dados.funcionarios || !dados.funcionarios.length) {
-      doc.setFont("Helvetica", "normal");
-      doc.setFontSize(10);
-      doc.text("Nenhum funcionário informado.", x, cy);
-      cy += 6;
-      return cy;
+      if (!perfil.motorista || !perfil.cpf || !perfil.marca || !perfil.modelo || !perfil.placa || !perfil.cor) {
+        alert("Preencha todos os campos obrigatórios do motorista e veículo.");
+        return;
+      }
+
+      savePerfil(perfil);
+      alert("Dados salvos com sucesso!");
+    };
+  }
+
+  // =============== FUNCIONÁRIOS DINÂMICOS ===============
+  function criarCardFuncionario(index) {
+    const div = document.createElement("div");
+    div.className = "func-card";
+    div.dataset.index = index;
+
+    div.innerHTML = `
+      <div class="func-title">Funcionário ${index + 1}</div>
+      <label>Nome</label>
+      <input class="func-nome">
+      <label>Empresa</label>
+      <input class="func-empresa">
+      <label>Local de embarque</label>
+      <input class="func-local">
+      <label>Horário de embarque</label>
+      <input class="func-horario" type="time">
+      <label>Houve atraso?</label>
+      <select class="func-atraso">
+        <option value="nao">Não</option>
+        <option value="sim">Sim</option>
+      </select>
+    `;
+    return div;
+  }
+
+  function reindexarFuncionarios() {
+    const container = $("listaFuncionarios");
+    const cards = container.querySelectorAll(".func-card");
+    cards.forEach((card, idx) => {
+      card.dataset.index = idx;
+      const title = card.querySelector(".func-title");
+      if (title) title.textContent = `Funcionário ${idx + 1}`;
+    });
+  }
+
+  function initFuncionarios() {
+    const container = $("listaFuncionarios");
+
+    function add() {
+      const idx = container.querySelectorAll(".func-card").length;
+      const card = criarCardFuncionario(idx);
+      container.appendChild(card);
     }
 
-    dados.funcionarios.forEach((f, idx) => {
-      doc.setFont("Helvetica", "bold");
-      doc.setFontSize(10);
-      doc.text(`Funcionário ${idx + 1}`, x, cy);
-      cy += 5;
+    function remove() {
+      const cards = container.querySelectorAll(".func-card");
+      if (!cards.length) return;
+      container.removeChild(cards[cards.length - 1]);
+      reindexarFuncionarios();
+    }
 
-      cy = linhaLabelValor(x, cy, "Nome:", f.nome);
-      cy = linhaLabelValor(x, cy, "Empresa:", f.empresa);
-      cy = linhaLabelValor(x, cy, "Local de embarque:", f.localEmbarque);
-      cy = linhaLabelValor(x, cy, "Horário de embarque:", f.horarioEmbarque);
-      cy = linhaLabelValor(
-        x,
-        cy,
-        "Houve atraso?",
-        f.atraso === "sim" ? "Sim" : "Não"
-      );
+    // deixa ao menos 1 funcionário por padrão
+    add();
 
-      cy += 3;
-    });
-
-    return cy;
-  });
-
-  // ===== QUADRANTE 4 - HORÁRIOS / KM =====
-  desenharQuadrante("Horários, quilometragem e tempos", (x, cy) => {
-    cy = linhaLabelValor(x, cy, "Horário inicial da viagem:", dados.horaInicio);
-    cy = linhaLabelValor(x, cy, "KM inicial:", dados.kmInicial);
-    cy = linhaLabelValor(x, cy, "Horário final da viagem:", dados.horaFim);
-    cy = linhaLabelValor(x, cy, "KM final:", dados.kmFinal);
-    cy = linhaLabelValor(x, cy, "Total de KM:", dados.totalKm);
-    cy = linhaLabelValor(x, cy, "Tempo de viagem:", dados.tempoViagem);
-    cy = linhaLabelValor(x, cy, "Tempo de espera:", dados.tempoEspera);
-    return cy;
-  });
-
-  // ===== ASSINATURAS =====
-  const assinaturaY = Math.min(y + 10, 265);
-
-  doc.setFont("Helvetica", "normal");
-  doc.setFontSize(10);
-
-  // Linha Motorista
-  const linhaLarg = 70;
-  const x1 = marginLeft;
-  const x2 = pageWidth - marginLeft - linhaLarg;
-
-  doc.line(x1, assinaturaY, x1 + linhaLarg, assinaturaY);
-  doc.text("Assinatura do motorista", x1 + linhaLarg / 2, assinaturaY + 5, {
-    align: "center",
-  });
-  if (dados.motorista) {
-    doc.setFont("Helvetica", "bold");
-    doc.text(dados.motorista, x1 + linhaLarg / 2, assinaturaY + 10, {
-      align: "center",
-    });
-    doc.setFont("Helvetica", "normal");
+    $("btnAddFunc").onclick = add;
+    $("btnRemoveFunc").onclick = remove;
   }
 
-  // Linha Responsável
-  doc.line(x2, assinaturaY, x2 + linhaLarg, assinaturaY);
-  doc.text(
-    "Assinatura do responsável pela viagem",
-    x2 + linhaLarg / 2,
-    assinaturaY + 5,
-    { align: "center" }
-  );
-  if (dados.solicitante) {
-    doc.setFont("Helvetica", "bold");
-    doc.text(dados.solicitante, x2 + linhaLarg / 2, assinaturaY + 10, {
-      align: "center",
+  function coletarFuncionarios() {
+    const container = $("listaFuncionarios");
+    const cards = container.querySelectorAll(".func-card");
+    const lista = [];
+    cards.forEach((card) => {
+      const nome = card.querySelector(".func-nome").value.trim();
+      const empresa = card.querySelector(".func-empresa").value.trim();
+      const local = card.querySelector(".func-local").value.trim();
+      const horario = card.querySelector(".func-horario").value.trim();
+      const atraso = card.querySelector(".func-atraso").value;
+
+      if (!nome && !empresa && !local && !horario) {
+        return;
+      }
+
+      lista.push({
+        nome,
+        empresa,
+        localEmbarque: local,
+        horarioEmbarque: horario,
+        atraso,
+      });
     });
-    doc.setFont("Helvetica", "normal");
+    return lista;
   }
 
-  doc.save("recibo_viagem.pdf");
-}
+  // =============== CÁLCULOS DE KM E TEMPO ===============
+  function parseHoraToMinutos(horaStr) {
+    if (!horaStr) return null;
+    const [h, m] = horaStr.split(":").map((n) => parseInt(n || "0", 10));
+    if (isNaN(h) || isNaN(m)) return null;
+    return h * 60 + m;
+  }
+
+  function minutosToHHMM(min) {
+    if (min == null || isNaN(min)) return "-";
+    const sinal = min < 0 ? "-" : "";
+    min = Math.abs(min);
+    const h = Math.floor(min / 60);
+    const m = min % 60;
+    const hh = String(h).padStart(2, "0");
+    const mm = String(m).padStart(2, "0");
+    return `${sinal}${hh}:${mm}`;
+  }
+
+  function recalcularResumo() {
+    const kmInicial = parseFloat($("kmInicial").value.replace(",", ".")) || 0;
+    const kmFinal = parseFloat($("kmFinal").value.replace(",", ".")) || 0;
+    const horaChegada = $("horaChegadaPonto").value;
+    const horaInicio = $("horaInicio").value;
+    const horaFim = $("horaFim").value;
+
+    // KM
+    const totalKm = kmFinal - kmInicial;
+    $("totalKm").value = totalKm > 0 ? totalKm.toFixed(1) + " km" : "-";
+
+    // Tempo viagem = inicio -> fim
+    const minInicio = parseHoraToMinutos(horaInicio);
+    const minFim = parseHoraToMinutos(horaFim);
+    let tempoViagemMin = null;
+    if (minInicio != null && minFim != null && minFim >= minInicio) {
+      tempoViagemMin = minFim - minInicio;
+    }
+    $("tempoViagem").value = tempoViagemMin != null ? minutosToHHMM(tempoViagemMin) : "-";
+
+    // Tempo espera = chegada -> início
+    const minChegada = parseHoraToMinutos(horaChegada);
+    let tempoEsperaMin = null;
+    if (minChegada != null && minInicio != null && minInicio >= minChegada) {
+      tempoEsperaMin = minInicio - minChegada;
+    }
+
+    // Se houve atraso de funcionário, apenas destacamos que houve atraso
+    const funcs = coletarFuncionarios();
+    const houveAtraso = funcs.some((f) => f.atraso === "sim");
+    let textoEspera = tempoEsperaMin != null ? minutosToHHMM(tempoEsperaMin) : "-";
+    if (houveAtraso) {
+      textoEspera += " (houve atraso de funcionário)";
+    }
+    $("tempoEspera").value = textoEspera;
+  }
+
+  function initResumoWatch() {
+    ["kmInicial", "kmFinal", "horaChegadaPonto", "horaInicio", "horaFim"].forEach((id) => {
+      const el = $(id);
+      if (el) el.addEventListener("input", recalcularResumo);
+    });
+  }
+
+  // =============== HISTÓRICO ===============
+  function loadHistorico() {
+    try {
+      return JSON.parse(localStorage.getItem(KEY_HISTORICO) || "[]");
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveHistorico(lista) {
+    localStorage.setItem(KEY_HISTORICO, JSON.stringify(lista));
+  }
+
+  function renderHistorico() {
+    const lista = loadHistorico();
+    const container = $("listaHistorico");
+    const vazio = $("historicoVazio");
+
+    container.innerHTML = "";
+    if (!lista.length) {
+      vazio.style.display = "block";
+      return;
+    }
+    vazio.style.display = "none";
+
+    lista
+      .slice()
+      .sort((a, b) => new Date(b.emitidoEm) - new Date(a.emitidoEm))
+      .forEach((recibo) => {
+        const div = document.createElement("div");
+        div.className = "hist-item";
+
+        const data = new Date(recibo.emitidoEm);
+        const dataBR = data.toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+
+        const empresaDestino = recibo.empresaDestino || "-";
+
+        div.innerHTML = `
+          <div class="hist-main">
+            <strong>${dataBR}</strong>
+            <span>${empresaDestino}</span>
+          </div>
+          <div class="hist-actions">
+            <button class="btn-small btn" data-acao="pdf">PDF</button>
+            <button class="btn-small btn-secondary" data-acao="del">Excluir</button>
+          </div>
+        `;
+
+        div.querySelector('[data-acao="pdf"]').onclick = () => {
+          gerarReciboPdf(recibo);
+        };
+        div.querySelector('[data-acao="del"]').onclick = () => {
+          const listaAtual = loadHistorico();
+          const nova = listaAtual.filter((r) => r.id !== recibo.id);
+          saveHistorico(nova);
+          renderHistorico();
+        };
+
+        container.appendChild(div);
+      });
+  }
+
+  // =============== EMISSÃO (PDF + WHATSAPP) ===============
+  function coletarDadosRecibo() {
+    const perfil = loadPerfil();
+
+    if (
+      !perfil.motorista ||
+      !perfil.cpf ||
+      !perfil.marca ||
+      !perfil.modelo ||
+      !perfil.placa ||
+      !perfil.cor
+    ) {
+      alert("Preencha e salve os dados da empresa/motorista antes de emitir o recibo.");
+      return null;
+    }
+
+    const empresaDestino = $("empresaDestino").value.trim();
+    const empresaResponsavel = $("empresaResponsavel").value.trim();
+    const solicitante = $("solicitante").value.trim();
+    const horaChegadaPonto = $("horaChegadaPonto").value.trim();
+    const descricaoServico = $("descricaoServico").value.trim();
+
+    const horaInicio = $("horaInicio").value.trim();
+    const horaFim = $("horaFim").value.trim();
+    const kmInicial = $("kmInicial").value.trim();
+    const kmFinal = $("kmFinal").value.trim();
+    const totalKm = $("totalKm").value.trim();
+    const tempoViagem = $("tempoViagem").value.trim();
+    const tempoEspera = $("tempoEspera").value.trim();
+
+    const funcionarios = coletarFuncionarios();
+
+    if (!empresaDestino || !solicitante || !horaInicio || !horaFim) {
+      alert("Preencha pelo menos: Empresa de destino, Solicitante, Horário inicial e final da viagem.");
+      return null;
+    }
+
+    const recibo = {
+      id: Date.now(),
+      emitidoEm: new Date().toISOString(),
+      // perfil
+      empresa: perfil.empresa || "",
+      cnpj: perfil.cnpj || "",
+      motorista: perfil.motorista || "",
+      cpf: perfil.cpf || "",
+      marca: perfil.marca || "",
+      modelo: perfil.modelo || "",
+      placa: perfil.placa || "",
+      cor: perfil.cor || "",
+      // viagem
+      empresaDestino,
+      empresaResponsavel,
+      solicitante,
+      horaChegadaPonto,
+      descricaoServico,
+      // resumo
+      horaInicio,
+      horaFim,
+      kmInicial,
+      kmFinal,
+      totalKm,
+      tempoViagem,
+      tempoEspera,
+      // funcionários
+      funcionarios,
+    };
+
+    return recibo;
+  }
+
+  function initEmitir() {
+    $("emitirPdf").onclick = () => {
+      const recibo = coletarDadosRecibo();
+      if (!recibo) return;
+
+      const historico = loadHistorico();
+      historico.push(recibo);
+      saveHistorico(historico);
+      renderHistorico();
+
+      gerarReciboPdf(recibo);
+    };
+
+    $("enviarWa").onclick = () => {
+      const recibo = coletarDadosRecibo();
+      if (!recibo) return;
+
+      const funcsResumo =
+        (recibo.funcionarios || [])
+          .map((f, i) => {
+            return `Funcionário ${i + 1}: ${f.nome || "-"} | Empresa: ${
+              f.empresa || "-"
+            } | Embarque: ${f.localEmbarque || "-"} (${f.horarioEmbarque || "-"}) | Atraso: ${
+              f.atraso === "sim" ? "Sim" : "Não"
+            }`;
+          })
+          .join("\n") || "Nenhum funcionário informado.";
+
+      const msg = `
+Recibo de Viagem - ${recibo.empresa || "Serviço de Transporte"}
+
+Dados da empresa/motorista:
+Empresa: ${recibo.empresa || "-"}
+CNPJ: ${recibo.cnpj || "-"}
+Motorista: ${recibo.motorista || "-"}
+CPF/RG: ${recibo.cpf || "-"}
+Veículo: ${(recibo.marca || "") + " " + (recibo.modelo || "")}
+Placa / Cor: ${(recibo.placa || "") + " / " + (recibo.cor || "")}
+
+Dados da viagem:
+Empresa de destino: ${recibo.empresaDestino || "-"}
+Empresa responsável: ${recibo.empresaResponsavel || "-"}
+Solicitante/responsável: ${recibo.solicitante || "-"}
+Chegada ao ponto: ${recibo.horaChegadaPonto || "-"}
+Descrição: ${recibo.descricaoServico || "-"}
+
+Funcionários:
+${funcsResumo}
+
+Horários e quilometragem:
+Início: ${recibo.horaInicio || "-"}
+KM inicial: ${recibo.kmInicial || "-"}
+Fim: ${recibo.horaFim || "-"}
+KM final: ${recibo.kmFinal || "-"}
+Total de KM: ${recibo.totalKm || "-"}
+Tempo de viagem: ${recibo.tempoViagem || "-"}
+Tempo de espera: ${recibo.tempoEspera || "-"}
+`.trim();
+
+      const url = "https://wa.me/?text=" + encodeURIComponent(msg);
+      window.open(url, "_blank");
+    };
+  }
+
+  // =============== BOOT ===============
+  window.addEventListener("load", () => {
+    checkPlano();
+    initTheme();
+    initPerfil();
+    initFuncionarios();
+    initResumoWatch();
+    renderHistorico();
+    recalcularResumo();
+  });
+})();

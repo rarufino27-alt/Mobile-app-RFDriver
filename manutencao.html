@@ -221,31 +221,48 @@ input, select, textarea{
 #modalMaquineta{ position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; z-index:2000; padding-top:40px; }
 .modalBox{ background:var(--card); width:92%; max-width:420px; padding:20px; border-radius:14px; margin:auto; box-shadow:var(--shadow-strong); }
 
-/* bottom menu */
-.bottom-menu{
-    position:fixed;
-    bottom:18px; left:50%;
-    transform:translateX(-50%);
-    width:92%; max-width:980px;
-    background:linear-gradient(135deg,var(--brand),var(--brand-dark));
-    padding:14px 12px;
-    border-radius:18px;
-    box-shadow:0 14px 36px rgba(0,0,0,0.25);
-    display:flex;
-    justify-content:space-around;
-    border:1px solid rgba(255,255,255,0.15);
-    z-index:999;
+/* === NOVO BOTTOM MENU - MODERNO === */
+.neo-menu{
+  backdrop-filter: blur(10px);
+  background: rgba(10,20,35,0.55);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:12px 0;
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:92%;
+  max-width:980px;
+  display:flex;
+  justify-content:space-around;
+  box-shadow:0 18px 40px rgba(0,0,0,0.35);
+  z-index:2000;
 }
-.bottom-menu .menu-item{ text-decoration:none; color:#fff; font-weight:700; font-size:13px; display:flex; flex-direction:column; align-items:center; gap:4px; }
-.bottom-menu .menu-item .icon{ font-size:22px; opacity:0.95; }
-.bottom-menu .menu-item.active{ background:rgba(255,255,255,0.18); padding:6px 8px; border-radius:10px; }
 
-/* responsive */
-@media (max-width:520px){
-    .row{ flex-direction:column; }
-    header{ padding:12px; }
-    .brand .logo{ width:40px; height:40px; font-size:16px; }
-    .container{ padding:0 12px; }
+.neo-menu .menu-item{
+  text-decoration:none;
+  color:#fff;
+  font-weight:700;
+  font-size:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  opacity:.75;
+  transition:.25s;
+}
+
+.neo-menu .menu-item .icon{ font-size:20px; }
+
+.neo-menu .menu-item.active{
+  opacity:1;
+  transform:scale(1.15);
+}
+
+body.dark .neo-menu{
+  background: rgba(25,25,30,0.65);
+  border-color:rgba(255,255,255,0.05);
 }
 </style>
 </head>
@@ -400,42 +417,22 @@ input, select, textarea{
 <!--     MENU INFERIOR           -->
 <!-- ============================ -->
 
-<nav class="bottom-menu">
-    <a href="index.html" class="menu-item" id="m-index">
-        <span class="icon">🏠</span>
-        <span>Dashboard</span>
-    </a>
-
-    <a href="entradas.html" class="menu-item" id="m-entradas">
-        <span class="icon">💵</span>
-        <span>Entradas</span>
-    </a>
-
-    <a href="manutencao.html" class="menu-item active" id="m-manut">
-        <span class="icon">🛠️</span>
-        <span>Manutenção</span>
-    </a>
-
-    <a href="resumo.html" class="menu-item" id="m-resumo">
-        <span class="icon">📊</span>
-        <span>Resumo</span>
-    </a>
-
-    <a href="perfil.html" class="menu-item" id="m-perfil">
-        <span class="icon">👤</span>
-        <span>Perfil</span>
-    </a>
-
-    <a href="calculadora.html" class="menu-item" id="m-calc">
-        <span class="icon">📟</span>
-        <span>Calc</span>
-    </a>
+<nav class="neo-menu">
+  <a href="planos.html" class="menu-item"><span class="icon">⭐</span><span>Planos</span></a>
+  <a href="index.html" class="menu-item"><span class="icon">🏠</span>Dashboard</a>
+  <a href="entradas.html" class="menu-item"><span class="icon">💵</span>Entradas</span></a>
+  <a href="recibo.html" class="menu-item"><span class="icon">🧾</span>Recibo</span></a>
+  <a href="manutencao.html" class="menu-item active"><span class="icon">🛠️</span>Manut.</span></a>
+  <a href="resumo.html" class="menu-item"><span class="icon">📊</span>Resumo</span></a>
+  <a href="perfil.html" class="menu-item"><span class="icon">👤</span>Perfil</span></a>
+  <a href="calculadora.html" class="menu-item"><span class="icon">📟</span>Calc</span></a>
 </nav>
 
 <!-- libs para export PDF (mantidos) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5m1sY6GqI1p1gZJ3Z5k9V2Gg8zmsmN1Vq+9zB6Q3y0R6vQn4Jg4k9w0+6U1Oajm0E2aKZb2k8bT8v8v4w2Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-L3pQo3kIeg0cNQ6Q0R9V4mVh6Kp6n5qv9bVt3Q5s1Zq9K+7y0uD2v1zV9z1Yp9u4Z8k3Wz8b4e1o3j2G5f4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<script src="planos.js"></script>
 <script>
 /* ====================
    THEME (CLARO / ESCURO)

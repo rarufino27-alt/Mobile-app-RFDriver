@@ -47,10 +47,34 @@
 *{box-sizing:border-box; font-family:Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
 body{
   margin:0;
-  background:linear-gradient(180deg,var(--page-gap),var(--bg) 50%);
+  background:var(--bg);
   color:var(--text);
   padding-bottom:160px;
   -webkit-font-smoothing:antialiased;
+
+  /* MARCA D’ÁGUA */
+  background-image:url('fluxo-driver.png');
+  background-repeat:no-repeat;
+  background-position:center 75%;
+  background-size:550px;
+  background-attachment:fixed;
+  opacity:0.98;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:160px;
+  -webkit-font-smoothing:antialiased;
+
+  /* MARCA D’ÁGUA */
+  background-image:url('fluxo-driver.png');
+  background-repeat:no-repeat;
+  background-position:center 65%;
+  background-size:450px;
+  background-attachment:fixed;
+  opacity:0.98;
 }
 
 /* header */
@@ -105,18 +129,49 @@ header{
 /* list receber */
 .receber-item{ display:flex; gap:8px; align-items:center; justify-content:space-between; padding:10px; border-radius:10px; background:var(--card-strong); margin-top:8px; }
 
-/* bottom menu */
-.bottom-menu{ position:fixed; bottom:18px; left:50%; transform:translateX(-50%); width:92%; max-width:980px; padding:14px 12px; border-radius:18px; display:flex; justify-content:space-around; background:linear-gradient(135deg,var(--brand),var(--brand-dark)); box-shadow:0 14px 36px rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); z-index:999; }
-.bottom-menu .menu-item{ text-decoration:none; color:#fff; font-weight:700; display:flex; flex-direction:column; gap:4px; align-items:center; font-size:13px; }
-.bottom-menu .menu-item .icon{ font-size:22px; }
-.bottom-menu .menu-item.active{ background:rgba(255,255,255,0.14); padding:6px 8px; border-radius:10px; }
+/* === NOVO BOTTOM MENU - MODERNO === */
+.neo-menu{
+  backdrop-filter: blur(10px);
+  background: rgba(10,20,35,0.55);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:12px 0;
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:92%;
+  max-width:980px;
+  display:flex;
+  justify-content:space-around;
+  box-shadow:0 18px 40px rgba(0,0,0,0.35);
+  z-index:2000;
+}
 
-/* modal tutorial (simple) */
-#modalTutorial{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2000; padding-top:40px; }
-.modalInner{ background:var(--card); width:92%; max-width:520px; margin:auto; padding:18px; border-radius:12px; box-shadow:var(--shadow-strong); }
+.neo-menu .menu-item{
+  text-decoration:none;
+  color:#fff;
+  font-weight:700;
+  font-size:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  opacity:.75;
+  transition:.25s;
+}
 
-/* responsive */
-@media(max-width:780px){ .col-1{ flex:1 1 100%; } .col-2{ flex:1 1 100%; } .chartRow{ gap:10px; } }
+.neo-menu .menu-item .icon{ font-size:20px; }
+
+.neo-menu .menu-item.active{
+  opacity:1;
+  transform:scale(1.15);
+}
+
+body.dark .neo-menu{
+  background: rgba(25,25,30,0.65);
+  border-color:rgba(255,255,255,0.05);
+}
 </style>
 </head>
 <body>
@@ -282,19 +337,22 @@ header{
 </div>
 
 <!-- bottom menu -->
-<nav class="bottom-menu" aria-label="Menu">
-  <a href="index.html" class="menu-item" id="m-index"><span class="icon">🏠</span><span>Dashboard</span></a>
-  <a href="entradas.html" class="menu-item" id="m-entradas"><span class="icon">💵</span><span>Entradas</span></a>
-  <a href="manutencao.html" class="menu-item" id="m-manut"><span class="icon">🛠️</span><span>Manutenção</span></a>
-  <a href="resumo.html" class="menu-item" id="m-resumo"><span class="icon">📊</span><span>Resumo</span></a>
-  <a href="perfil.html" class="menu-item active" id="m-perfil"><span class="icon">👤</span><span>Perfil</span></a>
-  <a href="calculadora.html" class="menu-item" id="m-calc"><span class="icon">📟</span><span>Calc</span></a>
+<nav class="neo-menu">
+  <a href="planos.html" class="menu-item"><span class="icon">⭐</span><span>Planos</span></a>
+  <a href="index.html" class="menu-item"><span class="icon">🏠</span>Dashboard</a>
+  <a href="entradas.html" class="menu-item"><span class="icon">💵</span>Entradas</span></a>
+  <a href="recibo.html" class="menu-item"><span class="icon">🧾</span>Recibo</span></a>
+  <a href="manutencao.html" class="menu-item"><span class="icon">🛠️</span>Manut.</span></a>
+  <a href="resumo.html" class="menu-item"><span class="icon">📊</span>Resumo</span></a>
+  <a href="perfil.html" class="menu-item active"><span class="icon">👤</span>Perfil</span></a>
+  <a href="calculadora.html" class="menu-item"><span class="icon">📟</span>Calc</span></a>
 </nav>
 
 <!-- libs for PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<script src="planos.js"></script>
 <script>
 /* helpers */
 const $ = id => document.getElementById(id);

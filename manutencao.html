@@ -413,19 +413,35 @@ body.dark .neo-menu{
     </div>
 </div>
 
-<!-- ============================ -->
-<!--     MENU INFERIOR           -->
-<!-- ============================ -->
-
+<!-- =============== MENU INFERIOR ================= -->
 <nav class="neo-menu">
-  <a href="planos.html" class="menu-item"><span class="icon">⭐</span><span>Planos</span></a>
-  <a href="index.html" class="menu-item"><span class="icon">🏠</span>Dashboard</a>
-  <a href="entradas.html" class="menu-item"><span class="icon">💵</span>Entradas</span></a>
-  <a href="recibo.html" class="menu-item"><span class="icon">🧾</span>Recibo</span></a>
-  <a href="manutencao.html" class="menu-item active"><span class="icon">🛠️</span>Manut.</span></a>
-  <a href="resumo.html" class="menu-item"><span class="icon">📊</span>Resumo</span></a>
-  <a href="perfil.html" class="menu-item"><span class="icon">👤</span>Perfil</span></a>
-  <a href="calculadora.html" class="menu-item"><span class="icon">📟</span>Calc</span></a>
+  <a href="planos.html" class="menu-item">
+    <span class="icon">⭐</span><span>Planos</span>
+  </a>
+  <a href="index.html" class="menu-item">
+    <span class="icon">🏠</span><span>Dashboard</span>
+  </a>
+  <a href="entradas.html" class="menu-item">
+    <span class="icon">💵</span><span>Entradas</span>
+  </a>
+  <a href="recibo_empresa.html" class="menu-item">
+    <span class="icon">🏢</span><span>Empresa</span>
+  </a>
+  <a href="recibo_particular.html" class="menu-item">
+    <span class="icon">🚗</span><span>Particular</span>
+  </a>
+  <a href="manutencao.html" class="menu-item active">
+    <span class="icon">🛠</span><span>Manut.</span>
+  </a>
+  <a href="resumo.html" class="menu-item">
+    <span class="icon">📊</span><span>Resumo</span>
+  </a>
+  <a href="perfil.html" class="menu-item">
+    <span class="icon">👤</span><span>Perfil</span>
+  </a>
+  <a href="calculadora.html" class="menu-item">
+    <span class="icon">📟</span><span>Calc</span>
+  </a>
 </nav>
 
 <!-- libs para export PDF (mantidos) -->
@@ -433,6 +449,14 @@ body.dark .neo-menu{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-L3pQo3kIeg0cNQ6Q0R9V4mVh6Kp6n5qv9bVt3Q5s1Zq9K+7y0uD2v1zV9z1Yp9u4Z8k3Wz8b4e1o3j2G5f4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script src="planos.js"></script>
+
+<script>
+if(!planoTem("manutencao")){
+   alert("Disponível somente no plano PRO.");
+   location.href="planos.html";
+}
+</script>
+
 <script>
 /* ====================
    THEME (CLARO / ESCURO)

@@ -8,56 +8,44 @@
 <style>
 /* PALETA CORPORATIVA */
 :root {
-    /* CORES MODO CLARO (atual) */
     --bg: #ffffff;
     --page-gap: #f3f5f8;
     --card: #fafbfc;
     --card-strong: #f0f2f5;
     --panel: #ffffff;
-
     --brand: #0b5bd7;
     --brand-dark: #073f8a;
-
     --accent-success: #1DB954;
     --accent-danger: #ff3b30;
-
     --muted: #65707a;
     --text: #0b1115;
-
     --shadow: 0 6px 16px rgba(13,30,45,0.07);
     --shadow-strong: 0 10px 32px rgba(10,20,30,0.12);
-
     --radius: 14px;
-
-    /* === MENU PADRÃO ENTRADAS === */
-    --menu-bg: linear-gradient(135deg,var(--brand),var(--brand-dark));
 }
 
-/* ========= MODO ESCURO ========= */
-.dark {
-    --bg: #0f1115;
-    --page-gap: #15171c;
-
-    --card: #181a20;
-    --card-strong: #1d1f27;
-    --panel: #1b1d25;
-
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-
-    --shadow: 0 6px 16px rgba(0,0,0,0.35);
-    --shadow-strong: 0 10px 32px rgba(0,0,0,0.45);
+/* DARK */
+.dark{
+    --bg:#0f1115;
+    --page-gap:#15171c;
+    --card:#181a20;
+    --card-strong:#1d1f27;
+    --panel:#1b1d25;
+    --text:#e5e7eb;
+    --muted:#9ca3af;
+    --shadow:0 6px 16px rgba(0,0,0,0.35);
+    --shadow-strong:0 10px 32px rgba(0,0,0,0.45);
 }
 
 /* BASE */
-*{box-sizing:border-box}
 body{
     margin:0;
-    font-family: Inter,Roboto,Arial,sans-serif;
     background:linear-gradient(180deg,var(--page-gap),var(--bg) 50%);
     color:var(--text);
     padding-bottom:160px;
+    font-family: Inter,Roboto,Arial,sans-serif;
 }
+*{box-sizing:border-box}
 
 /* HEADER */
 header{
@@ -68,22 +56,18 @@ header{
     max-width:980px;
     margin:12px auto;
 }
-.brand{
-    display:flex; align-items:center; gap:12px;
-}
+.brand{display:flex; align-items:center; gap:12px;}
 .brand .logo{
-    width:46px; height:46px;
+    width:46px;height:46px;
     border-radius:12px;
-    display:flex; align-items:center; justify-content:center;
-    font-weight:800; font-size:18px; color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:18px;color:#fff;
     background:linear-gradient(135deg,var(--brand),var(--brand-dark));
     box-shadow:var(--shadow);
 }
 
 /* CONTAINER */
 .container{ max-width:980px; margin:0 auto; padding:0 16px; }
-
-/* GREETING */
 #greeting{ color:var(--muted); margin:6px 0 14px; font-size:15px; }
 
 /* CARD LUCRO */
@@ -108,7 +92,7 @@ header{
 .card-lucro .valor{ font-size:34px; font-weight:900; margin-top:6px; }
 .card-lucro .sub{ font-size:13px; color:var(--muted); }
 
-/* CARDS PEQUENOS */
+/* CARDS */
 .row{ display:flex; gap:14px; flex-wrap:wrap; }
 .card-small{
     flex:1; min-width:200px;
@@ -122,143 +106,50 @@ header{
 .card-small .value{ font-size:22px; font-weight:900; color:var(--brand); margin-top:6px; }
 .card-small .gastos{ color:var(--accent-danger)!important; }
 
-/* META DIÁRIA – PAINEL */
-.meta-card{
-    background:var(--card-strong);
-    border-radius:var(--radius);
-    padding:22px;
-    border:2px solid #d6dae0;
-    margin-top:18px;
-    box-shadow:var(--shadow-strong);
+/* === NOVA BOTTOM BAR MODERNA (neo-menu) === */
+.neo-menu{
+  backdrop-filter: blur(10px);
+  background: rgba(10,20,35,0.55);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:12px 0;
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:92%;
+  max-width:980px;
+  display:flex;
+  justify-content:space-around;
+  box-shadow:0 18px 40px rgba(0,0,0,0.35);
+  z-index:2000;
 }
 
-.meta-card h3{
-    margin:0 0 12px 0;
-    font-size:16px;
-    font-weight:800;
+.neo-menu .menu-item{
+  text-decoration:none;
+  color:#fff;
+  font-weight:700;
+  font-size:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  opacity:.75;
+  transition:.25s;
 }
 
-/* CIRCULO */
-.circular{
-    width:140px;
-    height:140px;
-    border-radius:50%;
-    background:#fff;
-    position:relative;
-    overflow:hidden;
-    box-shadow:inset 0 0 25px rgba(13,35,68,0.10), var(--shadow);
+.neo-menu .menu-item .icon{ font-size:20px; }
+
+.neo-menu .menu-item.active{
+  opacity:1;
+  transform:scale(1.15);
 }
 
-/* CÍRCULO SVG */
-.circular svg{
-    position:absolute; top:0; left:0; width:100%; height:100%;
+body.dark .neo-menu{
+  background: rgba(25,25,30,0.65);
+  border-color:rgba(255,255,255,0.05);
 }
 
-.circular .label{
-    position:absolute; inset:0;
-    display:flex; flex-direction:column;
-    align-items:center; justify-content:center;
-}
-.circular .pct{ font-size:20px; font-weight:900; color:var(--brand); }
-
-/* BARRAS */
-.chartRow{
-    display:flex; gap:14px; padding:12px 0;
-}
-.bar{
-    width:82px; min-height:70px;
-    background:#e4e8ef;
-    border-radius:10px 10px 0 0;
-    display:flex; align-items:flex-end; justify-content:center;
-}
-.bar .inner{
-    width:70%; border-radius:8px 8px 0 0;
-    color:#fff; padding-bottom:6px;
-    font-weight:700;
-}
-
-/* PROGRESSO LINEAR */
-.progressBar{
-    width:100%; height:14px;
-    background:#e4e8ee;
-    border-radius:10px;
-    overflow:hidden;
-}
-.progressBar .fill{
-    height:100%;
-    width:0%;
-    background:linear-gradient(90deg,var(--brand),var(--brand-dark));
-    transition:.6s;
-}
-
-/* ALERTA */
-.alert{
-    margin-top:12px;
-    background:#ffe6e6;
-    border:1px solid rgba(255,59,48,0.15);
-    padding:12px;
-    border-radius:10px;
-    text-align:center;
-    font-weight:800;
-    color:var(--accent-danger);
-    display:none;
-}
-
-/* =====================================================
-      MENU INFERIOR — PADRÃO EXATO DA PÁGINA ENTRADAS
-===================================================== */
-.bottom-menu{
-    position:fixed;
-    bottom:18px;
-    left:50%;
-    transform:translateX(-50%);
-    width:92%;
-    max-width:980px;
-    background:var(--menu-bg);
-    padding:10px 0;
-    border-radius:18px;
-    display:flex;
-    justify-content:space-around;
-    box-shadow:0 12px 30px rgba(11,30,45,0.5);
-    z-index:1000;
-    border:1px solid rgba(255,255,255,0.2);
-}
-
-.bottom-menu .menu-item{
-    text-align:center;
-    color:#fff;
-    text-decoration:none!important;
-    font-size:13px;
-    font-weight:800;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:4px;
-}
-
-.bottom-menu .menu-item .icon{
-    font-size:22px;
-    margin-bottom:4px;
-}
-
-.bottom-menu .menu-item.active{
-    opacity:0.9;
-    scale:1.06;
-}
-
-/* FAB */
-.fab{
-    position:fixed;
-    right:22px; bottom:95px;
-    width:60px; height:60px;
-    border-radius:16px;
-    font-size:32px;
-    display:flex; align-items:center; justify-content:center;
-    color:#fff;
-    background:linear-gradient(135deg,var(--brand),var(--brand-dark));
-    box-shadow:0 18px 40px rgba(11,91,215,.25);
-    border:4px solid #fff;
-}
 </style>
 </head>
 
@@ -269,16 +160,8 @@ header{
         <div class="logo">RF</div>
         <h1>Dashboard</h1>
     </div>
-<button id="toggleTheme" 
-        style="
-            background:var(--card-strong);
-            color:var(--text);
-            border:1px solid rgba(0,0,0,0.15);
-            padding:8px 12px;
-            border-radius:10px;
-            cursor:pointer;
-            font-weight:700;
-        ">
+<button id="toggleTheme"
+style="background:var(--card-strong);color:var(--text);border:1px solid rgba(0,0,0,0.15);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:700;">
     🌙
 </button>
 </header>
@@ -307,245 +190,40 @@ header{
         </div>
     </div>
 
-    <!-- META DIÁRIA -->
-    <div class="meta-card">
-
-        <h3>Acompanhamento - Meta Diária</h3>
-
-        <div style="display:flex; gap:18px; flex-wrap:wrap;">
-
-            <div class="circular" id="circularWrap"></div>
-
-            <div style="flex:1; min-width:220px;">
-
-                <div style="color:var(--muted);">Meta diária</div>
-                <div id="labelMetaDia" style="font-size:20px;font-weight:800;margin-top:4px;">R$ 0,00</div>
-
-                <div style="color:var(--muted); margin-top:10px;">Feito hoje</div>
-                <div id="feitoHoje" style="font-size:20px;font-weight:800;margin-top:4px;color:var(--brand)">R$ 0,00</div>
-
-                <div style="color:var(--muted); margin-top:10px;">Diferença</div>
-                <div id="diffHoje" style="font-size:20px;font-weight:800;margin-top:4px;">R$ 0,00</div>
-
-                <div style="margin-top:16px;">
-                    <div class="progressBar"><div id="linearFill" class="fill"></div></div>
-                </div>
-
-            </div>
-        </div>
-
-        <div style="margin-top:14px;">
-            <div class="chartRow">
-                <div class="bar"><div id="barMeta" class="inner"></div></div>
-                <div class="bar"><div id="barHoje" class="inner"></div></div>
-            </div>
-        </div>
-
-        <div id="alertDaily" class="alert">Você está abaixo da meta diária — ajuste seu fluxo.</div>
-    </div>
-
 </div>
 
-<button class="fab">+</button>
-
-<!-- MENU INFERIOR PADRÃO ENTRADAS -->
-<nav class="bottom-menu">
-    <a href="index.html" class="menu-item active">
-        <span class="icon">🏠</span>
-        <span>Dashboard</span>
-    </a>
-
-    <a href="entradas.html" class="menu-item">
-        <span class="icon">💵</span>
-        <span>Entradas</span>
-    </a>
-
-    <a href="manutencao.html" class="menu-item">
-        <span class="icon">🛠️</span>
-        <span>Manutenção</span>
-    </a>
-
-    <a href="resumo.html" class="menu-item">
-        <span class="icon">📊</span>
-        <span>Resumo</span>
-    </a>
-
-    <a href="perfil.html" class="menu-item">
-        <span class="icon">👤</span>
-        <span>Perfil</span>
-    </a>
-
-    <a href="calculadora.html" class="menu-item">
-        <span class="icon">📟</span>
-        <span>Calc</span>
-    </a>
+<!-- NOVO MENU BOTTOM -->
+<nav class="neo-menu">
+    <a href="planos.html" class="menu-item"><span class="icon">⭐</span><span>Planos</span></a>
+    <a href="index.html" class="menu-item active"><span class="icon">🏠</span><span>Dashboard</span></a>
+    <a href="entradas.html" class="menu-item"><span class="icon">💵</span><span>Entradas</span></a>
+    <a href="recibo.html" class="menu-item"><span class="icon">🧾</span><span>Recibo</span></a>
+    <a href="manutencao.html" class="menu-item"><span class="icon">🛠️</span><span>Manut.</span></a>
+    <a href="resumo.html" class="menu-item"><span class="icon">📊</span><span>Resumo</span></a>
+    <a href="perfil.html" class="menu-item"><span class="icon">👤</span><span>Perfil</span></a>
+    <a href="calculadora.html" class="menu-item"><span class="icon">📟</span><span>Calc</span></a>
 </nav>
 
 <script>
-/* Helpers */
-const $ = id => document.getElementById(id);
-const brl = v => Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-
-/* Load state */
-function loadState(){
-    return {
-        registros: JSON.parse(localStorage.getItem("entradasSaidas")||"[]"),
-        metaObj: JSON.parse(localStorage.getItem("metaMensal")||"{}"),
-        recebers: JSON.parse(localStorage.getItem("valoresReceber")||"[]"),
-        perfil: JSON.parse(localStorage.getItem("perfilMotorista")||"{}")
-    };
-}
-
-function isSameDay(s){
-    if(!s) return false;
-    const d=new Date(s),n=new Date();
-    return d.getFullYear()==n.getFullYear() && d.getMonth()==n.getMonth() && d.getDate()==n.getDate();
-}
-
-/* Calculadoras */
-function somaBruto(reg){return reg.reduce((s,r)=>r.tipo=="entrada"&&isSameDay(r.criadoEm)?s+Number(r.valorBruto||0):s,0);}
-function somaLiq(reg){return reg.reduce((s,r)=>r.tipo=="entrada"&&isSameDay(r.criadoEm)?s+Number(r.valor||0):s,0);}
-function somaSaidas(reg){return reg.reduce((s,r)=>r.tipo=="saida"&&isSameDay(r.criadoEm)?s+Number(r.valor||0):s,0);}
-
-function totalReceberMes(arr){
-    const n=new Date();
-    return arr.reduce((s,r)=>{
-        if(!r.data) return s;
-        const d=new Date(r.data);
-        return (d.getFullYear()==n.getFullYear() && d.getMonth()==n.getMonth()) ? s+Number(r.valor||0) : s;
-    },0);
-}
-
-function diasRestantes(){
-    const h=new Date();
-    const u=new Date(h.getFullYear(),h.getMonth()+1,0).getDate();
-    return u-h.getDate()+1;
-}
-
-function metaDia(meta,receber){
-    const mensal=Number(meta.valor||0);
-    const rec=totalReceberMes(receber);
-    const rest=mensal-rec;
-    return rest/diasRestantes();
-}
-
-/* Criar círculo */
-function renderCircle(pct){
-    const size=140, stroke=12, radius=(size-stroke)/2;
-    const circ=2*Math.PI*radius;
-    const offset=circ*(1-(pct/100));
-
-    const svg=`
-    <svg viewBox="0 0 ${size} ${size}">
-        <defs>
-            <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="${getComputedStyle(document.documentElement).getPropertyValue("--brand").trim()}"/>
-                <stop offset="100%" stop-color="${getComputedStyle(document.documentElement).getPropertyValue("--brand-dark").trim()}"/>
-            </linearGradient>
-        </defs>
-        <circle cx="${size/2}" cy="${size/2}" r="${radius}" stroke="#e2e7ec" stroke-width="${stroke}" fill="none"/>
-        <circle cx="${size/2}" cy="${size/2}" r="${radius}" 
-            stroke="url(#grad)" stroke-width="${stroke}" stroke-linecap="round"
-            stroke-dasharray="${circ}" stroke-dashoffset="${offset}"
-            style="transition:.6s"/>
-    </svg>`;
-
-    $("circularWrap").innerHTML =
-        svg +
-        `<div class="label">
-            <div class="pct">${pct}%</div>
-            <div style="font-size:12px;color:var(--muted)">da meta</div>
-        </div>`;
-}
-
-/* Atualizar dashboard */
-function updateDashboard(){
-    const {registros,metaObj,recebers,perfil}=loadState();
-
-    /* Nome */
-    $("greeting").innerText = "Olá, " + (perfil.nome ? perfil.nome.split(" ")[0] : "Motorista") + "!";
-
-    /* Valores */
-    const bruto = somaBruto(registros);
-    const liquido = somaLiq(registros);
-    const gastos = somaSaidas(registros);
-    const lucro = bruto - gastos;
-
-    $("gastosDia").innerText = brl(gastos);
-    $("totalFaturado").innerText = brl(bruto);
-    $("lucroValor").innerText = brl(lucro);
-
-    /* Destaque lucro */
-    const card = $("cardLucro");
-    card.classList.remove("positivo","negativo");
-
-    if(lucro > 0){
-        $("lucroValor").style.color = "var(--accent-success)";
-        card.classList.add("positivo");
-    } else if(lucro < 0){
-        $("lucroValor").style.color = "var(--accent-danger)";
-        card.classList.add("negativo");
-    } else {
-        $("lucroValor").style.color = "var(--text)";
-    }
-
-    /* Meta */
-    const meta = metaDia(metaObj, recebers);
-    const feito = liquido - gastos;
-    const diff = feito - meta;
-    const pct = meta>0 ? Math.min(100, Math.round((feito/meta)*100)) : 0;
-
-    $("labelMetaDia").innerText = brl(meta);
-    $("feitoHoje").innerText = brl(feito);
-    $("diffHoje").innerText = brl(diff);
-
-    renderCircle(pct);
-
-    $("linearFill").style.width = pct+"%";
-
-    /* Mini barras */
-    const max = Math.max(Math.abs(meta),Math.abs(feito),1);
-    $("barMeta").style.height = Math.round(Math.abs(meta)/max*100)+"%";
-    $("barHoje").style.height = Math.round(Math.abs(feito)/max*100)+"%";
-
-    $("barMeta").style.background = "linear-gradient(180deg,#e8dca8,#f5ebc4)";
-    $("barHoje").style.background = "linear-gradient(180deg,var(--accent-success),#14b64a)";
-
-    $("alertDaily").style.display = feito < meta ? "block" : "none";
-}
-
-window.addEventListener("focus", updateDashboard);
-updateDashboard();
-
-/* FAB */
-document.querySelector(".fab").onclick = ()=> location.href="entradas.html";
-</script>
-
-<script>
-/* ================================
-   TEMA GLOBAL (CLARO / ESCURO)
-================================ */
+/* theme */
 function applyTheme(theme){
     if(theme === "dark"){
         document.documentElement.classList.add("dark");
         localStorage.setItem("theme","dark");
-        document.getElementById("toggleTheme").innerText = "☀️";
-    } else {
+        toggleTheme.innerText="☀️";
+    }else{
         document.documentElement.classList.remove("dark");
         localStorage.setItem("theme","light");
-        document.getElementById("toggleTheme").innerText = "🌙";
+        toggleTheme.innerText="🌙";
     }
 }
-
-/* Carrega tema salvo */
-const savedTheme = localStorage.getItem("theme") || "light";
+const savedTheme = localStorage.getItem("theme")||"light";
 applyTheme(savedTheme);
 
-/* Alterna tema ao clicar */
-document.getElementById("toggleTheme").addEventListener("click", ()=>{
-    const isDark = document.documentElement.classList.contains("dark");
-    applyTheme(isDark ? "light" : "dark");
-});
+toggleTheme.onclick=()=>{
+    const d=document.documentElement.classList.contains("dark");
+    applyTheme(d?"light":"dark");
+};
 </script>
 
 </body>

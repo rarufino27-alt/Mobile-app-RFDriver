@@ -97,8 +97,8 @@ header{
     gap:12px;
 }
 .brand .logo{
-    width:46px;
-    height:46px;
+    width:100px;
+    height:100px;
     border-radius:12px;
     display:flex;
     align-items:center;
@@ -221,60 +221,91 @@ input, select, textarea{
 #modalMaquineta{ position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; z-index:2000; padding-top:40px; }
 .modalBox{ background:var(--card); width:92%; max-width:420px; padding:20px; border-radius:14px; margin:auto; box-shadow:var(--shadow-strong); }
 
-/* === NOVO BOTTOM MENU - MODERNO === */
-.neo-menu{
-  backdrop-filter: blur(10px);
-  background: rgba(10,20,35,0.55);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:18px;
-  padding:12px 0;
+/* ===== MENU LATERAL ===== */
+.sidebar{
   position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  width:92%;
-  max-width:980px;
-  display:flex;
-  justify-content:space-around;
-  box-shadow:0 18px 40px rgba(0,0,0,0.35);
-  z-index:2000;
+  top:0;
+  left:-260px;
+  width:260px;
+  height:100%;
+  background:var(--panel);
+  padding:20px;
+  box-shadow:2px 0 18px rgba(15,23,42,.35);
+  transition:.3s;
+  z-index:9999;
+  overflow-y:auto;
 }
+.sidebar.open{ left:0; }
 
-.neo-menu .menu-item{
-  text-decoration:none;
+.menu-button{
+  position:fixed;
+  top:8px;
+  left:200px;
+  background:var(--brand);
   color:#fff;
+  padding:8px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  z-index:9999;
   font-weight:700;
-  font-size:12px;
+  font-size:13px;
   display:flex;
-  flex-direction:column;
   align-items:center;
-  gap:3px;
-  opacity:.75;
-  transition:.25s;
+  gap:6px;
+  box-shadow:0 8px 16px rgba(15,23,42,0.25);
 }
+.menu-button span.icon{font-size:16px;}
 
-.neo-menu .menu-item .icon{ font-size:20px; }
-
-.neo-menu .menu-item.active{
-  opacity:1;
-  transform:scale(1.15);
+.menu-close{
+  display:block;
+  font-size:24px;
+  cursor:pointer;
+  margin-bottom:6px;
+  text-align:right;
 }
-
-body.dark .neo-menu{
-  background: rgba(25,25,30,0.65);
-  border-color:rgba(255,255,255,0.05);
+.menu-title{
+  font-weight:700;
+  font-size:35px;
+  margin-bottom:10px;
+}
+.menu-item{
+  padding:15px 0;
+  font-size:20px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.submenu{padding-left:18px;margin-bottom:4px;}
+.submenu-item{
+  padding:4px 0;
+  font-size:12px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
 }
 </style>
 </head>
+
 <body>
+
+<!-- === BOTÃO MENU === -->
+<div class="menu-button" onclick="openMenu()">
+  <span class="icon">☰</span>
+  <span>Menu</span>
+</div>
 
 <header>
     <div class="brand">
-        <div class="logo">RF</div>
-        <h2 style="margin:0;">Revisões &amp; Manutenções</h2>
+        <div class="logo">RF Driver</div>
+        <h1>Manutenção Preventiva</h1>
     </div>
 
-    <button id="toggleTheme">🌙</button>
+  <button id="toggleTheme">
+    <span class="icon">🌙</span>
+    <span>Escuro/Claro</span>
+  </button>
 </header>
 
 <div class="container">
@@ -413,36 +444,20 @@ body.dark .neo-menu{
     </div>
 </div>
 
-<!-- =============== MENU INFERIOR ================= -->
-<nav class="neo-menu">
-  <a href="planos.html" class="menu-item">
-    <span class="icon">⭐</span><span>Planos</span>
-  </a>
-  <a href="index.html" class="menu-item">
-    <span class="icon">🏠</span><span>Dashboard</span>
-  </a>
-  <a href="entradas.html" class="menu-item">
-    <span class="icon">💵</span><span>Entradas</span>
-  </a>
-  <a href="recibo_empresa.html" class="menu-item">
-    <span class="icon">🏢</span><span>Empresa</span>
-  </a>
-  <a href="recibo_particular.html" class="menu-item">
-    <span class="icon">🚗</span><span>Particular</span>
-  </a>
-  <a href="manutencao.html" class="menu-item active">
-    <span class="icon">🛠</span><span>Manut.</span>
-  </a>
-  <a href="resumo.html" class="menu-item">
-    <span class="icon">📊</span><span>Resumo</span>
-  </a>
-  <a href="perfil.html" class="menu-item">
-    <span class="icon">👤</span><span>Perfil</span>
-  </a>
-  <a href="calculadora.html" class="menu-item">
-    <span class="icon">📟</span><span>Calc</span>
-  </a>
-</nav>
+<!-- ============= MENU LATERAL =============== -->
+<div id="sidebar" class="sidebar">
+  <span class="menu-close" onclick="closeMenu()">×</span>
+  <div class="menu-title">Navegação</div>
+  <div class="menu-item" onclick="location.href='planos.html'">💎 Planos</div>
+  <div class="menu-item" onclick="location.href='index.html'">🏠 Dashboard</div>
+  <div class="menu-item" onclick="location.href='entradas.html'">💵 Entradas</div>
+  <div class="menu-item" onclick="location.href='recibo_empresa.html'">🏭 Empresa</div>
+  <div class="menu-item" onclick="location.href='recibo_particular.html'">🚘 Particular</div>
+  <div class="menu-item" onclick="location.href='manutencao.html'">🛠 Manutenção</div>
+  <div class="menu-item" onclick="location.href='resumo.html'">🧮 Resumo</div>
+  <div class="menu-item" onclick="location.href='perfil.html'">👤 Perfil</div>
+  <div class="menu-item" onclick="location.href='calculadora.html'">📟 Calculadora</div>
+</div>
 
 <!-- libs para export PDF (mantidos) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5m1sY6GqI1p1gZJ3Z5k9V2Gg8zmsmN1Vq+9zB6Q3y0R6vQn4Jg4k9w0+6U1Oajm0E2aKZb2k8bT8v8v4w2Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -458,6 +473,14 @@ if(!planoTem("manutencao")){
 </script>
 
 <script>
+/* ====== MENU ====== */
+function openMenu(){
+  document.getElementById("sidebar").classList.add("open");
+}
+function closeMenu(){
+  document.getElementById("sidebar").classList.remove("open");
+}
+
 /* ====================
    THEME (CLARO / ESCURO)
    ==================== */

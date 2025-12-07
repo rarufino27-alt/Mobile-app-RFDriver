@@ -434,7 +434,8 @@ function init(){
   meta = load(KEY_META);
   valoresReceber = load(KEY_RECEBER);
   registros = load(KEY_REG) || [];
-  saldoInitial = load(KEY_SALDO);
+  saldoInicialObj = load(KEY_SALDO);
+
 
   // profile
   $('fotoPerfil').src = perfil.foto || '';

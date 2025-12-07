@@ -105,7 +105,7 @@ header{
 .card h3{ margin:0 0 15px 0; font-size:28px; }
 
 /* inputs / foto */
-.foto{ width:180px; height:180px; border-radius:40%; object-fit:cover; border:3px solid var(--brand); display:block; margin:10px auto; background:var(--panel); }
+.foto{ width:180px; height:180px; border-radius:50%; object-fit:cover; border:3px solid var(--brand); display:block; margin:10px auto; background:var(--panel); }
 .input, input, select, textarea{ width:100%; padding:12px; border-radius:10px; border:1px solid #cfd4da; background:var(--panel); color:var(--text); margin-bottom:10px; font-size:15px; }
 
 /* buttons */
@@ -415,7 +415,7 @@ let perfil = load(KEY_PROFILE);
 let meta = load(KEY_META);
 let valoresReceber = load(KEY_RECEBER);
 let registros = load(KEY_REG) || [];
-let saldoInicialObj = load(KEY_SALDO);
+saldoInicialObj = load(KEY_SALDO);
 
 /* THEME (light as default) */
 function applyTheme(theme){

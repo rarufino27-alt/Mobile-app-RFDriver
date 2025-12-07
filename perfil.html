@@ -5,24 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Perfil - Motorista App</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
 <style>
 :root{
   --bg:#ffffff;
   --page-gap:#f3f5f8;
-
   --card:#fafbfc;
   --card-strong:#f0f2f5;
   --panel:#ffffff;
-
   --brand:#0b5bd7;
   --brand-dark:#073f8a;
-
   --accent-success:#1DB954;
   --accent-danger:#ff3b30;
-
   --text:#0b1115;
   --muted:#65707a;
-
   --shadow:0 6px 16px rgba(13,30,45,0.07);
   --shadow-strong:0 10px 32px rgba(10,20,30,0.12);
   --radius:14px;
@@ -45,21 +41,6 @@
 }
 
 *{box-sizing:border-box; font-family:Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  padding-bottom:160px;
-  -webkit-font-smoothing:antialiased;
-
-  /* MARCA D’ÁGUA */
-  background-image:url('fluxo-driver.png');
-  background-repeat:no-repeat;
-  background-position:center 75%;
-  background-size:550px;
-  background-attachment:fixed;
-  opacity:0.98;
-}
 
 body{
   margin:0;
@@ -67,8 +48,6 @@ body{
   color:var(--text);
   padding-bottom:160px;
   -webkit-font-smoothing:antialiased;
-
-  /* MARCA D’ÁGUA */
   background-image:url('fluxo-driver.png');
   background-repeat:no-repeat;
   background-position:center 65%;
@@ -92,138 +71,119 @@ header{
   font-weight:800;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand-dark));
   box-shadow:var(--shadow);font-size:13px;
 }
+.brand h1{
+  font-size:30px;
+  font-weight:800;
+  margin:10px 0;
+}
 #toggleTheme{ background:var(--card-strong); padding:8px 12px; border-radius:10px; border:1px solid rgba(0,0,0,0.08); cursor:pointer; color:var(--text); font-weight:700; }
 
-/* container + layout */
+/* container */
 .container{ max-width:980px; margin:16px auto; padding:0 16px; }
 .row{ display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; }
 .col-1{ flex:0 0 320px; min-width:260px; }
 .col-2{ flex:1 1 560px; min-width:280px; }
 
 /* cards */
-.card{ background:var(--card); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); margin-bottom:16px; border:1px solid #d7dce2; }
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:var(--shadow);
+  margin-bottom:16px;
+  border:1px solid #d7dce2;
+}
 .card h3{ margin:0 0 15px 0; font-size:28px; }
 
-/* inputs / foto */
-.foto{ width:180px; height:180px; border-radius:50%; object-fit:cover; border:3px solid var(--brand); display:block; margin:10px auto; background:var(--panel); }
-.input, input, select, textarea{ width:100%; padding:12px; border-radius:10px; border:1px solid #cfd4da; background:var(--panel); color:var(--text); margin-bottom:10px; font-size:15px; }
+/* foto + inputs */
+.foto{
+  width:180px; height:180px; border-radius:50%; object-fit:cover;
+  border:3px solid var(--brand); display:block; margin:10px auto; background:var(--panel);
+}
+.input, input, select, textarea{
+  width:100%; padding:12px; border-radius:10px; border:1px solid #cfd4da;
+  background:var(--panel); color:var(--text); margin-bottom:10px; font-size:15px;
+}
 
 /* buttons */
-.btn{ background:linear-gradient(135deg,var(--brand),var(--brand-dark)); color:#fff; padding:12px; border:none; width:100%; border-radius:12px; font-weight:700; cursor:pointer; }
-.btnGhost{ background:var(--card-strong); color:var(--text); padding:10px; border:none; border-radius:10px; cursor:pointer; }
+.btn{
+  background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+  color:#fff; padding:12px; border:none; width:100%; border-radius:12px; font-weight:700; cursor:pointer;
+}
+.btnGhost{
+  background:var(--card-strong); color:var(--text); padding:10px; border:none; border-radius:10px; cursor:pointer;
+}
 
-/* small helpers */
+/* small */
 .small{ color:var(--muted); font-size:13px; }
-.valorLinha{ display:flex; justify-content:space-between; align-items:center; margin-top:6px; color:var(--muted); font-size:14px; }
+.valorLinha{ display:flex; justify-content:space-between; margin-top:6px; color:var(--muted); font-size:14px; }
 
-/* progress bar */
+/* progress */
 .progressBar{ width:100%; height:14px; background:var(--card-strong); border-radius:10px; overflow:hidden; border:1px solid rgba(0,0,0,0.04); }
 .fill{ height:100%; background:linear-gradient(90deg,var(--brand),var(--brand-dark)); width:0%; transition:width .6s ease; }
 
-/* chart area for "Detalhes" */
+/* chart */
 .chartRow{ display:flex; gap:12px; align-items:end; margin-top:12px; }
-.chartCard{ flex:1; min-width:90px; background:var(--card-strong); padding:12px; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:8px; border:1px solid #e6eaef; }
-.barShell{ width:48px; height:140px; background:var(--panel); border-radius:12px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; border:1px solid rgba(0,0,0,0.03); }
-.barInner{ width:100%; display:flex; align-items:flex-end; justify-content:center; color:#fff; font-weight:800; border-radius:10px 10px 0 0; }
+.chartCard{
+  flex:1; min-width:90px; background:var(--card-strong); padding:12px; border-radius:12px;
+  display:flex; flex-direction:column; align-items:center; gap:8px; border:1px solid #e6eaef;
+}
+.barShell{
+  width:48px; height:140px; background:var(--panel); border-radius:12px;
+  display:flex; align-items:flex-end; justify-content:center;
+  overflow:hidden; border:1px solid rgba(0,0,0,0.03);
+}
+.barInner{
+  width:100%; display:flex; align-items:flex-end; justify-content:center;
+  color:#fff; font-weight:800; border-radius:10px 10px 0 0;
+}
 
-/* list receber */
-.receber-item{ display:flex; gap:8px; align-items:center; justify-content:space-between; padding:10px; border-radius:10px; background:var(--card-strong); margin-top:8px; }
-
-/* ===== MENU LATERAL ===== */
+/* sidebar */
 .sidebar{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100%;
-  background:var(--panel);
-  padding:20px;
-  box-shadow:2px 0 18px rgba(15,23,42,.35);
-  transition:.3s;
-  z-index:9999;
-  overflow-y:auto;
+  position:fixed; top:0; left:-260px; width:260px; height:100%;
+  background:var(--panel); padding:20px; box-shadow:2px 0 18px rgba(15,23,42,.35);
+  transition:.3s; z-index:9999; overflow-y:auto;
 }
 .sidebar.open{ left:0; }
-
 .menu-button{
-  position:fixed;
-  top:5px;
-  left:12px;
-  background:var(--brand);
-  color:#fff;
-  padding:4px 10px;
-  border-radius:999px;
-  cursor:pointer;
-  z-index:9999;
-  font-weight:700;
-  font-size:14px;
-  display:flex;
-  align-items:center;
-  gap:10px;
+  position:fixed; top:5px; left:12px; background:var(--brand); color:#fff;
+  padding:4px 10px; border-radius:999px; cursor:pointer; z-index:9999;
+  font-weight:700; font-size:14px; display:flex; align-items:center; gap:10px;
   box-shadow:0 8px 16px rgba(15,23,42,0.25);
 }
-.menu-button span.icon{font-size:16px;}
-
-.menu-close{
-  display:block;
-  font-size:24px;
-  cursor:pointer;
-  margin-bottom:6px;
-  text-align:right;
-}
-.menu-title{
-  font-weight:700;
-  font-size:35px;
-  margin-bottom:10px;
-}
-.menu-item{
-  padding:15px 0;
-  font-size:20px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.brand h1{
-  font-size: 30px;
-  font-weight: 800;
-  margin: 10;
-}
-
+.menu-item{ padding:15px 0; font-size:20px; cursor:pointer; display:flex; gap:10px; align-items:center; }
+.menu-close{display:block; font-size:24px; cursor:pointer; margin-bottom:6px; text-align:right;}
+.menu-title{ font-weight:700; font-size:35px; margin-bottom:10px;}
 </style>
 </head>
 
 <body>
 
-<!-- === BOTÃO MENU === -->
 <div class="menu-button" onclick="openMenu()">
   <span class="icon">☰</span>
   <span>Menu</span>
 </div>
 
 <header>
-    <div class="brand">
-        <div class="logo">RF Driver</div>
-        <h1>Perfil</h1>
-    </div>
+  <div class="brand">
+    <div class="logo">RF Driver</div>
+    <h1>Perfil</h1>
+  </div>
 
-    <button id="toggleTheme">
-        <span class="icon">🌙</span>
-        <span>Escuro/Claro</span>
-    </button>
+  <button id="toggleTheme">
+    🌙 Escuro/Claro
+  </button>
 </header>
 
 <div class="container">
 
   <div class="row">
-
-    <!-- left column -->
+    <!-- col 1 -->
     <div class="col-1">
 
       <div class="card">
         <h3>Dados do Motorista</h3>
-        <img id="fotoPerfil" class="foto" src="" alt="Foto do motorista">
+        <img id="fotoPerfil" class="foto" src="" alt="Foto">
         <input id="fotoInput" type="file" accept="image/*">
         <input id="nome" class="input" placeholder="Nome completo">
         <input id="carro" class="input" placeholder="Marca do carro">
@@ -235,7 +195,7 @@ header{
 
       <div class="card">
         <h3>Saldo Inicial</h3>
-        <input id="saldoInicial" type="number" class="input" placeholder="Saldo inicial do mês (R$)" step="0.01">
+        <input id="saldoInicial" type="number" class="input" placeholder="Saldo inicial (R$)" step="0.01">
         <div class="valorLinha"><span>Saldo atual:</span><strong id="saldoAtualDisplay">R$ 0,00</strong></div>
         <div style="display:flex;gap:10px;margin-top:12px;">
           <button id="salvarSaldoBtn" class="btn" style="flex:1;">Salvar Saldo</button>
@@ -245,47 +205,29 @@ header{
 
       <div class="card">
         <h3>Meta Mensal</h3>
-        <input id="metaMensal" type="number" class="input" placeholder="Valor da meta mensal (R$)" step="0.01">
+        <input id="metaMensal" type="number" class="input" placeholder="R$" step="0.01">
         <div class="valorLinha"><span>Total a receber:</span><strong id="tvReceber">R$ 0,00</strong></div>
         <div class="valorLinha"><span>Meta líquida:</span><strong id="tvMetaLiquida">R$ 0,00</strong></div>
-        <div class="valorLinha"><span>Falta para meta:</span><strong id="tvFalta">R$ 0,00</strong></div>
+        <div class="valorLinha"><span>Falta:</span><strong id="tvFalta">R$ 0,00</strong></div>
         <div style="display:flex;gap:10px;margin-top:12px;">
-          <button id="salvarMetaBtn" class="btn" style="flex:1;">Salvar Meta</button>
+          <button id="salvarMetaBtn" class="btn" style="flex:1;">Salvar</button>
           <button id="limparMetaBtn" class="btnGhost" style="flex:1;">Limpar</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Valores a Receber</h3>
-        <input id="receberValor" class="input" type="number" placeholder="Valor (R$)" step="0.01">
-        <input id="receberData" class="input" type="date">
-        <div style="display:flex;gap:8px;">
-          <button id="addReceberBtn" class="btn" style="flex:1;">Adicionar</button>
-          <button id="tutorialOpenBtn" class="btnGhost" style="flex:1;">Ajuda</button>
-        </div>
-
-        <div id="listaReceber" style="margin-top:12px;"></div>
-
-        <div style="display:flex;gap:8px;margin-top:12px;">
-          <button id="btnWhats" class="btn" style="background:#25D366;color:#000;flex:1;">Enviar WhatsApp</button>
-          <button id="btnPdf" class="btn" style="background:#ff9f00;color:#000;flex:1;">Gerar PDF</button>
         </div>
       </div>
 
     </div>
 
-    <!-- right column -->
+    <!-- col2 -->
     <div class="col-2">
 
       <div class="card">
         <h3>Progresso Mensal</h3>
-
         <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
           <div style="flex:1; min-width:200px;">
-            <div class="small">Meta mensal</div>
+            <div class="small">Meta</div>
             <div id="labelMeta" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
 
-            <div class="small" style="margin-top:8px;">Realizado (mês)</div>
+            <div class="small" style="margin-top:8px;">Realizado</div>
             <div id="labelRealizado" style="font-weight:800;font-size:18px;margin-top:6px;">R$ 0,00</div>
 
             <div class="small" style="margin-top:8px;">A receber</div>
@@ -293,430 +235,235 @@ header{
           </div>
 
           <div style="flex:1; min-width:220px;">
-            <div class="progressBar" aria-hidden="true"><div class="fill" id="linearFill" style="width:0%"></div></div>
+            <div class="progressBar"><div class="fill" id="linearFill"></div></div>
             <div class="small" style="margin-top:8px;">Progresso mensal</div>
           </div>
         </div>
-
       </div>
 
       <div class="card">
         <h3>Detalhes</h3>
 
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <div style="flex:1; min-width:140px;">
+          <div style="flex:1;">
             <div class="small">Meta mensal</div>
             <div class="valorLinha"><strong id="metaMensalVal">R$ 0,00</strong></div>
           </div>
-          <div style="flex:1; min-width:140px;">
-            <div class="small">Realizado no mês</div>
+          <div style="flex:1;">
+            <div class="small">Realizado</div>
             <div class="valorLinha"><strong id="realizadoMesVal">R$ 0,00</strong></div>
           </div>
-          <div style="flex:1; min-width:140px;">
-            <div class="small">Saídas no mês</div>
+          <div style="flex:1;">
+            <div class="small">Saídas</div>
             <div class="valorLinha"><strong id="saidasMesVal">R$ 0,00</strong></div>
           </div>
         </div>
 
-        <!-- gráfico de barras vertical (corporate style) -->
         <div class="chartRow" style="margin-top:12px;">
           <div class="chartCard">
-            <div class="barShell"><div id="barMeta" class="barInner" style="height:10%;background:var(--brand);"></div></div>
+            <div class="barShell"><div id="barMeta" class="barInner" style="background:var(--brand)"></div></div>
             <div class="small">Meta</div>
             <div id="barMetaLabel" class="small">0%</div>
           </div>
 
           <div class="chartCard">
-            <div class="barShell"><div id="barRealizado" class="barInner" style="height:10%;background:var(--accent-success);"></div></div>
+            <div class="barShell"><div id="barRealizado" class="barInner" style="background:var(--accent-success)"></div></div>
             <div class="small">Realizado</div>
             <div id="barRealizadoLabel" class="small">0%</div>
           </div>
 
           <div class="chartCard">
-            <div class="barShell"><div id="barReceber" class="barInner" style="height:10%;background:var(--card-strong);"></div></div>
+            <div class="barShell"><div id="barReceber" class="barInner" style="background:var(--card-strong)"></div></div>
             <div class="small">A Receber</div>
             <div id="barReceberLabel" class="small">0%</div>
           </div>
         </div>
 
         <div id="alertMonthly" class="small" style="margin-top:12px;color:var(--accent-danger);display:none;">
-          Você está abaixo da meta mensal — revise seus custos e recebíveis.
+          Você está abaixo da meta mensal
         </div>
       </div>
 
     </div>
-
   </div>
+
 </div>
 
-<!-- modal tutorial -->
-<div id="modalTutorial" role="dialog" aria-hidden="true">
-  <div class="modalInner">
-    <h3>Como usar esta tela</h3>
-    <ol>
-      <li>Preencha seus dados de motorista.</li>
-      <li>Defina sua meta mensal.</li>
-      <li>Cadastre valores a receber.</li>
-      <li>Acompanhe o progresso mensal na barra.</li>
-    </ol>
-    <div style="display:flex;gap:8px;margin-top:12px;">
-      <button id="tutorialCloseBtn" class="btn" style="flex:1">Fechar</button>
-      <button id="tutorialNeverBtn" class="btnGhost" style="flex:1;background:#666;color:#fff">Não mostrar novamente</button>
-    </div>
-  </div>
-</div>
-
-<!-- ============= MENU LATERAL =============== -->
+<!-- Menu Lateral -->
 <div id="sidebar" class="sidebar">
   <span class="menu-close" onclick="closeMenu()">×</span>
   <div class="menu-title">Navegação</div>
-  <div class="menu-item" onclick="location.href='planos.html'">💎 Planos</div>
   <div class="menu-item" onclick="location.href='index.html'">🏠 Dashboard</div>
   <div class="menu-item" onclick="location.href='entradas.html'">💵 Entradas</div>
-  <div class="menu-item" onclick="location.href='recibo_empresa.html'">🏭 Empresa</div>
-  <div class="menu-item" onclick="location.href='recibo_particular.html'">🚘 Particular</div>
   <div class="menu-item" onclick="location.href='manutencao.html'">🛠 Manutenção</div>
+  <div class="menu-item" onclick="location.href='calculadora.html'">📟 Calculadora</div>
   <div class="menu-item" onclick="location.href='resumo.html'">🧮 Resumo</div>
   <div class="menu-item" onclick="location.href='perfil.html'">👤 Perfil</div>
-  <div class="menu-item" onclick="location.href='calculadora.html'">📟 Calculadora</div>
 </div>
 
-<!-- libs for PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script src="planos.js"></script>
 <script>
-function openMenu(){
-  document.getElementById("sidebar").classList.add("open");
-}
-function closeMenu(){
-  document.getElementById("sidebar").classList.remove("open");
-}
+function openMenu(){ $('sidebar').classList.add('open'); }
+function closeMenu(){ $('sidebar').classList.remove('open'); }
 
-/* helpers */
 const $ = id => document.getElementById(id);
 const brl = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
-/* STORAGE KEYS */
-const KEY_PROFILE = 'perfilMotorista';
-const KEY_META = 'metaMensal';
-const KEY_RECEBER = 'valoresReceber';
-const KEY_REG = 'entradasSaidas';
-const KEY_SALDO = 'saldoInicial';
-const KEY_TUTORIAL = 'hide_tutorial';
+/*** STORAGE KEYS ***/
+const KEY_PROFILE='perfilMotorista';
+const KEY_META='metaMensal';
+const KEY_SALDO='saldoInicial';
+const KEY_REG='entradasSaidas';
 
-/* load/save shortcuts */
-const load = k => { try { return JSON.parse(localStorage.getItem(k) || (k===KEY_RECEBER?'[]':'{}')); } catch(e){ return (k===KEY_RECEBER?[]:{}); } };
-const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+/* safe load */
+const load = k=>{
+  try{
+    const raw=localStorage.getItem(k);
+    return raw?JSON.parse(raw):null;
+  }catch(e){
+    return null;
+  }
+};
+const save = (k,v)=>localStorage.setItem(k,JSON.stringify(v));
 
-/* state */
-let perfil = load(KEY_PROFILE);
-let meta = load(KEY_META);
-let valoresReceber = load(KEY_RECEBER);
-let registros = load(KEY_REG) || [];
-saldoInicialObj = load(KEY_SALDO);
+/*** STATE ***/
+let perfil = load(KEY_PROFILE) || {};
+let meta = load(KEY_META) || {};
+let saldoInicialObj = load(KEY_SALDO) || {valor:0};
+let registros = [].concat(load(KEY_REG) || []);
 
-/* THEME (light as default) */
-function applyTheme(theme){
-  if(theme === 'dark'){ document.documentElement.classList.add('dark'); localStorage.setItem('theme','dark'); $('toggleTheme').innerText='☀️'; }
-  else { document.documentElement.classList.remove('dark'); localStorage.setItem('theme','light'); $('toggleTheme').innerText='🌙'; }
-}
-(function initTheme(){
-  const saved = localStorage.getItem('theme') || 'light';
-  applyTheme(saved);
-  $('toggleTheme').addEventListener('click', ()=>{ const isDark = document.documentElement.classList.contains('dark'); applyTheme(isDark ? 'light' : 'dark'); });
+/*** THEME ***/
+(function(){
+  const t=localStorage.getItem('theme')||'light';
+  if(t==='dark') document.documentElement.classList.add('dark');
+  $('toggleTheme').addEventListener('click',()=>{
+    const isDark=document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme',isDark?'dark':'light');
+  });
 })();
 
-/* init UI */
+/*** LOAD UI ***/
 function init(){
-  perfil = load(KEY_PROFILE);
-  meta = load(KEY_META);
-  valoresReceber = load(KEY_RECEBER);
-  registros = load(KEY_REG) || [];
-  saldoInicialObj = load(KEY_SALDO);
 
+  perfil = load(KEY_PROFILE) || {};
+  meta = load(KEY_META) || {};
+  saldoInicialObj = load(KEY_SALDO) || {valor:0};
+  registros = [].concat(load(KEY_REG) || []);
 
-  // profile
   $('fotoPerfil').src = perfil.foto || '';
   $('nome').value = perfil.nome || '';
   $('carro').value = perfil.carro || '';
   $('modelo').value = perfil.modelo || '';
   $('ano').value = perfil.ano || '';
   $('placa').value = perfil.placa || '';
-
-  // meta
   $('metaMensal').value = meta.valor || '';
+  $('saldoInicial').value = saldoInicialObj.valor || '';
+  $('saldoAtualDisplay').innerText = brl(saldoInicialObj.valor);
 
-// saldo
-$('saldoInicial').value = saldoInicialObj.valor || '';
-$('saldoAtualDisplay').innerText = brl(saldoInicialObj.valor || 0);
-
-  // tutorial
-  if(!localStorage.getItem(KEY_TUTORIAL)) {
-    // show tutorial small by default? keep hidden until user opens
-    // $('modalTutorial').style.display = 'block';
-  }
-
-  carregarNome();
-  renderReceber();
   updateAll();
 }
 init();
 
-/* helper name */
-function carregarNome(){
-  const n = perfil.nome ? perfil.nome.split(' ')[0] : '';
-  const g = $('greeting');
-  if(g) g.innerText = n ? `Olá, ${n}!` : '';
-}
-
-/* photo */
+/*** FOTO ***/
 $('fotoInput').addEventListener('change', e=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    perfil.foto = ev.target.result;
-    $('fotoPerfil').src = perfil.foto;
-    save(KEY_PROFILE, perfil);
+  const f=e.target.files[0];
+  if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    perfil.foto=ev.target.result;
+    $('fotoPerfil').src=perfil.foto;
+    save(KEY_PROFILE,perfil);
   };
-  reader.readAsDataURL(file);
+  r.readAsDataURL(f);
 });
 
-/* salvar perfil */
-$('salvarPerfilBtn').addEventListener('click', ()=>{
-  perfil.nome = $('nome').value.trim();
-  perfil.carro = $('carro').value.trim();
-  perfil.modelo = $('modelo').value.trim();
-  perfil.ano = $('ano').value.trim();
-  perfil.placa = $('placa').value.trim();
-  save(KEY_PROFILE, perfil);
-  carregarNome();
+/*** SALVAR PERFIL ***/
+$('salvarPerfilBtn').addEventListener('click',()=>{
+  perfil={
+    nome:$('nome').value.trim(),
+    carro:$('carro').value.trim(),
+    modelo:$('modelo').value.trim(),
+    ano:$('ano').value.trim(),
+    placa:$('placa').value.trim(),
+    foto:perfil.foto||''
+  };
+  save(KEY_PROFILE,perfil);
   alert('Perfil salvo!');
 });
 
-/* saldo inicial */
-$('salvarSaldoBtn').addEventListener('click', ()=>{
-  const v = Number($('saldoInicial').value) || 0;
-  saldoInicialObj = { valor: v };
-  save(KEY_SALDO, saldoInicialObj);
-  $('saldoAtualDisplay').innerText = brl(v);
+/*** SALDO ***/
+$('salvarSaldoBtn').addEventListener('click',()=>{
+  const v=Number($('saldoInicial').value)||0;
+  saldoInicialObj={valor:v};
+  save(KEY_SALDO,saldoInicialObj);
+  $('saldoAtualDisplay').innerText=brl(v);
   updateAll();
-  alert('Saldo inicial salvo!');
 });
-$('resetSaldoBtn').addEventListener('click', ()=>{
-  // reload displayed values from storage
-  init();
-});
+$('resetSaldoBtn').addEventListener('click',init);
 
-/* meta mensal */
-$('salvarMetaBtn').addEventListener('click', ()=>{
-  meta = { valor: Number($('metaMensal').value) || 0 };
-  save(KEY_META, meta);
+/*** META ***/
+$('salvarMetaBtn').addEventListener('click',()=>{
+  meta={valor:Number($('metaMensal').value)||0};
+  save(KEY_META,meta);
   updateAll();
-  alert('Meta salva!');
 });
-$('limparMetaBtn').addEventListener('click', ()=>{
-  meta = {}; save(KEY_META, meta); $('metaMensal').value=''; updateAll();
-});
-
-/* valores a receber */
-$('addReceberBtn').addEventListener('click', ()=>{
-  const valor = Number($('receberValor').value) || 0;
-  const data = $('receberData').value;
-  if(!valor || !data) return alert('Preencha valor e data.');
-  valoresReceber.push({valor,data});
-  save(KEY_RECEBER, valoresReceber);
-  $('receberValor').value=''; $('receberData').value='';
-  renderReceber();
+$('limparMetaBtn').addEventListener('click',()=>{
+  meta={};
+  save(KEY_META,meta);
+  $('metaMensal').value='';
   updateAll();
 });
 
-function renderReceber(){
-  const el = $('listaReceber');
-  if(!valoresReceber || !valoresReceber.length){
-    el.innerHTML = `<div class="small">Nenhum valor a receber.</div>`;
-    return;
-  }
-  let html = '';
-  valoresReceber.forEach((r,i)=>{
-    html += `<div class="receber-item">
-      <div style="flex:1">
-        <div style="font-weight:700">${r.data} — ${brl(r.valor)}</div>
-        <div class="small">Previsto</div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button onclick="marcarComoRecebido(${i})" style="background:var(--brand);color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer">Recebido</button>
-        <button onclick="removerReceber(${i})" style="background:var(--accent-danger);color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer">Remover</button>
-      </div>
-    </div>`;
-  });
-  el.innerHTML = html;
+/*** HELPERS ***/
+function isThisMonth(iso){
+  const d=new Date(iso), n=new Date();
+  return d.getMonth()===n.getMonth() && d.getFullYear()===n.getFullYear();
 }
-
-function removerReceber(i){
-  valoresReceber.splice(i,1);
-  save(KEY_RECEBER, valoresReceber);
-  renderReceber();
-  updateAll();
-}
-
-function marcarComoRecebido(i){
-  const r = valoresReceber[i];
-  if(!confirm('Confirmar recebimento?')) return;
-  registros.push({
-    id: Date.now(),
-    tipo:'entrada',
-    valor: r.valor,
-    criadoEm: new Date().toISOString(),
-    subtipo:'a_receber',
-    formaPag:'a_receber'
-  });
-  save(KEY_REG, registros);
-  valoresReceber.splice(i,1);
-  save(KEY_RECEBER, valoresReceber);
-  renderReceber();
-  updateAll();
-}
-
-/* date helpers for month */
-function isSameMonthISO(iso){
-  const d = new Date(iso);
-  const now = new Date();
-  return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-}
-
-/* calculations */
-function entradasLiquidasMes(){
-  registros = load(KEY_REG) || [];
-  return registros.reduce((s,r)=>{
-    if(r.tipo==='entrada' && isSameMonthISO(r.criadoEm)) return s + Number(r.valor||0);
-    return s;
-  },0);
+function entradasMes(){
+  registros=[].concat(load(KEY_REG)||[]);
+  return registros.reduce((s,r)=>(r.tipo==='entrada'&&isThisMonth(r.criadoEm)?s+Number(r.valor||0):s),0);
 }
 function saidasMes(){
-  registros = load(KEY_REG) || [];
-  return registros.reduce((s,r)=>{
-    if(r.tipo==='saida' && isSameMonthISO(r.criadoEm)) return s + Number(r.valor||0);
-    return s;
-  },0);
-}
-function totalReceberNoMes(){
-  const now = new Date();
-  return (valoresReceber||[]).reduce((s,r)=>{
-    const d = new Date(r.data);
-    if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) return s + Number(r.valor||0);
-    return s;
-  },0);
+  registros=[].concat(load(KEY_REG)||[]);
+  return registros.reduce((s,r)=>(r.tipo==='saida'&&isThisMonth(r.criadoEm)?s+Number(r.valor||0):s),0);
 }
 function realizadoMes(){
-  const entradas = entradasLiquidasMes();
-  const saidas = saidasMes();
-  const saldo = (saldoInicialObj && Number(saldoInicialObj.valor)) || 0;
-  return entradas - saidas + saldo;
+  return entradasMes()-saidasMes()+Number(saldoInicialObj.valor||0);
 }
 
-/* days left */
-function diasRestantes(){
-  const hoje = new Date();
-  const ultimo = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0).getDate();
-  return ultimo - hoje.getDate() + 1;
-}
-
-/* update UI (main) */
+/*** UPDATE UI ***/
 function updateAll(){
-  registros = load(KEY_REG) || [];
-  const metaMensal = Number((meta && meta.valor) || 0);
-  const receb = totalReceberNoMes();
-  const entradas = entradasLiquidasMes();
-  const saidas = saidasMes();
-  const realizado = realizadoMes();
-  const metaLiquida = Math.max(0, metaMensal - receb);
+  registros=[].concat(load(KEY_REG)||[]);
+  const metaMensal=Number(meta.valor||0);
+  const realizados=realizadoMes();
+  const receb=0; /* você pode somar valores a receber depois */
 
-  // labels
-  $('labelMeta').innerText = brl(metaMensal);
-  $('labelReceber').innerText = brl(receb);
-  $('labelRealizado').innerText = brl(realizado);
+  $('labelMeta').innerText=brl(metaMensal);
+  $('labelRealizado').innerText=brl(realizados);
+  $('labelReceber').innerText=brl(receb);
 
-  $('metaMensalVal').innerText = brl(metaMensal);
-  $('realizadoMesVal').innerText = brl(realizado);
-  $('saidasMesVal').innerText = brl(saidas);
+  $('metaMensalVal').innerText=brl(metaMensal);
+  $('realizadoMesVal').innerText=brl(realizados);
+  $('saidasMesVal').innerText=brl(saidasMes());
 
-  $('tvReceber').innerText = brl(receb);
-  $('tvMetaLiquida').innerText = brl(metaLiquida);
-  $('tvFalta').innerText = brl(Math.max(0, metaLiquida - realizado));
+  const metaLiquida=metaMensal-receb;
+  $('tvReceber').innerText=brl(receb);
+  $('tvMetaLiquida').innerText=brl(metaLiquida);
+  $('tvFalta').innerText=brl(Math.max(0,metaLiquida-realizados));
 
-  // progress linear
-  const pct = metaLiquida>0 ? Math.min(100, Math.round((realizado/metaLiquida)*100)) : 100;
-  $('linearFill').style.width = pct + '%';
+  const pct=metaLiquida>0?Math.min(100,Math.round((realizados/metaLiquida)*100)):100;
+  $('linearFill').style.width=pct+'%';
 
-  // chart bars relative
-  const max = Math.max(metaLiquida, Math.abs(realizado), receb, 1);
-  const pctMeta = Math.round((metaLiquida/max)*100);
-  const pctReal = Math.round((realizado/max)*100);
-  const pctRec = Math.round((receb/max)*100);
+  $('barMeta').style.height=Math.max(6,(metaLiquida/Math.max(metaLiquida,realizados,1))*100)+'%';
+  $('barRealizado').style.height=Math.max(6,(realizados/Math.max(metaLiquida,realizados,1))*100)+'%';
+  $('barReceber').style.height='6%';
 
-  $('barMeta').style.height = Math.max(6, pctMeta) + '%';
-  $('barRealizado').style.height = Math.max(6, pctReal) + '%';
-  $('barReceber').style.height = Math.max(6, pctRec) + '%';
+  $('barMetaLabel').innerText=Math.round((metaLiquida/Math.max(metaLiquida,realizados,1))*100)+'%';
+  $('barRealizadoLabel').innerText=Math.round((realizados/Math.max(metaLiquida,realizados,1))*100)+'%';
+  $('barReceberLabel').innerText='0%';
 
-  $('barMetaLabel').innerText = pctMeta + '%';
-  $('barRealizadoLabel').innerText = pctReal + '%';
-  $('barReceberLabel').innerText = pctRec + '%';
-
-  // alert
-  $('alertMonthly').style.display = (realizado < metaLiquida) ? 'block' : 'none';
+  $('alertMonthly').style.display=(realizados<metaLiquida)?'block':'none';
 }
-
-/* WhatsApp export */
-$('btnWhats').addEventListener('click', ()=>{
-  const msg = `📊 Relatório do Mês
-🎯 Meta: ${brl((meta && meta.valor)||0)}
-📥 A receber: ${brl(totalReceberNoMes())}
-💰 Realizado: ${brl(realizadoMes())}
-📤 Saídas: ${brl(saidasMes())}
-💵 Entradas: ${brl(entradasLiquidasMes())}
-🏦 Saldo inicial: ${brl((saldoInicialObj && saldoInicialObj.valor)||0)}
-⏳ Dias restantes: ${diasRestantes()}`;
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
-});
-
-/* PDF export */
-$('btnPdf').addEventListener('click', async ()=>{
-  const container = document.querySelector('.container');
-  try{
-    const canvas = await html2canvas(container,{scale:2});
-    const img = canvas.toDataURL('image/png');
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p','mm','a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const imgProps = pdf.getImageProperties(img);
-    const imgHeight = (imgProps.height * pageWidth) / imgProps.width;
-    pdf.addImage(img,'PNG',0,0,pageWidth,imgHeight);
-    pdf.save('perfil_relatorio.pdf');
-  }catch(e){ console.error(e); alert('Falha ao gerar PDF.'); }
-});
-
-/* modal tutorial */
-$('tutorialOpenBtn').addEventListener('click', ()=> $('modalTutorial').style.display='block');
-$('tutorialCloseBtn').addEventListener('click', ()=> $('modalTutorial').style.display='none');
-$('tutorialNeverBtn').addEventListener('click', ()=>{ localStorage.setItem(KEY_TUTORIAL,'1'); $('modalTutorial').style.display='none'; });
-
-/* helpers: remove localStorage tutorial on load if set */
-if(localStorage.getItem(KEY_TUTORIAL)) $('modalTutorial').style.display='none';
-
-/* boot */
-window.addEventListener('load', ()=>{
-  renderReceber();
-  updateAll();
-  // bottom menu active
-  document.querySelectorAll('.bottom-menu .menu-item').forEach(el=>{
-    el.classList.remove('active');
-    const href = el.getAttribute('href') || '';
-    if(location.pathname && location.pathname.indexOf(href) !== -1) el.classList.add('active');
-  });
-});
 </script>
+
 </body>
 </html>

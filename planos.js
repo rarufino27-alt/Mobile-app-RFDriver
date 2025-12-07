@@ -1,58 +1,139 @@
-<div id="sidebar" class="sidebar">
-  <span class="menu-close" onclick="closeMenu()">×</span>
-  <div class="menu-title">Navegação do app</div>
+/* =====================================================
+   CHAVE PRINCIPAL (plano REAL comprado)
+===================================================== */
+const PLANO_KEY = "planoAtual";
 
-  <div class="menu-item" onclick="navegar('index','dashboard')">
-    <span class="icon-flag" id="icon-dashboard"></span>
-    <span class="menu-item-label">Dashboard</span>
-  </div>
+/* planoREAL (free, basico, premium, pro) */
+function setPlano(plano) {
+  localStorage.setItem(PLANO_KEY, plano);
+}
 
-  <div class="menu-item">
-    <span class="icon-flag" id="icon-entradas"></span>
-    <span class="menu-item-label">Entradas</span>
-  </div>
-  <div class="submenu">
-    <div class="submenu-item" onclick="navegar('entradas','entradas_corridas')">
-      <span class="icon-flag" id="icon-entradas-corridas"></span>
-      <span>Entradas corridas</span>
-    </div>
-    <div class="submenu-item" onclick="navegar('entradas','entradas_outras')">
-      <span class="icon-flag" id="icon-entradas-outras"></span>
-      <span>Outras entradas</span>
-    </div>
-    <div class="submenu-item" onclick="navegar('entradas','entradas_saidas')">
-      <span class="icon-flag" id="icon-entradas-saidas"></span>
-      <span>Saídas</span>
-    </div>
-  </div>
+function getPlano() {
+  return localStorage.getItem(PLANO_KEY) || "free";
+}
 
-  <div class="menu-item" onclick="navegar('recibo_empresa','empresas')">
-    <span class="icon-flag" id="icon-empresas"></span>
-    <span class="menu-item-label">Empresas</span>
-  </div>
 
-  <div class="menu-item" onclick="navegar('recibo_particular','particular')">
-    <span class="icon-flag" id="icon-particular"></span>
-    <span class="menu-item-label">Particular</span>
-  </div>
+/* =====================================================
+   PERMISSÕES
+===================================================== */
+const permissoes = {
+  free:{
+    dashboard:"locked",
+    entradas:"partial",
+    entradas_corridas:"full",
+    entradas_outras:"locked",
+    entradas_saidas:"locked",
+    empresas:"locked",
+    particular:"locked",
+    manutencao:"locked",
+    resumo:"locked",
+    perfil:"locked",
+    calculadora:"locked"
+  },
+  basico:{
+    dashboard:"full",
+    entradas:"partial",
+    entradas_corridas:"full",
+    entradas_outras:"locked",
+    entradas_saidas:"full",
+    empresas:"locked",
+    particular:"locked",
+    manutencao:"locked",
+    resumo:"locked",
+    perfil:"full",
+    calculadora:"locked"
+  },
+  premium:{
+    dashboard:"full",
+    entradas:"full",
+    entradas_corridas:"full",
+    entradas_outras:"full",
+    entradas_saidas:"full",
+    empresas:"locked",
+    particular:"partial",
+    manutencao:"locked",
+    resumo:"locked",
+    perfil:"full",
+    calculadora:"full"
+  },
+  pro:{
+    dashboard:"full",
+    entradas:"full",
+    entradas_corridas:"full",
+    entradas_outras:"full",
+    entradas_saidas:"full",
+    empresas:"full",
+    particular:"full",
+    manutencao:"full",
+    resumo:"full",
+    perfil:"full",
+    calculadora:"full"
+  }
+};
 
-  <div class="menu-item" onclick="navegar('manutencao','manutencao')">
-    <span class="icon-flag" id="icon-manutencao"></span>
-    <span class="menu-item-label">Manutenção</span>
-  </div>
 
-  <div class="menu-item" onclick="navegar('resumo','resumo')">
-    <span class="icon-flag" id="icon-resumo"></span>
-    <span class="menu-item-label">Resumo</span>
-  </div>
+/* =====================================================
+   TRIAL PRO – 24h
+===================================================== */
+function iniciarTrial24h(planoDepois){
+  const agora = Date.now();
+  const fim = agora + 24*60*60*1000;
 
-  <div class="menu-item" onclick="navegar('perfil','perfil')">
-    <span class="icon-flag" id="icon-perfil"></span>
-    <span class="menu-item-label">Perfil</span>
-  </div>
+  // NÃO altera planoReal
+  // apenas ativa o modo trial PRO
+  localStorage.setItem("trialEnd", fim);
+  localStorage.setItem("planAfterTrial", planoDepois);
+  localStorage.setItem("trial", "on");
 
-  <div class="menu-item" onclick="navegar('calculadora','calculadora')">
-    <span class="icon-flag" id="icon-calculadora"></span>
-    <span class="menu-item-label">Calculadora</span>
-  </div>
-</div>
+  alert("🎉 Você ganhou 24h com acesso total ao Plano PRO!");
+}
+
+
+/* =====================================================
+   VERIFICAÇÃO DIÁRIA
+===================================================== */
+function checarTrial(){
+  const trialEnd = localStorage.getItem("trialEnd");
+  if(!trialEnd) return;
+
+  const agora = Date.now();
+
+  if(agora > trialEnd){
+    const voltar = localStorage.getItem("planAfterTrial") || "free";
+
+    setPlano(voltar);
+
+    localStorage.removeItem("trial");
+    localStorage.removeItem("trialEnd");
+    localStorage.removeItem("planAfterTrial");
+  }
+}
+
+
+/* =====================================================
+   PRIMEIRA VEZ NO APP
+===================================================== */
+function iniciarTrialSePrimeiraVez(){
+  if(localStorage.getItem("jaEntrou")) return;
+
+  iniciarTrial24h("free");
+  localStorage.setItem("jaEntrou","sim");
+}
+
+
+/* =====================================================
+   FUNÇÕES DE APOIO AO HTML
+===================================================== */
+
+// retorna o plano ativo (PRO se estiver em trial)
+function planoAtivo(){
+  const isTrial = localStorage.getItem("trial")==="on";
+  if(isTrial) return "pro";
+  return getPlano();
+}
+
+// retorna permissao considerando o plano ativo
+function getPermissao(feature){
+  const plano = planoAtivo();
+  return permissoes[plano][feature];
+}

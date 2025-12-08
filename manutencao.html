@@ -3,137 +3,94 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Revisões &amp; Manutenções - Motorista App</title>
+<title>Revisões & Manutenções - Motorista App</title>
 
-<!-- Fonte corporativa -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* ============================ */
-/*     PALETA CORPORATIVA       */
-/*     + MODO CLARO / ESCURO    */
-/* ============================ */
-
 :root{
-    /* MODO CLARO */
-    --bg: #ffffff;
-    --page-gap: #f3f5f8;
-
-    --card: #fafbfc;
-    --card-strong: #f0f2f5;
-    --panel: #ffffff;
-
-    --brand: #0b5bd7;
-    --brand-dark: #073f8a;
-
-    --accent-success: #1DB954;
-    --accent-danger: #ff3b30;
-
-    --text: #0b1115;
-    --muted: #65707a;
-
-    --shadow: 0 6px 16px rgba(13,30,45,0.07);
-    --shadow-strong: 0 10px 32px rgba(10,20,30,0.12);
-
-    --radius: 14px;
+    --bg:#ffffff;
+    --page-gap:#f3f5f8;
+    --card:#fafbfc;
+    --card-strong:#f0f2f5;
+    --panel:#ffffff;
+    --brand:#0b5bd7;
+    --brand-dark:#073f8a;
+    --accent-success:#1DB954;
+    --accent-danger:#ff3b30;
+    --text:#0b1115;
+    --muted:#65707a;
+    --shadow:0 6px 16px rgba(13,30,45,.07);
+    --shadow-strong:0 10px 32px rgba(10,20,30,.12);
+    --radius:14px;
 }
-
-/* ============================ */
-/*       MODO ESCURO GLOBAL     */
-/* ============================ */
 
 .dark{
-    --bg: #0f1115;
-    --page-gap: #15171c;
-
-    --card: #181a20;
-    --card-strong: #1d1f27;
-    --panel: #1b1d25;
-
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-
-    --shadow: 0 6px 16px rgba(0,0,0,0.35);
-    --shadow-strong: 0 10px 32px rgba(0,0,0,0.45);
-
-    --brand: #3b82f6;
-    --brand-dark: #2563eb;
-
-    --accent-success: #22c55e;
-    --accent-danger: #ef4444;
+    --bg:#0f1115;
+    --page-gap:#15171c;
+    --card:#181a20;
+    --card-strong:#1d1f27;
+    --panel:#1b1d25;
+    --text:#e5e7eb;
+    --muted:#9ca3af;
+    --shadow:0 6px 16px rgba(0,0,0,.35);
+    --shadow-strong:0 10px 32px rgba(0,0,0,.45);
+    --brand:#3b82f6;
+    --brand-dark:#2563eb;
 }
 
-/* ============================ */
-/*           BASE               */
-/* ============================ */
-
-*{ box-sizing:border-box; font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+*{box-sizing:border-box;font-family:Inter,Arial;}
 
 body{
     margin:0;
-    background:linear-gradient(180deg, var(--page-gap), var(--bg) 50%);
+    background:linear-gradient(180deg,var(--page-gap),var(--bg) 50%);
     color:var(--text);
-    padding-bottom:160px; /* espaço do menu inferior */
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
+    padding-bottom:60px;
 }
 
-/* ============================ */
-/*          HEADER              */
-/* ============================ */
+/* MENU SUPERIOR */
+.top-menu{
+  position:fixed;
+  top:0;left:0;width:100%;
+  background:var(--panel);
+  display:flex;
+  padding:8px;
+  gap:8px;
+  align-items:center;
+  z-index:9999;
+  overflow-x:auto;
+  box-shadow:var(--shadow);
+}
+.top-menu button{
+  padding:10px 14px;
+  background:var(--card);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  flex-shrink:0;
+  color:var(--text);
+}
 
+body{padding-top:70px;}
+
+/* HEADER */
 header{
     padding:18px 16px;
     max-width:980px;
-    margin:0 auto 10px auto;
+    margin:0 auto 14px auto;
     display:flex;
     align-items:center;
     justify-content:space-between;
 }
 
-.brand{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-.brand .logo{
-    width:80px;
-    height:20px;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:800;
-    color:#fff;
-    background:linear-gradient(135deg,var(--brand),var(--brand-dark));
-    box-shadow:var(--shadow);
-    font-size:13px;
-}
-
-/* botão modo escuro */
 #toggleTheme{
     background:var(--card-strong);
-    padding:8px 12px;
-    border-radius:10px;
-    border:1px solid rgba(0,0,0,0.08);
-    font-weight:700;
-    cursor:pointer;
-    color:var(--text);
+    padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,.1);
+    font-weight:700;cursor:pointer;color:var(--text);
 }
 
-/* ============================ */
-/*          CONTAINER           */
-/* ============================ */
-
-.container{
-    max-width:980px;
-    margin:0 auto;
-    padding:0 16px;
-}
-
-/* ============================ */
-/*           CARDS              */
-/* ============================ */
+.container{max-width:980px;margin:0 auto;padding:0 16px;}
 
 .card{
     background:var(--card);
@@ -143,169 +100,85 @@ header{
     border:1px solid #d7dce2;
     box-shadow:var(--shadow);
 }
+.card h3{margin:0 0 12px}
 
-.card h3{
-    margin-top:0;
-    margin-bottom:12px;
+.label{font-size:13px;color:var(--muted);margin-bottom:6px;display:block;}
+input{
+    width:100%;padding:12px;border-radius:10px;
+    border:1px solid #cfd4da;background:var(--panel);
+    color:var(--text);margin-bottom:12px;font-size:15px;
 }
 
-/* util text */
-.hint{ font-size:13px; color:var(--muted); }
+.row{display:flex;gap:14px;flex-wrap:wrap;}
+.col{flex:1;min-width:160px;}
 
-/* layout row/col */
-.row{ display:flex; gap:14px; flex-wrap:wrap; }
-.col{ flex:1; min-width:160px; }
-
-/* labels and inputs */
-.label{ font-size:13px; color:var(--muted); margin-bottom:6px; display:block; }
-input, select, textarea{
-    width:100%;
-    padding:12px;
-    border-radius:10px;
-    border:1px solid #cfd4da;
-    background:var(--panel);
-    color:var(--text);
-    margin-bottom:12px;
-    font-size:15px;
-}
-
-/* buttons */
 .btn{
     background:linear-gradient(135deg,var(--brand),var(--brand-dark));
-    color:#fff;
-    padding:12px;
-    border:none;
-    width:100%;
-    border-radius:12px;
-    font-weight:700;
-    cursor:pointer;
+    color:#fff;padding:12px;border:none;width:100%;
+    border-radius:12px;font-weight:700;cursor:pointer;
 }
 .btnGhost{
-    background:var(--card-strong);
-    color:var(--text);
-    padding:11px;
-    border:none;
-    width:100%;
-    border-radius:10px;
-    font-weight:600;
-    cursor:pointer;
+    background:var(--card-strong);color:var(--text);
+    padding:11px;border:none;width:100%;
+    border-radius:10px;font-weight:600;cursor:pointer;
 }
 
-/* list items */
 .listItem{
     background:var(--card-strong);
-    padding:14px;
-    border-radius:12px;
-    margin-bottom:12px;
-    display:flex;
-    justify-content:space-between;
-    gap:12px;
+    padding:14px;border-radius:12px;margin-bottom:12px;
+    display:flex;justify-content:space-between;gap:12px;
 }
+.hint{font-size:13px;color:var(--muted);}
 
-/* status badges */
-.badge{ padding:6px 10px; border-radius:10px; font-size:13px; font-weight:700; display:inline-block; }
-.statusGreen{ background:#d7fbe3; color:#0b6620; }
-.statusWarn{ background:#fff4d6; color:#9d6700; }
-.statusRed{ background:#ffe3e3; color:#a00000; }
+.badge{padding:6px 10px;border-radius:10px;font-size:13px;font-weight:700;}
+.statusGreen{background:#d7fbe3;color:#0b6620;}
+.statusWarn{background:#fff4d6;color:#9d6700;}
+.statusRed{background:#ffe3e3;color:#a00000;}
 
-.dark .statusGreen{ background:#114222; color:#9dffc1; }
-.dark .statusWarn{ background:#6a4c09; color:#ffeab3; }
-.dark .statusRed{ background:#5a0a06; color:#ffb3b3; }
+.dark .statusGreen{background:#114222;color:#9dffc1;}
+.dark .statusWarn{background:#6a4c09;color:#ffeab3;}
+.dark .statusRed{background:#5a0a06;color:#ffb3b3;}
 
-/* table */
-.table{ width:100%; border-collapse:collapse; font-size:14px; }
-.table th{ text-align:left; padding:8px; font-size:12px; color:var(--muted); }
-.table td{ padding:8px; }
+.table{width:100%;border-collapse:collapse;font-size:14px;}
+.table th{padding:8px;font-size:12px;color:var(--muted);}
+.table td{padding:8px;}
 
-/* modal (shared with entradas template) */
-#modalMaquineta{ position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; z-index:2000; padding-top:40px; }
-.modalBox{ background:var(--card); width:92%; max-width:420px; padding:20px; border-radius:14px; margin:auto; box-shadow:var(--shadow-strong); }
-
-/* ===== MENU LATERAL ===== */
-.sidebar{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100%;
-  background:var(--panel);
-  padding:20px;
-  box-shadow:2px 0 18px rgba(15,23,42,.35);
-  transition:.3s;
-  z-index:9999;
-  overflow-y:auto;
+#modalMaquineta{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.55);
+    display:none;
+    z-index:2000;
+    padding-top:40px;
 }
-.sidebar.open{ left:0; }
-
-.menu-button{
-  position:fixed;
-  top:6px;
-  left:12px;
-  background:var(--brand);
-  color:#fff;
-  padding:6px 12px;
-  border-radius:999px;
-  cursor:pointer;
-  z-index:9999;
-  font-weight:700;
-  font-size:13px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  box-shadow:0 8px 16px rgba(15,23,42,0.25);
-}
-.menu-button span.icon{font-size:16px;}
-
-.menu-close{
-  display:block;
-  font-size:24px;
-  cursor:pointer;
-  margin-bottom:6px;
-  text-align:right;
-}
-.menu-title{
-  font-weight:700;
-  font-size:35px;
-  margin-bottom:10px;
-}
-.menu-item{
-  padding:15px 0;
-  font-size:20px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.submenu{padding-left:18px;margin-bottom:4px;}
-.submenu-item{
-  padding:4px 0;
-  font-size:12px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:6px;
+.modalBox{
+    background:var(--card);
+    width:92%;max-width:420px;
+    padding:20px;border-radius:14px;
+    margin:auto;box-shadow:var(--shadow-strong);
 }
 </style>
 </head>
 
 <body>
 
-<!-- === BOTÃO MENU === -->
-<div class="menu-button" onclick="openMenu()">
-  <span class="icon">☰</span>
-  <span>Menu</span>
+<div class="top-menu">
+  <button onclick="location.href='planos.html'">💎 Planos</button>
+  <button onclick="location.href='perfil.html'">👤 Perfil</button>
+  <button onclick="location.href='index.html'">🏠 Dashboard</button>
+  <button onclick="location.href='entradas.html'">💵 Caixa</button>
+  <button onclick="location.href='resumo.html'">🧮 Resumo</button>
+  <button onclick="location.href='recibo_empresa.html'">🏭 Empresa</button>
+  <button onclick="location.href='recibo_particular.html'">🚘 Particular</button>
+  <button onclick="location.href='manutencao.html'">🛠 Manutenção</button>
+  <button onclick="location.href='calculadora.html'">📟 Calculadora</button>
 </div>
 
 <header>
     <div class="brand">
         <div class="logo">RF Driver</div>
-    <h1 style="margin:50;font-size:30px;font-weight:800">Manutenção</h1>
+        <h1 style="font-weight:800;font-size:28px;margin:0">Manutenção</h1>
     </div>
-
-  <button id="toggleTheme">
-    <span class="icon">🌙</span>
-    <span>Escuro/Claro</span>
-  </button>
+    <button id="toggleTheme">🌙</button>
 </header>
 
 <div class="container">
@@ -424,7 +297,7 @@ input, select, textarea{
 
 </div> <!-- fecha container -->
 
-<!-- Modal Maquineta (mantido para compatibilidade com template) -->
+<!-- Modal Maquineta (mantido, caso use no futuro em manutenção/pagamento) -->
 <div id="modalMaquineta">
     <div class="modalBox">
         <h3 style="margin-top:0;">Cadastrar Maquineta</h3>
@@ -444,85 +317,74 @@ input, select, textarea{
     </div>
 </div>
 
-<!-- ============= MENU LATERAL =============== -->
-<div id="sidebar" class="sidebar">
-  <span class="menu-close" onclick="closeMenu()">×</span>
-  <div class="menu-title">Navegação</div>
-  <div class="menu-item" onclick="location.href='planos.html'">💎 Planos</div>
-  <div class="menu-item" onclick="location.href='index.html'">🏠 Dashboard</div>
-  <div class="menu-item" onclick="location.href='entradas.html'">💵 Entradas</div>
-  <div class="menu-item" onclick="location.href='recibo_empresa.html'">🏭 Empresa</div>
-  <div class="menu-item" onclick="location.href='recibo_particular.html'">🚘 Particular</div>
-  <div class="menu-item" onclick="location.href='manutencao.html'">🛠 Manutenção</div>
-  <div class="menu-item" onclick="location.href='resumo.html'">🧮 Resumo</div>
-  <div class="menu-item" onclick="location.href='perfil.html'">👤 Perfil</div>
-  <div class="menu-item" onclick="location.href='calculadora.html'">📟 Calculadora</div>
-</div>
-
-<!-- libs para export PDF (mantidos) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5m1sY6GqI1p1gZJ3Z5k9V2Gg8zmsmN1Vq+9zB6Q3y0R6vQn4Jg4k9w0+6U1Oajm0E2aKZb2k8bT8v8v4w2Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-L3pQo3kIeg0cNQ6Q0R9V4mVh6Kp6n5qv9bVt3Q5s1Zq9K+7y0uD2v1zV9z1Yp9u4Z8k3Wz8b4e1o3j2G5f4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="planos.js"></script>
 
 <script>
-if(!planoTem("manutencao")){
-   alert("Disponível somente no plano PRO.");
-   location.href="planos.html";
+/* BLOQUEIO DE PLANO: MANUTENÇÃO APENAS PRO */
+function plano(){
+  try{ return getPlano(); }catch(e){}
+  return (localStorage.getItem('planoAtual') || 'free').toLowerCase();
 }
-</script>
+(function(){
+  const p = plano();
+  if(p !== 'pro'){
+     alert("A página Manutenção é liberada apenas no plano PRO.");
+     window.location.href = "planos.html";
+     return;
+  }
+})();
 
-<script>
-/* ====== MENU ====== */
-function openMenu(){
-  document.getElementById("sidebar").classList.add("open");
-}
-function closeMenu(){
-  document.getElementById("sidebar").classList.remove("open");
-}
-
-/* ====================
-   THEME (CLARO / ESCURO)
-   ==================== */
+/* THEME */
 function applyTheme(theme){
+    const html = document.documentElement;
+    const btn = document.getElementById('toggleTheme');
     if(theme === 'dark'){
-        document.documentElement.classList.add('dark');
+        html.classList.add('dark');
         localStorage.setItem('theme','dark');
-        const tbtn = document.getElementById('toggleTheme');
-        if(tbtn) tbtn.innerText = '☀️';
+        if(btn) btn.innerText = "☀️";
     } else {
-        document.documentElement.classList.remove('dark');
+        html.classList.remove('dark');
         localStorage.setItem('theme','light');
-        const tbtn = document.getElementById('toggleTheme');
-        if(tbtn) tbtn.innerText = '🌙';
+        if(btn) btn.innerText = "🌙";
     }
 }
+
 (function initTheme(){
     const saved = localStorage.getItem('theme') || 'light';
     applyTheme(saved);
-    const tbtn = document.getElementById('toggleTheme');
-    if(tbtn){
-        tbtn.addEventListener('click', ()=>{ const isDark = document.documentElement.classList.contains('dark'); applyTheme(isDark ? 'light' : 'dark'); });
+    const btn = document.getElementById('toggleTheme');
+    if(btn){
+        btn.addEventListener("click", ()=>{
+            const isDark=document.documentElement.classList.contains("dark");
+            applyTheme(isDark?"light":"dark");
+        });
     }
 })();
 
-/* ====================
-   HELPERS / STORAGE
-   ==================== */
+/* HELPERS */
 const $ = id => document.getElementById(id);
 const currency = v => Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const now = () => new Date().toISOString();
 const esc = t => t ? String(t).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])) : "";
 
-const load = k => {
-    try { return JSON.parse(localStorage.getItem(k) || (k==="manutencoes"?"[]":k==="manutHistorico"?"[]":"{}")); }
-    catch(e){ return (k==="manutencoes"||k==="manutHistorico")?[]:{}; }
-};
-const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+const load = key=>{
+   try{
+      const raw = localStorage.getItem(key);
+      if(!raw){
+        if(key==='manutHistorico') return [];
+        if(key==='manutencoes') return [];
+        return {};
+      }
+      return JSON.parse(raw);
+   }catch(e){
+      return (key==='manutHistorico' || key==='manutencoes') ? [] : {};
+   }
+}
+const save = (k,v)=>localStorage.setItem(k, JSON.stringify(v));
 
-/* ====================
-   PERFIL
-   ==================== */
+/* PERFIL / VEÍCULO */
 function renderPerfil(){
     const p = load("perfilMotorista");
     $("perfilNome").value = p.nome || "";
@@ -534,303 +396,248 @@ function renderPerfil(){
 }
 
 function salvarPerfil(){
-    const p = load("perfilMotorista");
-    p.nome = $("perfilNome").value.trim();
-    p.carro = $("perfilMarca").value.trim();
-    p.modelo = $("perfilModelo").value.trim();
-    p.ano = $("perfilAno").value.trim();
-    p.placa = $("perfilPlaca").value.trim();
-    const km = Number($("kmAtual").value);
-    if(km || km === 0) { p.kmAtual = km; }
-    save("perfilMotorista", p);
+   const p = load("perfilMotorista");
+   p.nome = $("perfilNome").value.trim();
+   p.carro = $("perfilMarca").value.trim();
+   p.modelo = $("perfilModelo").value.trim();
+   p.ano = $("perfilAno").value.trim();
+   p.placa = $("perfilPlaca").value.trim();
 
-    // recalc manutenções
-    const manuts = load("manutencoes");
-    manuts.forEach(m => calc(m, p.kmAtual||0));
-    save("manutencoes", manuts);
+   const km = Number($("kmAtual").value);
+   if(km || km===0) p.kmAtual = km;
+   save("perfilMotorista", p);
 
-    renderManutencoes();
-    alert("Dados salvos!");
+   const man = load("manutencoes");
+   man.forEach(m=>calc(m,p.kmAtual||0));
+   save("manutencoes",man);
+
+   renderManutencoes();
+   alert("Dados salvos!");
 }
 
-/* ====================
-   MANUTENÇÕES
-   ==================== */
+/* MANUTENÇÕES */
 function calc(m, kmAtual){
-    m.kmProxima = Number(m.kmUltimaTroca) + Number(m.intervaloKm);
-    m.kmRestante = m.kmProxima - (Number(kmAtual) || 0);
-    m.valorPorKm = (Number(m.custoEstimado)||0) / (Number(m.intervaloKm)||1);
+   m.kmProxima = Number(m.kmUltimaTroca) + Number(m.intervaloKm);
+   m.kmRestante = m.kmProxima - (Number(kmAtual)||0);
+   m.valorPorKm = (Number(m.custoEstimado)||0)/(Number(m.intervaloKm)||1);
 }
 
 function renderManutencoes(){
-    const box = $("listaManutencoes");
-    box.innerHTML = "";
-    const manuts = load("manutencoes");
-    const perfil = load("perfilMotorista");
-    const kmAtual = Number(perfil.kmAtual||0);
+   const box = $("listaManutencoes");
+   box.innerHTML="";
+   const man = load("manutencoes");
+   const perfil = load("perfilMotorista");
+   const kmAtual = Number(perfil.kmAtual||0);
 
-    manuts.forEach(m => calc(m, kmAtual));
-    manuts.sort((a,b)=>a.kmRestante - b.kmRestante);
-    save("manutencoes", manuts);
+   man.forEach(m=>calc(m,kmAtual));
+   man.sort((a,b)=>a.kmRestante-b.kmRestante);
+   save("manutencoes",man);
 
-    if(!manuts.length){
-        box.innerHTML = `<div class='hint'>Nenhuma manutenção cadastrada</div>`;
-        return;
-    }
+   if(!man.length){
+      box.innerHTML="<div class='hint'>Nenhuma manutenção cadastrada</div>";
+      return;
+   }
 
-    manuts.forEach(m=>{
-        const div = document.createElement("div");
-        div.className="listItem";
+   man.forEach(m=>{
+      const color =
+        m.kmRestante <=800 ? "statusRed":
+        m.kmRestante <=2000 ? "statusWarn" : "statusGreen";
 
-        const color =
-            m.kmRestante <= 800 ? "statusRed" :
-            m.kmRestante <= 2000 ? "statusWarn" : "statusGreen";
+      const div=document.createElement("div");
+      div.className="listItem";
+      div.innerHTML=`
+        <div style="flex:1;">
+          <div style="font-weight:700;">${esc(m.nome)}</div>
+          <div class="hint">Última: ${esc(m.kmUltimaTroca)} • Próx: ${esc(m.kmProxima)}</div>
+          <div class="hint">Custo: ${currency(m.custoEstimado)}</div>
+          ${m.obs?`<div class="hint">${esc(m.obs)}</div>`:""}
+        </div>
 
-        div.innerHTML = `
-            <div style="flex:1;">
-                <div style="font-weight:700;">${esc(m.nome)}</div>
-                <div class="hint">Última: ${esc(m.kmUltimaTroca)} • Próx: ${esc(m.kmProxima)}</div>
-                <div class="hint">Custo: ${currency(m.custoEstimado)}</div>
-                ${m.obs ? `<div class="hint">${esc(m.obs)}</div>` : ""}
-            </div>
+        <div style="text-align:right;">
+          <div class="badge ${color}">${m.kmRestante} km</div>
 
-            <div style="text-align:right;">
-                <div class="badge ${color}">${m.kmRestante} km</div>
-
-                <div style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-                    <button class="btnGhost" onclick="editar(${m.id})">Editar</button>
-                    <button class="btnGhost" onclick="remover(${m.id})">Remover</button>
-                    <button class="btn" onclick="realizada(${m.id})">Realizar</button>
-                </div>
-            </div>
-        `;
-        box.appendChild(div);
-    });
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+            <button class="btnGhost" onclick="editar(${m.id})">Editar</button>
+            <button class="btnGhost" onclick="remover(${m.id})">Remover</button>
+            <button class="btn" onclick="realizada(${m.id})">Realizar</button>
+          </div>
+        </div>
+      `;
+      box.appendChild(div);
+   });
 }
 
 function adicionar(){
-    const nome = $("mNome").value.trim();
-    const u = Number($("mKmUltima").value);
-    const int = Number($("mIntervalo").value);
-    const custo = Number($("mCusto").value);
-    const obs = $("mObs").value.trim();
+   const nome=$("mNome").value.trim();
+   const u=Number($("mKmUltima").value);
+   const i=Number($("mIntervalo").value);
 
-    if(!nome || !u || !int) return alert("Preencha nome, KM e intervalo.");
+   if(!nome || !u || !i) return alert("Preencha nome, KM e intervalo.");
 
-    const perfil = load("perfilMotorista");
-    const kmAtual = Number(perfil.kmAtual||0);
+   const custo=Number($("mCusto").value);
+   const obs=$("mObs").value.trim();
+   const perfil=load("perfilMotorista");
+   const kmAtual=Number(perfil.kmAtual||0);
 
-    const m = {
-        id: Date.now(),
-        nome,
-        kmUltimaTroca:u,
-        intervaloKm:int,
-        custoEstimado:custo,
-        obs,
-        criadoEm:now()
-    };
+   const m={
+      id:Date.now(),
+      nome,
+      kmUltimaTroca:u,
+      intervaloKm:i,
+      custoEstimado:custo,
+      obs,
+      criadoEm:now()
+   };
+   calc(m,kmAtual);
 
-    calc(m, kmAtual);
+   const arr=load("manutencoes");
+   arr.push(m);
+   save("manutencoes",arr);
 
-    const arr = load("manutencoes");
-    arr.push(m);
-    save("manutencoes", arr);
-
-    renderManutencoes();
-    limparFormManut();
+   renderManutencoes();
+   limparFormManut();
 }
 
 function editar(id){
-    const arr = load("manutencoes");
-    const m = arr.find(x=>x.id===id);
-    if(!m) return;
+   const arr=load("manutencoes");
+   const m=arr.find(x=>x.id===id);
+   if(!m) return;
 
-    $("mNome").value = m.nome;
-    $("mKmUltima").value = m.kmUltimaTroca;
-    $("mIntervalo").value = m.intervaloKm;
-    $("mCusto").value = m.custoEstimado;
-    $("mObs").value = m.obs;
+   $("mNome").value=m.nome;
+   $("mKmUltima").value=m.kmUltimaTroca;
+   $("mIntervalo").value=m.intervaloKm;
+   $("mCusto").value=m.custoEstimado;
+   $("mObs").value=m.obs;
 
-    remover(id);
-    window.scrollTo({top:0,behavior:"smooth"});
+   remover(id);
+   window.scrollTo({top:0,behavior:"smooth"});
 }
 
 function remover(id){
-    if(!confirm("Deseja remover?")) return;
-    const arr = load("manutencoes").filter(x=>x.id!==id);
-    save("manutencoes", arr);
-    renderManutencoes();
+   if(!confirm("Deseja remover?")) return;
+   const arr=load("manutencoes").filter(x=>x.id!==id);
+   save("manutencoes",arr);
+   renderManutencoes();
 }
 
 function realizada(id){
-    const arr = load("manutencoes");
-    const m = arr.find(x=>x.id === id);
-    if(!m) return;
+   const arr=load("manutencoes");
+   const m=arr.find(x=>x.id===id);
+   if(!m) return;
 
-    const perfil = load("perfilMotorista");
-    const kmAtual = Number(perfil.kmAtual||0);
+   const perfil=load("perfilMotorista");
+   const kmAtual=Number(perfil.kmAtual||0);
 
-    const km = Number(prompt("KM da troca:", kmAtual));
-    if(!km && km !== 0) return;
+   const km=Number(prompt("KM da troca:",kmAtual));
+   if(!km && km!==0) return;
 
-    const valor = Number(prompt("Valor pago:", m.custoEstimado)) || 0;
-    const obs = prompt("Obs:", "") || "";
+   const valor=Number(prompt("Valor pago:",m.custoEstimado))||0;
+   const obs=prompt("Obs:","")||"";
 
-    const hist = load("manutHistorico");
-    hist.push({
-        id:Date.now(),
-        nome:m.nome,
-        kmTroca:km,
-        custoPago:valor,
-        data:now(),
-        obs
-    });
-    save("manutHistorico", hist);
+   const hist=load("manutHistorico");
+   hist.push({
+      id:Date.now(),
+      nome:m.nome,
+      kmTroca:km,
+      custoPago:valor,
+      data:now(),
+      obs
+   });
+   save("manutHistorico",hist);
 
-    // atualizar última troca
-    m.kmUltimaTroca = km;
-    calc(m, kmAtual);
-    save("manutencoes", arr);
+   m.kmUltimaTroca=km;
+   calc(m,kmAtual);
+   save("manutencoes",arr);
 
-    if(km > kmAtual){
-        perfil.kmAtual = km;
-        save("perfilMotorista", perfil);
-        renderPerfil();
-    }
+   if(km > kmAtual){
+      perfil.kmAtual=km;
+      save("perfilMotorista",perfil);
+      renderPerfil();
+   }
 
-    renderManutencoes();
-    renderHistorico();
-    alert("Manutenção registrada!");
+   renderManutencoes();
+   renderHistorico();
+   alert("Manutenção registrada!");
 }
 
-/* ====================
-   HISTÓRICO
-   ==================== */
+/* HISTÓRICO */
 function renderHistorico(){
-    const hist = load("manutHistorico");
-    const tbody = document.querySelector("#histTable tbody");
-    tbody.innerHTML = "";
+  const hist=load("manutHistorico");
+  const tbody=document.querySelector("#histTable tbody");
+  tbody.innerHTML="";
 
-    if(!hist.length){
-        tbody.innerHTML = `<tr><td colspan=5 class='hint'>Nenhum registro</td></tr>`;
-        return;
-    }
+  if(!hist.length){
+    tbody.innerHTML="<tr><td colspan='5' class='hint'>Nenhum registro</td></tr>";
+    return;
+  }
 
-    hist.slice().reverse().forEach(h=>{
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${new Date(h.data).toLocaleString()}</td>
-            <td>${esc(h.nome)}</td>
-            <td>${h.kmTroca}</td>
-            <td>${currency(h.custoPago)}</td>
-            <td>${esc(h.obs)}</td>
-        `;
-        tbody.appendChild(tr);
-    });
+  hist.slice().reverse().forEach(h=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${new Date(h.data).toLocaleString()}</td>
+      <td>${esc(h.nome)}</td>
+      <td>${h.kmTroca}</td>
+      <td>${currency(h.custoPago)}</td>
+      <td>${esc(h.obs)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
-/* ====================
-   EXPORTS
-   ==================== */
+/* EXPORTS */
 function exportWhats(){
-    const p = load("perfilMotorista");
-    const manuts = load("manutencoes") || [];
+  const p=load("perfilMotorista");
+  const man=load("manutencoes")||[];
 
-    let msg = `Relatório de Manutenção - ${new Date().toLocaleDateString()}\n\n`;
-    msg += `Veículo: ${p.carro||""} ${p.modelo||""} • Placa: ${p.placa||""}\nKM Atual: ${p.kmAtual||0}\n\n`;
+  let msg=`Relatório de Manutenção - ${new Date().toLocaleDateString()}\n\n`;
+  msg+=`Veículo: ${p.carro||""} ${p.modelo||""} - Placa: ${p.placa||""}\nKM Atual: ${p.kmAtual||0}\n\n`;
 
-    manuts.forEach(m=>{
-        msg += `• ${m.nome}: Próx ${m.kmProxima} (${m.kmRestante} km)\n`;
-    });
+  man.forEach(m=>{
+    msg+=`• ${m.nome}: Próx ${m.kmProxima} (${m.kmRestante} km)\n`;
+  });
 
-    window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
+  window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
 }
 
 async function exportPdf(){
-    // usa html2canvas + jspdf (carregados via CDN)
-    const el = document.querySelector(".container");
-    if(!el) return alert("Erro ao gerar PDF.");
-    try{
-        const canvas = await html2canvas(el, {scale:2});
-        const img = canvas.toDataURL("image/png");
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF("p","mm","a4");
-        const w = pdf.internal.pageSize.getWidth();
-        const h = (canvas.height * (w / canvas.width));
-        pdf.addImage(img,"PNG",0,0,w,h);
-        pdf.save("manutencao.pdf");
-    } catch(e){
-        console.error(e);
-        alert("Falha ao exportar PDF.");
-    }
+  const el=document.querySelector(".container");
+  if(!el) return alert("Erro ao gerar PDF.");
+  try{
+    const canvas=await html2canvas(el,{scale:2});
+    const img=canvas.toDataURL("image/png");
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF("p","mm","a4");
+    const W=pdf.internal.pageSize.getWidth();
+    const H=canvas.height*(W/canvas.width);
+    pdf.addImage(img,"PNG",0,0,W,H);
+    pdf.save("manutencao.pdf");
+  }catch(e){
+    alert("Falha ao exportar PDF.");
+  }
 }
 
-/* ====================
-   UTIL
-   ==================== */
+/* UTIL */
 function limparFormManut(){
-    $("mNome").value="";
-    $("mKmUltima").value="";
-    $("mIntervalo").value="";
-    $("mCusto").value="";
-    $("mObs").value="";
+   $("mNome").value="";
+   $("mKmUltima").value="";
+   $("mIntervalo").value="";
+   $("mCusto").value="";
+   $("mObs").value="";
 }
 
-/* ====================
-   BOOT
-   ==================== */
+/* BOOT */
 (function boot(){
-    // inicializa perfis e listas
-    renderPerfil();
-    renderManutencoes();
-    renderHistorico();
+   renderPerfil();
+   renderManutencoes();
+   renderHistorico();
 
-    // eventos
-    $("salvarPerfil").onclick = salvarPerfil;
-    $("limparPerfil").onclick = ()=>{ renderPerfil(); renderManutencoes(); renderHistorico(); };
-    $("addManut").onclick = adicionar;
-    $("limparFormManut").onclick = limparFormManut;
-    $("exportWhats").onclick = exportWhats;
-    $("exportPdf").onclick = exportPdf;
-
-    // modal maquineta handlers (compatibilidade)
-    $("btnSalvarMaquineta")?.addEventListener('click', ()=>{
-        // salva de forma simples no localStorage como antes se necessário
-        const nome = $("maqNome")?.value?.trim();
-        if(!nome){ alert('Informe o nome da maquineta'); return; }
-        let maquinetas = load('maquinetas') || [];
-        maquinetas.push({
-            nome,
-            debito: Number($("maqDebito")?.value)||0,
-            credito_avista: Number($("maqCreditoAvista")?.value)||0,
-            "2": Number($("maq2x")?.value)||0,
-            "3": Number($("maq3x")?.value)||0,
-            "4": Number($("maq4x")?.value)||0,
-            "5": Number($("maq5x")?.value)||0
-        });
-        save('maquinetas', maquinetas);
-        fecharCadastroMaquineta();
-        ['maqNome','maqDebito','maqCreditoAvista','maq2x','maq3x','maq4x','maq5x'].forEach(id=>{ if($(id)) $(id).value=''; });
-    });
-    $("btnCancelarMaquineta")?.addEventListener('click', ()=> fecharCadastroMaquineta());
-
-    // close modal when clicking outside
-    document.getElementById('modalMaquineta')?.addEventListener('click', (e)=>{
-        if(e.target && e.target.id === 'modalMaquineta') fecharCadastroMaquineta();
-    });
-
-    // set bottom menu active based on pathname (robusto)
-    document.querySelectorAll('.bottom-menu .menu-item').forEach(el=>{
-        el.classList.remove('active');
-        const href = el.getAttribute('href') || '';
-        if(location.pathname && location.pathname.indexOf(href) !== -1){
-            el.classList.add('active');
-        }
-        // fallback: if current file is manutencao.html, activate
-        if(!location.pathname && href.includes('manutencao.html')) el.classList.add('active');
-    });
+   $("salvarPerfil").onclick=salvarPerfil;
+   $("limparPerfil").onclick=()=>{renderPerfil();renderManutencoes();renderHistorico()};
+   $("addManut").onclick=adicionar;
+   $("limparFormManut").onclick=limparFormManut;
+   $("exportWhats").onclick=exportWhats;
+   $("exportPdf").onclick=exportPdf;
 })();
 </script>
-
 </body>
 </html>

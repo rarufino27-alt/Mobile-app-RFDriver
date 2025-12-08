@@ -6,7 +6,7 @@
 <title>Dashboard - Motorista App</title>
 
 <style>
-/* PALETA CORPORATIVA */
+/* ====== PALLETE ====== */
 :root {
     --bg: #ffffff;
     --page-gap: #f3f5f8;
@@ -24,7 +24,7 @@
     --radius: 14px;
 }
 
-/* DARK */
+/* ====== DARK ====== */
 .dark{
     --bg:#0f1115;
     --page-gap:#15171c;
@@ -37,17 +37,41 @@
     --shadow-strong:0 10px 32px rgba(0,0,0,0.45);
 }
 
-/* BASE */
+/* ====== BASE ====== */
 body{
     margin:0;
     background:linear-gradient(180deg,var(--page-gap),var(--bg) 50%);
     color:var(--text);
     padding-bottom:160px;
+    padding-top:70px;
     font-family: Inter,Roboto,Arial,sans-serif;
 }
 *{box-sizing:border-box}
 
-/* HEADER */
+/* ====== MENU SUPERIOR ====== */
+.top-menu{
+  position:fixed;top:0;left:0;width:100%;
+  background:var(--panel);
+  display:flex;
+  padding:8px;
+  gap:8px;
+  align-items:center;
+  z-index:9999;
+  overflow-x:auto;
+  box-shadow:var(--shadow);
+}
+.top-menu button{
+  padding:10px 14px;
+  background:var(--card);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  flex-shrink:0;
+  color:var(--text);
+}
+
+/* ====== HEADER ====== */
 header{
     padding:18px 16px;
     display:flex;
@@ -56,21 +80,35 @@ header{
     max-width:980px;
     margin:12px auto;
 }
-.brand{display:flex; align-items:center; gap:12px;}
-.brand .logo{
-    width:80px;height:30px;
-    border-radius:12px;
-    display:flex;align-items:center;justify-content:center;
-    font-weight:800;font-size:13px;color:#fff;
-    background:linear-gradient(135deg,var(--brand),var(--brand-dark));
-    box-shadow:var(--shadow);
-}
 
-/* CONTAINER */
+/* ====== CONTAINER ====== */
 .container{ max-width:980px; margin:0 auto; padding:0 16px; }
-#greeting{ color:var(--muted); margin:6px 0 14px; font-size:15px; }
 
-/* CARD LUCRO */
+/* ===== FILTROS ===== */
+.period-filters{
+    display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;
+}
+.period-btn{
+    width:auto;padding:8px 12px;font-size:12px;
+    border-radius:999px;border:1px solid #d7dce2;
+    background:var(--panel);color:var(--muted);
+}
+.period-btn.active{
+    background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+    color:#fff;border:none;
+}
+.period-range{
+    display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;
+}
+.period-range input[type="date"]{
+    padding:6px 8px;border-radius:8px;border:1px solid #cfd4da;background:var(--panel);
+}
+.period-apply{
+    width:auto;padding:8px 12px;font-size:12px;
+}
+.period-note{font-size:12px;color:var(--muted);margin-bottom:10px;}
+
+/* ====== CARD LUCRO ====== */
 .card-lucro{
     background:var(--card-strong);
     border-radius:var(--radius);
@@ -78,21 +116,14 @@ header{
     border:3px solid transparent;
     box-shadow:var(--shadow-strong);
     margin:14px 0 20px;
-    transition:.3s;
 }
-.card-lucro.positivo{
-    border-color:var(--accent-success);
-    box-shadow:0 0 0 4px rgba(29,185,84,.18), var(--shadow-strong);
-}
-.card-lucro.negativo{
-    border-color:var(--accent-danger);
-    box-shadow:0 0 0 4px rgba(255,59,48,.20), var(--shadow-strong);
-}
+.card-lucro.positivo{border-color:var(--accent-success);}
+.card-lucro.negativo{border-color:var(--accent-danger);}
 .card-lucro .label{ font-size:14px; color:var(--muted); }
 .card-lucro .valor{ font-size:34px; font-weight:900; margin-top:6px; }
 .card-lucro .sub{ font-size:13px; color:var(--muted); }
 
-/* CARDS */
+/* ===== SMALL CARDS ===== */
 .row{ display:flex; gap:14px; flex-wrap:wrap; }
 .card-small{
     flex:1; min-width:200px;
@@ -105,71 +136,22 @@ header{
 .card-small .title{ font-size:13px; color:var(--muted); }
 .card-small .value{ font-size:22px; font-weight:900; color:var(--brand); margin-top:6px; }
 .card-small .gastos{ color:var(--accent-danger)!important; }
-
-/* ===== MENU LATERAL ===== */
-.sidebar{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100%;
-  background:var(--panel);
-  padding:20px;
-  box-shadow:2px 0 18px rgba(15,23,42,.35);
-  transition:.3s;
-  z-index:9999;
-  overflow-y:auto;
-}
-.sidebar.open{ left:0; }
-
-.menu-button{
-  position:fixed;
-  top:8px;
-  left:18px;
-  background:var(--brand);
-  color:#fff;
-  padding:6px 12px;
-  border-radius:999px;
-  cursor:pointer;
-  z-index:9999;
-  font-weight:700;
-  font-size:13px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  box-shadow:0 8px 16px rgba(15,23,42,0.25);
-}
-.menu-button span.icon{font-size:16px;}
-
-.menu-close{
-  display:block;
-  font-size:24px;
-  cursor:pointer;
-  margin-bottom:6px;
-  text-align:right;
-}
-.menu-title{
-  font-weight:700;
-  font-size:35px;
-  margin-bottom:10px;
-}
-.menu-item{
-  padding:15px 0;
-  font-size:20px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
 </style>
 </head>
 
 <body>
 
-<!-- === BOTÃO MENU === -->
-<div class="menu-button" onclick="openMenu()">
-  <span class="icon">☰</span>
-  <span>Menu</span>
+<!-- MENU SUPERIOR -->
+<div class="top-menu">
+  <button onclick="location.href='planos.html'">💎 Planos</button>
+  <button onclick="location.href='perfil.html'">👤 Perfil</button>
+  <button onclick="location.href='index.html'">🏠 Dashboard</button>
+  <button onclick="location.href='entradas.html'">💵 Caixa</button>
+  <button onclick="location.href='resumo.html'">🧮 Resumo</button>
+  <button onclick="location.href='recibo_empresa.html'">🏭 Empresa</button>
+  <button onclick="location.href='recibo_particular.html'">🚘 Particular</button>
+  <button onclick="location.href='manutencao.html'">🛠 Manutenção</button>
+  <button onclick="location.href='calculadora.html'">📟 Calculadora</button>
 </div>
 
 <header>
@@ -177,83 +159,171 @@ header{
         <div class="logo">RF Driver</div>
         <h1>Dashboard</h1>
     </div>
-
-  <button id="toggleTheme">
-    <span class="icon">🌙</span>
-    <span>Escuro/Claro</span>
-  </button>
+  <button id="toggleTheme">🌙</button>
 </header>
 
 <div class="container">
 
-    <div id="greeting"></div>
+    <!-- FILTRO -->
+    <div class="period-filters">
+        <button class="period-btn active" id="btnHoje">Hoje</button>
+        <button class="period-btn" id="btnSemana">Semana</button>
+        <button class="period-btn" id="btnMes">Mês</button>
+        <button class="period-btn" id="btnPers">Período</button>
+    </div>
+
+    <div class="period-range" id="rangePers" style="display:none">
+        <input type="date" id="ini">
+        <input type="date" id="fim">
+        <button class="period-apply" id="applyPers">Aplicar</button>
+    </div>
+
+    <div class="period-note" id="periodNote">Mostrando dados de hoje</div>
 
     <div id="cardLucro" class="card-lucro">
         <div>
             <div class="label">Lucro Estimado</div>
             <div id="lucroValor" class="valor">R$ 0,00</div>
-            <div class="sub">Visão líquida do dia</div>
+            <div class="sub">Visão líquida</div>
         </div>
     </div>
 
     <div class="row">
         <div class="card-small">
-            <div class="title">Gastos do Dia</div>
-            <div id="gastosDia" class="value gastos">R$ 0,00</div>
+            <div class="title">Gastos</div>
+            <div id="gastos" class="value gastos">R$ 0,00</div>
         </div>
 
         <div class="card-small">
-            <div class="title">Total Faturado Hoje</div>
-            <div id="totalFaturado" class="value">R$ 0,00</div>
+            <div class="title">Faturado</div>
+            <div id="fat" class="value">R$ 0,00</div>
         </div>
     </div>
 
 </div>
 
-
-<!-- ============= MENU LATERAL =============== -->
-<div id="sidebar" class="sidebar">
-  <span class="menu-close" onclick="closeMenu()">×</span>
-  <div class="menu-title">Navegação</div>
-  <div class="menu-item" onclick="location.href='planos.html'">💎 Planos</div>
-  <div class="menu-item" onclick="location.href='index.html'">🏠 Dashboard</div>
-  <div class="menu-item" onclick="location.href='entradas.html'">💵 Entradas</div>
-  <div class="menu-item" onclick="location.href='recibo_empresa.html'">🏭 Empresa</div>
-  <div class="menu-item" onclick="location.href='recibo_particular.html'">🚘 Particular</div>
-  <div class="menu-item" onclick="location.href='manutencao.html'">🛠 Manutenção</div>
-  <div class="menu-item" onclick="location.href='resumo.html'">🧮 Resumo</div>
-  <div class="menu-item" onclick="location.href='perfil.html'">👤 Perfil</div>
-  <div class="menu-item" onclick="location.href='calculadora.html'">📟 Calculadora</div>
-</div>
-
+<script src="planos.js"></script>
 <script>
-/* ====== MENU ====== */
-function openMenu(){
-  document.getElementById("sidebar").classList.add("open");
+
+/* BLOQUEIO IMEDIATO SE FOR FREE */
+function plano(){
+  try{ return getPlano(); }catch(e){}
+  return (localStorage.getItem('planoAtual')||'free').toLowerCase();
 }
-function closeMenu(){
-  document.getElementById("sidebar").classList.remove("open");
+if(plano()==='free'){
+   alert("O Dashboard é liberado apenas no plano BÁSICO ou superior.");
+   window.location.href = "planos.html";
 }
 
 /* theme */
 function applyTheme(theme){
-    if(theme === "dark"){
-        document.documentElement.classList.add("dark");
-        localStorage.setItem("theme","dark");
-        toggleTheme.innerText="☀️";
+    if(theme==='dark'){
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme','dark');
+        toggleTheme.innerText='☀️';
     }else{
-        document.documentElement.classList.remove("dark");
-        localStorage.setItem("theme","light");
-        toggleTheme.innerText="🌙";
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme','light');
+        toggleTheme.innerText='🌙';
     }
 }
-const savedTheme = localStorage.getItem("theme")||"light";
-applyTheme(savedTheme);
-
+const saved=localStorage.getItem('theme')||'light';
+applyTheme(saved);
 toggleTheme.onclick=()=>{
-    const d=document.documentElement.classList.contains("dark");
-    applyTheme(d?"light":"dark");
+    const d=document.documentElement.classList.contains('dark');
+    applyTheme(d?'light':'dark');
 };
+
+/* STATE */
+let periodo='hoje';
+let ini=null,fim=null;
+
+/* filtros */
+function block(p){
+ if(p==='semana' && plano()==='free'){
+   alert('Semana disponível a partir do Básico');
+   location.href='planos.html';return true;}
+ if((p==='mes'||p==='pers') && (plano()==='free'||plano()==='basico')){
+   alert('Mês e Período disponíveis a partir do Premium');
+   location.href='planos.html';return true;}
+ return false;
+}
+
+/* carregar registros */
+function load(){
+ return JSON.parse(localStorage.getItem('entradasSaidas')||'[]');
+}
+
+function norm(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+
+function ok(r){
+ const d=new Date(r.criadoEm);if(isNaN(d))return true;
+ const h=norm(new Date());
+ const dn=norm(d);
+ if(periodo==='hoje')return dn.getTime()===h.getTime();
+ if(periodo==='semana'){
+   const lim=new Date(h);lim.setDate(lim.getDate()-6);
+   return dn>=lim && dn<=h;
+ }
+ if(periodo==='mes'){
+   return d.getMonth()===h.getMonth() && d.getFullYear()===h.getFullYear();
+ }
+ if(periodo==='pers'){
+   if(!ini||!fim)return true;
+   const d0=norm(ini),d1=norm(fim);
+   return dn>=d0 && dn<=d1;
+ }
+ return true;
+}
+
+function render(){
+ const regs=load().filter(ok);
+ let entr=0,said=0;
+ regs.forEach(r=>{
+   if(r.tipo==='entrada')entr+=Number(r.valor||r.valorBruto||0);
+   else said+=Number(r.valor||0);
+ });
+ $('fat').innerText=fmt(entr);
+ $('gastos').innerText=fmt(said);
+ const lucro=entr-said;
+ $('lucroValor').innerText=fmt(lucro);
+ const card=$('cardLucro');
+ card.classList.remove('positivo','negativo');
+ card.classList.add(lucro>=0?'positivo':'negativo');
+}
+
+function $(id){return document.getElementById(id);}
+function fmt(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+
+$('btnHoje').onclick=()=>{periodo='hoje';updateUI();render();}
+$('btnSemana').onclick=()=>{if(block('semana'))return;periodo='semana';updateUI();render();}
+$('btnMes').onclick=()=>{if(block('mes'))return;periodo='mes';updateUI();render();}
+$('btnPers').onclick=()=>{if(block('pers'))return;periodo='pers';updateUI();render();}
+$('applyPers').onclick=()=>{
+  ini=$('ini').value?new Date($('ini').value):null;
+  fim=$('fim').value?new Date($('fim').value):null;
+  if(!ini||!fim){alert('Selecione datas');return;}
+  if(ini>fim){alert('Início maior que final');return;}
+  periodo='pers';updateUI();render();
+};
+
+function updateUI(){
+ ['btnHoje','btnSemana','btnMes','btnPers'].forEach(id=>$ (id).classList.remove('active'));
+ if(periodo==='hoje')$('btnHoje').classList.add('active');
+ if(periodo==='semana')$('btnSemana').classList.add('active');
+ if(periodo==='mes')$('btnMes').classList.add('active');
+ if(periodo==='pers')$('btnPers').classList.add('active');
+
+ $('rangePers').style.display=periodo==='pers'?'flex':'none';
+ const note=$('periodNote');
+ if(periodo==='hoje')note.innerText='Mostrando dados de hoje';
+ if(periodo==='semana')note.innerText='Mostrando últimos 7 dias';
+ if(periodo==='mes')note.innerText='Mostrando mês atual';
+ if(periodo==='pers')note.innerText='Mostrando período selecionado';
+}
+
+updateUI();
+render();
 </script>
 
 </body>

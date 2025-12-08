@@ -29,31 +29,18 @@
     --shadow-strong: 0 10px 32px rgba(10,20,30,0.12);
 
     --radius: 14px;
-    --menu-bg: linear-gradient(135deg,var(--brand),var(--brand-dark));
-    --menu-text: #fff;
 }
 
 .dark{
     --bg: #0f1115;
     --page-gap: #15171c;
-
     --card: #181a20;
     --card-strong: #1d1f27;
     --panel: #1b1d25;
-
     --text: #e5e7eb;
     --muted: #9ca3af;
-
-    --shadow: 0 6px 16px rgba(0,0,0,0.35);
-    --shadow-strong: 0 10px 32px rgba(0,0,0,0.45);
-
-    --brand: #3b82f6;
-    --brand-dark: #2563eb;
-
     --accent-success: #22c55e;
     --accent-danger: #ef4444;
-
-    --menu-bg: linear-gradient(135deg,var(--brand),var(--brand-dark));
 }
 
 *{ box-sizing:border-box; font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -63,140 +50,102 @@ body{
     background:linear-gradient(180deg, var(--page-gap), var(--bg) 50%);
     color:var(--text);
     padding-bottom:160px;
-    -webkit-font-smoothing:antialiased;
+    padding-top:70px; /* espaço para menu */
 }
 
-/* header */
+/* ===== MENU SUPERIOR ===== */
+.top-menu{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    background:var(--panel);
+    display:flex;
+    padding:8px;
+    gap:8px;
+    align-items:center;
+    z-index:9999;
+    overflow-x:auto;
+    box-shadow:var(--shadow);
+}
+
+.top-menu button{
+    padding:10px 14px;
+    background:var(--card);
+    border:1px solid rgba(0,0,0,0.08);
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+    flex-shrink:0;
+    color:var(--text);
+}
+
+/* ===== header ===== */
 header{
     padding:18px 16px;
     max-width:980px;
-    margin:0 auto 10px auto;
+    margin:0 auto;
     display:flex;
     align-items:center;
     justify-content:space-between;
 }
-.brand{ display:flex; align-items:center; gap:12px; }
-.brand .logo{
-    width:80px;height:20px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-    font-weight:800;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand-dark));
-    box-shadow:var(--shadow);font-size:13px;
-}
-#toggleTheme{ background:var(--card-strong); padding:8px 12px; border-radius:10px; border:1px solid rgba(0,0,0,0.08); cursor:pointer; color:var(--text); font-weight:700; }
+
+#toggleTheme{ background:var(--card-strong); padding:8px 12px; border-radius:10px; cursor:pointer; color:var(--text); }
 
 /* container */
 .container{ max-width:980px; margin:20px auto; padding:0 16px; }
-
 /* top cards */
 .top-row{ display:flex; gap:16px; flex-wrap:wrap; justify-content:space-between; }
-.cardTop{ flex:1; min-width:150px; background:var(--card); padding:18px; border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid #d7dce2; }
-.cardTop h3{ margin:0; font-size:13px; color:var(--muted); font-weight:700; }
-.cardTop .value{ margin-top:8px; font-size:26px; font-weight:800; color:var(--text); }
+.cardTop{ flex:1; min-width:150px; background:var(--card); padding:18px; border-radius:var(--radius); box-shadow:var(--shadow); }
+.cardTop h3{ margin:0; font-size:13px; color:var(--muted); }
+.cardTop .value{ margin-top:8px; font-size:26px; font-weight:800; }
 
 /* filters */
 .filters{ display:flex; gap:10px; margin-top:18px; }
-.filters button{ flex:1; padding:12px; border-radius:12px; border:1px solid transparent; background:var(--card); cursor:pointer; font-weight:700; color:var(--text); box-shadow:var(--shadow); }
-.filters button.active{ background:linear-gradient(135deg,var(--brand),var(--brand-dark)); color:#fff; border:none; }
+.filters button{ flex:1; padding:12px; border-radius:12px; background:var(--card); font-weight:700; cursor:pointer; }
+.filters button.active{ background:linear-gradient(135deg,var(--brand),var(--brand-dark)); color:#fff; }
 
 /* cards */
-.card{ margin-top:18px; background:var(--card); padding:18px; border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid #d7dce2; }
-.card h2{ margin:0 0 12px 0; font-size:18px; color:var(--text); font-weight:800; }
+.card{ margin-top:18px; background:var(--card); padding:18px; border-radius:var(--radius); box-shadow:var(--shadow); }
+.card h2{ margin:0 0 12px 0; font-size:18px; font-weight:800; }
 
 /* lines */
-.line{ display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(0,0,0,0.05); color:var(--text); font-size:15px; }
-.hint{ font-size:13px; color:var(--muted); }
+.line{ display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(0,0,0,0.05); }
 
-/* chart area (vertical bars style, compact) */
+/* chart */
 .chartRow{ display:flex; gap:12px; align-items:end; padding-top:10px; }
-.chartCard{ flex:1; min-width:100px; background:var(--card-strong); padding:12px; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:8px; border:1px solid #e6eaef; }
-.barShell{ width:48px; height:140px; background:var(--panel); border-radius:12px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; border:1px solid rgba(0,0,0,0.03); }
-.barInner{ width:100%; display:flex; align-items:flex-end; justify-content:center; color:#fff; font-weight:800; border-radius:10px 10px 0 0; }
+.chartCard{ flex:1; background:var(--card-strong); padding:12px; border-radius:12px; display:flex; flex-direction:column; align-items:center; }
+.barShell{ width:48px; height:140px; background:var(--panel); border-radius:12px; display:flex; align-items:flex-end; }
+.barInner{ width:100%; color:#fff; font-weight:800; border-radius:10px 10px 0 0; }
 
-/* ===== MENU LATERAL ===== */
-.sidebar{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100%;
-  background:var(--panel);
-  padding:20px;
-  box-shadow:2px 0 18px rgba(15,23,42,.35);
-  transition:.3s;
-  z-index:9999;
-  overflow-y:auto;
-}
-.sidebar.open{ left:0; }
-
-.menu-button{
-  position:fixed;
-  top:5px;
-  left:12px;
-  background:var(--brand);
-  color:#fff;
-  padding:2px 10px;
-  border-radius:999px;
-  cursor:pointer;
-  z-index:9999;
-  font-weight:700;
-  font-size:13px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  box-shadow:0 8px 16px rgba(15,23,42,0.25);
-}
-.menu-button span.icon{font-size:16px;}
-
-.menu-close{
-  display:block;
-  font-size:24px;
-  cursor:pointer;
-  margin-bottom:6px;
-  text-align:right;
-}
-.menu-title{
-  font-weight:700;
-  font-size:35px;
-  margin-bottom:10px;
-}
-.menu-item{
-  padding:15px 0;
-  font-size:20px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.brand h1{
-  font-size: 40px;
-  font-weight: 800;
-  margin: 0;
-}
+/* === end style */
 </style>
 </head>
 
 <body>
 
-<!-- === BOTÃO MENU === -->
-<div class="menu-button" onclick="openMenu()">
-  <span class="icon">☰</span>
-  <span>Menu</span>
+<!-- MENU SUPERIOR -->
+<div class="top-menu">
+  <button onclick="location.href='planos.html'">💎 Planos</button>
+  <button onclick="location.href='perfil.html'">👤 Perfil</button>
+  <button onclick="location.href='index.html'">🏠 Dashboard</button>
+  <button onclick="location.href='entradas.html'">💵 Entradas</button>
+  <button onclick="location.href='resumo.html'">🧮 Resumo</button>
+  <button onclick="location.href='recibo_empresa.html'">🏭 Empresa</button>
+  <button onclick="location.href='recibo_particular.html'">🚘 Particular</button>
+  <button onclick="location.href='manutencao.html'">🛠 Manutenção</button>
+  <button onclick="location.href='calculadora.html'">📟 Calculadora</button>
 </div>
 
 <header>
-    <div class="brand">
-        <div class="logo">RF Driver</div>
-        <h1>Financeiro</h1>
-    </div>
-
-  <button id="toggleTheme">
-    <span class="icon">🌙</span>
-    <span>Escuro/Claro</span>
-  </button>
+  <div class="brand">
+      <div class="logo">RF Driver</div>
+      <h1>Financeiro</h1>
+  </div>
+  <button id="toggleTheme">🌙</button>
 </header>
 
 <div class="container">
-
     <!-- Top cards -->
     <div class="top-row">
         <div class="cardTop">
@@ -242,7 +191,7 @@ header{
         <div class="line"><span>Empresa:</span> <strong id="cEmpresa">R$ 0,00</strong></div>
     </div>
 
-    <!-- Chart (vertical bars, compact) -->
+    <!-- Chart -->
     <div class="card">
         <h2>Desempenho</h2>
         <div class="chartRow" style="margin-top:8px;">
@@ -274,21 +223,6 @@ header{
 
 </div> <!-- container -->
 
-<!-- ============= MENU LATERAL =============== -->
-<div id="sidebar" class="sidebar">
-  <span class="menu-close" onclick="closeMenu()">×</span>
-  <div class="menu-title">Navegação</div>
-  <div class="menu-item" onclick="location.href='planos.html'">💎 Planos</div>
-  <div class="menu-item" onclick="location.href='index.html'">🏠 Dashboard</div>
-  <div class="menu-item" onclick="location.href='entradas.html'">💵 Entradas</div>
-  <div class="menu-item" onclick="location.href='recibo_empresa.html'">🏭 Empresa</div>
-  <div class="menu-item" onclick="location.href='recibo_particular.html'">🚘 Particular</div>
-  <div class="menu-item" onclick="location.href='manutencao.html'">🛠 Manutenção</div>
-  <div class="menu-item" onclick="location.href='resumo.html'">🧮 Resumo</div>
-  <div class="menu-item" onclick="location.href='perfil.html'">👤 Perfil</div>
-  <div class="menu-item" onclick="location.href='calculadora.html'">📟 Calculadora</div>
-</div>
-
 <script src="planos.js"></script>
 
 <script>
@@ -299,18 +233,12 @@ if(!planoTem("resumo")){
 </script>
 
 <script>
-function openMenu(){
-  document.getElementById("sidebar").classList.add("open");
-}
-function closeMenu(){
-  document.getElementById("sidebar").classList.remove("open");
-}
 
 /* helpers */
 const $ = id => document.getElementById(id);
 const brl = v => Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-/* THEME (sync with other pages) */
+/* THEME */
 function applyTheme(theme){
     if(theme === 'dark'){
         document.documentElement.classList.add('dark');
@@ -328,7 +256,7 @@ function applyTheme(theme){
     $('toggleTheme').addEventListener('click', ()=>{ const isDark = document.documentElement.classList.contains('dark'); applyTheme(isDark ? 'light' : 'dark'); });
 })();
 
-/* Date filters */
+/* filters */
 let filtro = 'dia';
 function setFiltro(f){
     filtro = f;
@@ -342,7 +270,9 @@ function setFiltro(f){
 /* period helpers */
 function isToday(date){
     const n = new Date();
-    return date.getFullYear() === n.getFullYear() && date.getMonth() === n.getMonth() && date.getDate() === n.getDate();
+    return date.getFullYear() === n.getFullYear() &&
+           date.getMonth() === n.getMonth() &&
+           date.getDate() === n.getDate();
 }
 function isSameWeek(date){
     const now = new Date();
@@ -356,7 +286,8 @@ function isSameWeek(date){
 }
 function isSameMonth(date){
     const now = new Date();
-    return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+    return date.getFullYear() === now.getFullYear() &&
+           date.getMonth() === now.getMonth();
 }
 function filtrarData(d){
     if(filtro === 'dia') return isToday(d);
@@ -364,7 +295,7 @@ function filtrarData(d){
     return isSameMonth(d);
 }
 
-/* main summary calc */
+/* main */
 function atualizarResumo(){
     const registros = JSON.parse(localStorage.getItem('entradasSaidas') || '[]');
 
@@ -403,7 +334,6 @@ function atualizarResumo(){
 
     const lucro = fat - desp;
 
-    // display values
     $('valFaturamento').innerText = brl(fat);
     $('valDespesas').innerText = brl(desp);
     $('valLucro').innerText = brl(lucro);
@@ -421,33 +351,25 @@ function atualizarResumo(){
     $('cParticular').innerText = brl(cPar);
     $('cEmpresa').innerText = brl(cEmp);
 
-    // chart heights (relative)
     const max = Math.max(Math.abs(fat), Math.abs(desp), Math.abs(lucro), 1);
     const pctFat = Math.round(fat / max * 100);
     const pctDesp = Math.round(desp / max * 100);
     const pctLucro = Math.round(Math.abs(lucro) / max * 100);
 
-    const barFat = $('barFat'), barDesp = $('barDesp'), barLucro = $('barLucro');
-    if(barFat) { barFat.style.height = Math.max(6, pctFat) + '%'; $('barFatLabel').innerText = pctFat + '%'; }
-    if(barDesp) { barDesp.style.height = Math.max(6, pctDesp) + '%'; $('barDespLabel').innerText = pctDesp + '%'; }
-    if(barLucro) { barLucro.style.height = Math.max(6, pctLucro) + '%'; $('barLucroLabel').innerText = pctLucro + '%'; }
+    $('barFat').style.height = Math.max(6,pctFat) + '%';
+    $('barDesp').style.height = Math.max(6,pctDesp) + '%';
+    $('barLucro').style.height = Math.max(6,pctLucro) + '%';
 
-    // lucro color
-    if(barLucro) barLucro.style.background = lucro >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)';
+    $('barFatLabel').innerText = pctFat + '%';
+    $('barDespLabel').innerText = pctDesp + '%';
+    $('barLucroLabel').innerText = pctLucro + '%';
+
+    $('barLucro').style.background = lucro>=0 ? 'var(--accent-success)' : 'var(--accent-danger)';
 }
 
 /* init */
-window.addEventListener('load', ()=> {
-    atualizarResumo();
-
-    // ensure bottom menu active item
-    document.querySelectorAll('.bottom-menu .menu-item').forEach(el=>{
-        el.classList.remove('active');
-        const href = el.getAttribute('href') || '';
-        if(location.pathname && location.pathname.indexOf(href) !== -1) el.classList.add('active');
-        if(!location.pathname && href.includes('resumo.html')) el.classList.add('active');
-    });
-});
+window.addEventListener('load', atualizarResumo);
 </script>
+
 </body>
 </html>

@@ -43,6 +43,31 @@ body{
     background:linear-gradient(180deg,var(--page-gap),var(--bg) 50%);
     color:var(--text);
     padding-bottom:160px;
+    padding-top:100px; /* espaço pro menu superior */
+}
+
+/* MENU SUPERIOR */
+.top-menu{
+  position:fixed;
+  top:0;left:0;width:100%;
+  background:var(--panel);
+  display:flex;
+  padding:8px;
+  gap:8px;
+  align-items:center;
+  z-index:9999;
+  overflow-x:auto;
+  box-shadow:var(--shadow);
+}
+.top-menu button{
+  padding:10px 14px;
+  background:var(--card);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  flex-shrink:0;
+  color:var(--text);
 }
 
 /* HEADER */
@@ -57,12 +82,7 @@ header{
 .brand{
     display:flex;align-items:center;gap:12px;
 }
-.brand .logo{
-    width:80px;height:20px;border-radius:12px;
-    display:flex;align-items:center;justify-content:center;
-    font-weight:800;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand-dark));
-    font-size:13px;box-shadow:var(--shadow);
-}
+
 #toggleTheme{
     background:var(--card-strong);
     padding:8px 12px;border-radius:10px;
@@ -132,7 +152,7 @@ textarea{resize:vertical;min-height:80px}
     gap:6px;
 }
 .btn-sm{
-    padding:6px 10px;
+    padding:6px 50px;
     border-radius:8px;
     border:none;
     font-size:12px;
@@ -144,88 +164,36 @@ textarea{resize:vertical;min-height:80px}
 
 /* BOTÃO PADRÃO */
 button{
-    width:40%;padding:14px;border:none;border-radius:10px;
+    width:17%;padding:14px;border:none;border-radius:10px;
     font-size:15px;font-weight:700;cursor:pointer;
     background:linear-gradient(135deg,var(--brand),var(--brand-dark));
     color:#fff;
-}
-
-/* ===== MENU LATERAL ===== */
-.sidebar{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100%;
-  background:var(--panel);
-  padding:20px;
-  box-shadow:2px 0 18px rgba(15,23,42,.35);
-  transition:.3s;
-  z-index:9999;
-  overflow-y:auto;
-}
-.sidebar.open{ left:0; }
-
-.menu-button{
-  position:fixed;
-  top:5px;
-  left:12px;
-  background:var(--brand);
-  color:#fff;
-  padding:6px 12px;
-  border-radius:999px;
-  cursor:pointer;
-  z-index:9999;
-  font-weight:700;
-  font-size:13px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  box-shadow:0 8px 16px rgba(15,23,42,0.25);
-}
-.menu-button span.icon{font-size:16px;}
-
-.menu-close{
-  display:block;
-  font-size:24px;
-  cursor:pointer;
-  margin-bottom:6px;
-  text-align:right;
-}
-.menu-title{
-  font-weight:700;
-  font-size:35px;
-  margin-bottom:10px;
-}
-.menu-item{
-  padding:15px 0;
-  font-size:20px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:10px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- === BOTÃO MENU === -->
-<div class="menu-button" onclick="openMenu()">
-  <span class="icon">☰</span>
-  <span>Menu</span>
+<!-- MENU SUPERIOR -->
+<div class="top-menu">
+  <button onclick="location.href='planos.html'">💎 Planos</button>
+  <button onclick="location.href='perfil.html'">👤 Perfil</button>
+  <button onclick="location.href='index.html'">🏠 Dashboard</button>
+  <button onclick="location.href='entradas.html'">💵 Caixa</button>
+  <button onclick="location.href='resumo.html'">🧮 Resumo</button>
+  <button onclick="location.href='recibo_empresa.html'">🏭 Empresa</button>
+  <button onclick="location.href='recibo_particular.html'">🚘 Particular</button>
+  <button onclick="location.href='manutencao.html'">🛠 Manutenção</button>
+  <button onclick="location.href='calculadora.html'">📟 Calculadora</button>
 </div>
 
 <header>
     <div class="brand">
         <div class="logo">RF Driver</div>
-    <h1 style="margin:50;font-size:30px;font-weight:800">Recibo Particular</h1>
+        <h1 style="margin:0;font-size:30px;font-weight:800">Recibo Particular</h1>
     </div>
 
-  <button id="toggleTheme">
-    <span class="icon">🌙</span>
-    <span>Escuro/Claro</span>
-  </button>
+  <button id="toggleTheme">🌙</button>
 </header>
 
 <div class="container">
@@ -237,7 +205,7 @@ button{
       <div class="tab" data-tab="historico">Histórico</div>
   </div>
 
-  <!-- =============== TAB - CADASTRO (MOTORISTA) ================= -->
+  <!-- =============== TAB - CADASTRO ================= -->
   <div id="tab-cadastro" class="card" style="display:none;">
     <h3>Dados do motorista</h3>
     <div class="form">
@@ -278,33 +246,46 @@ button{
 
 </div>
 
-<!-- ============= MENU LATERAL =============== -->
-<div id="sidebar" class="sidebar">
-  <span class="menu-close" onclick="closeMenu()">×</span>
-  <div class="menu-title">Navegação</div>
-  <div class="menu-item" onclick="location.href='planos.html'">💎 Planos</div>
-  <div class="menu-item" onclick="location.href='index.html'">🏠 Dashboard</div>
-  <div class="menu-item" onclick="location.href='entradas.html'">💵 Entradas</div>
-  <div class="menu-item" onclick="location.href='recibo_empresa.html'">🏭 Empresa</div>
-  <div class="menu-item" onclick="location.href='recibo_particular.html'">🚘 Particular</div>
-  <div class="menu-item" onclick="location.href='manutencao.html'">🛠 Manutenção</div>
-  <div class="menu-item" onclick="location.href='resumo.html'">🧮 Resumo</div>
-  <div class="menu-item" onclick="location.href='perfil.html'">👤 Perfil</div>
-  <div class="menu-item" onclick="location.href='calculadora.html'">📟 Calculadora</div>
-</div>
-
 <script>
-/* ====== MENU ====== */
-function openMenu(){
-  document.getElementById("sidebar").classList.add("open");
-}
-function closeMenu(){
-  document.getElementById("sidebar").classList.remove("open");
+/* ===================================================
+   BLOQUEIO DE PLANO
+   =================================================== */
+function plano(){
+  try{ return getPlano(); }catch(e){}
+  return (localStorage.getItem('planoAtual')||'free').toLowerCase();
 }
 
-/* ============================
-   THEME (CLARO / ESCURO)
-   ============================ */
+(function(){
+  const p = plano();
+  if(p!=='premium' && p!=='pro'){
+     alert("A página Recibo Particular está disponível a partir do plano Premium.");
+     window.location.href="planos.html";
+     return;
+  }
+})();
+
+/* ===================================================================
+   Controls de habilitar/desabilitar recursos
+   =================================================================== */
+function aplicarPermissoes(){
+  const p = plano();
+  const btnPdf = document.getElementById("emitirPdf");
+
+  // Premium: bloqueia PDF
+  if(p==='premium'){
+     if(btnPdf){
+        btnPdf.disabled = true;
+        btnPdf.style.opacity = ".4";
+        btnPdf.innerText = "PDF (Pro)";
+     }
+  }
+
+  // Pro: tudo liberado
+}
+
+/* ==========================
+   THEME
+   ========================== */
 function applyTheme(theme){
   const btn = document.getElementById("toggleTheme");
   if(theme === "dark"){
@@ -329,9 +310,9 @@ function applyTheme(theme){
   }
 })();
 
-/* ============================
+/* ==========================
    TABS
-   ============================ */
+   ========================== */
 const $ = id => document.getElementById(id);
 
 function setActiveTab(name){
@@ -345,12 +326,11 @@ function setActiveTab(name){
 document.querySelectorAll(".tab").forEach(tab=>{
   tab.addEventListener("click", ()=> setActiveTab(tab.dataset.tab));
 });
-// padrão: abrir EMITIR
 setActiveTab("emitir");
 
-/* ============================
-   STORAGE HISTÓRICO
-   ============================ */
+/* ==========================
+   STORAGE
+   ========================== */
 const KEY = "histParticular";
 
 function load(){
@@ -361,9 +341,7 @@ function save(list){
   localStorage.setItem(KEY, JSON.stringify(list));
 }
 
-/* ============================
-   MOTORISTA (CADASTRO)
-   ============================ */
+/* ===== Motorista ===== */
 function getMotorista(){
   try { return JSON.parse(localStorage.getItem("motoristaParticular") || "{}"); }
   catch(e){ return {}; }
@@ -390,9 +368,7 @@ if($("saveMotorista")){
   });
 }
 
-/* ============================
-   HISTÓRICO (LISTA)
-   ============================ */
+/* ===== Histórico ===== */
 function excluir(id){
   if(!confirm("Excluir este recibo?")) return;
   let arr = load();
@@ -407,7 +383,7 @@ function render(){
   const arr = load();
   if(!lista) return;
   if(!arr.length){
-    lista.innerHTML = "<div style='font-size:13px;color:"+getComputedStyle(document.body).getPropertyValue('--muted')+"'>Sem registros.</div>";
+    lista.innerHTML = "<div style='font-size:13px;color:var(--muted)'>Sem registros.</div>";
     return;
   }
   lista.innerHTML = arr.map(r=>`
@@ -424,10 +400,14 @@ function render(){
   `).join("");
 }
 
-/* ============================
-   PDF PROFISSIONAL (jsPDF)
-   ============================ */
+/* ===== PDF ===== */
 function gerarPDF(d){
+ const p = plano();
+ if(p !== 'pro'){ 
+   alert("PDF disponível apenas no plano PRO");
+   return;
+ }
+
  const m = getMotorista();
  const {jsPDF} = window.jspdf;
  const doc = new jsPDF('p','mm','a4');
@@ -454,7 +434,6 @@ function gerarPDF(d){
    y += h+4;
  }
 
- // Motorista
  box("Motorista",[
    "Nome: "      + (m.nome    || "-"),
    "CPF/CNPJ: "  + (m.cpf     || "-"),
@@ -463,14 +442,12 @@ function gerarPDF(d){
    "Cor: "       + (m.cor     || "-")
  ]);
 
- // Passageiro
  box("Passageiro",[
    "Nome: "   + (d.nome   || "-"),
    "Origem: " + (d.origem || "-"),
    "Destino: "+ (d.destino|| "-")
  ]);
 
- // Viagem
  box("Dados da viagem",[
    "Data: "  + (d.data  || "-"),
    "Valor: R$ " + (d.valor || "-"),
@@ -480,27 +457,25 @@ function gerarPDF(d){
 
  y += 8;
 
- // Assinaturas: passageiro (sem palavra 'passageiro') + motorista ao lado
- doc.setFontSize(10);
- // linha esquerda
  doc.text("__________________________________", mx, y);
- // linha direita
  const mx2 = mx + 90;
  doc.text("__________________________________", mx2, y);
  y += 6;
- // nomes
  doc.text((d.nome || "-"), mx, y);
  doc.text((m.nome || "-"), mx2, y);
 
  doc.save("recibo_particular.pdf");
 }
 
-/* ============================
-   EMITIR PDF / WHATSAPP
-   ============================ */
+/* ===== EMITIR ===== */
 function baixar(id){
- const l = load();
- const d = l.find(x=>x.id === id);
+ const p = plano();
+ if(p!=='pro'){
+   alert("Download disponível apenas no plano PRO");
+   return;
+ }
+ const arr = load();
+ const d = arr.find(x=>x.id===id);
  if(d) gerarPDF(d);
 }
 window.baixar = baixar;
@@ -508,20 +483,8 @@ window.baixar = baixar;
 const btnPdf = $("emitirPdf");
 const btnWa  = $("enviarWa");
 
-// esconder botões conforme plano
-if(btnPdf && !planoTem("reciboParticularPdf")){
-  btnPdf.style.display = "none";
-}
-if(btnWa && !planoTem("reciboParticularWhats")){
-  btnWa.style.display = "none";
-}
-
 if(btnPdf){
   btnPdf.addEventListener("click", ()=>{
-    if(!planoTem("reciboParticularPdf")){
-      alert("PDF disponível apenas no Plano Pro.");
-      return;
-    }
     const d = {
       id:     Date.now(),
       nome:   $("nomePassageiro")?.value || "",
@@ -532,7 +495,15 @@ if(btnPdf){
       tempo:  $("tempo")?.value         || "",
       km:     $("km")?.value            || ""
     };
-    gerarPDF(d);
+
+    const p = plano();
+    if(p==="pro"){
+      gerarPDF(d);
+    }else{
+      alert("Para gerar PDF, você precisa do plano PRO");
+      return;
+    }
+
     let arr = load();
     arr.unshift(d);
     save(arr);
@@ -543,11 +514,9 @@ if(btnPdf){
 
 if(btnWa){
   btnWa.addEventListener("click", ()=>{
-    if(!planoTem("reciboParticularWhats")){
-      alert("WhatsApp disponível apenas nos planos Premium e Pro.");
-      return;
-    }
-    const msg =
+    const p = plano();
+    if(p==='premium' || p==='pro'){
+      const msg =
 `RECIBO PARTICULAR
 
 Passageiro: ${$("nomePassageiro").value}
@@ -557,14 +526,17 @@ Data: ${$("dataViagem").value}
 Valor: R$ ${$("valor").value}
 Tempo: ${$("tempo").value}
 KM: ${$("km").value}`;
-    window.open("https://wa.me/?text="+encodeURIComponent(msg));
+
+      window.open("https://wa.me/?text="+encodeURIComponent(msg));
+    }else{
+      alert("WhatsApp disponível apenas no plano Premium +");
+    }
   });
 }
 
-/* ============================
-   BOOT INICIAL
-   ============================ */
+/* ===== Boot ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
+  aplicarPermissoes();
   fillMotorista();
   render();
 });

@@ -205,7 +205,59 @@ h1{
   transition:height .6s cubic-bezier(.17,.67,.6,1.35);
 }
 
-/******** fim do CSS *********/
+/******************************************
+ PRINT / PDF
+*******************************************/
+@media print{
+  .drawer,
+  .tabbar,
+  .drawer-toggle,
+  .theme-toggle,
+  #btnPDF{
+    display:none !important;
+  }
+  body{
+    background:#fff !important;
+    color:#000 !important;
+  }
+  header.report-header{
+    text-align:center;
+    margin-bottom:20px;
+  }
+  .meta-section{
+    display:block !important;
+  }
+}
+
+@media screen{
+  .meta-section{ display:none; }
+}
+
+/******************************************
+ CONFETTI
+*******************************************/
+.confetti-piece{
+  position:fixed;
+  top:-10px;
+  width:8px;
+  height:14px;
+  background:var(--gold-main);
+  opacity:0.9;
+  border-radius:2px;
+  z-index:99999;
+  animation: confetti-fall 1.5s linear forwards;
+}
+
+@keyframes confetti-fall{
+  0%{
+    transform:translate3d(0,-10vh,0) rotateZ(0deg);
+  }
+  100%{
+    transform:translate3d(0,110vh,0) rotateZ(360deg);
+  }
+}
+
+/************************ END CSS *************************/
 </style>
 </head>
 
@@ -230,9 +282,53 @@ h1{
 
 <div class="container">
 
+<header class="report-header">
+  <h2>Relatório Financeiro</h2>
+  <small id="periodoPDF"></small>
+</header>
+
 <!-- HEADER -->
-<h1>Resumo</h1>
+<h1>Financeiro</h1>
 <div class="sub">Visão geral da sua performance financeira.</div>
+
+<button id="btnPDF" style="
+ background:linear-gradient(90deg,var(--gold-main),var(--gold-main2));
+ border:none;padding:10px 18px;
+ border-radius:12px; font-weight:700;
+ color:#000; margin-top:10px;
+ cursor:pointer; font-size:15px;">
+ 📄 Exportar PDF
+</button>
+
+<!-- META -->
+<div class="card">
+  <h2>Meta de Ganhos</h2>
+
+  <div class="line">
+    <span>Meta semanal:</span>
+    <input id="metaSemanal" type="number" placeholder="R$ 0,00" style="width:120px;">
+  </div>
+
+  <div class="line">
+    <span>Meta mensal:</span>
+    <input id="metaMensal" type="number" placeholder="R$ 0,00" style="width:120px;">
+  </div>
+
+  <button onclick="salvarMeta()" style="
+    width:100%;padding:10px;border:none;border-radius:8px;
+    background:linear-gradient(90deg,var(--gold-main),var(--gold-main2));
+    font-weight:700;color:#000;margin-top:10px;
+  ">Salvar Meta</button>
+
+  <div style="margin-top:14px;">
+    <div style="font-size:14px;margin-bottom:6px">Progresso semanal</div>
+    <div style="background:var(--border);height:14px;border-radius:8px;overflow:hidden;">
+      <div id="barMetaSemanal" style="background:var(--gold-main);height:14px;width:0%;transition:.4s;"></div>
+    </div>
+    <small id="txtMetaSemanal"></small>
+  </div>
+
+</div>
 
 <!-- TOP VALUES -->
 <div class="card">
@@ -282,7 +378,7 @@ h1{
       <small id="barDespLabel">0%</small>
     </div>
 
-    <div style="text-align:center;">
+    <div style="text-align:center%;">
       <div class="barShell">
         <div id="barLucro" class="barInner" style="background:var(--accent-success); height:10%;"></div>
       </div>
@@ -292,94 +388,38 @@ h1{
   </div>
 </div>
 
-</div> <!-- ./container -->
+<div class="meta-section" id="metaPDFsection">
+  <h3>Metas do período</h3>
 
-<!-- MENU INFERIOR -->
-<div class="tabbar">
-  <a href="index.html">🏠<small>Home</small></a>
-  <a href="entradas.html">💵<small>Caixa</small></a>
-  <button class="action-btn" onclick="location.href='calculadora.html'">+</button>
-  <a class="active" href="resumo.html">📊<small>Resumo</small></a>
-  <a href="planos.html">💎<small>Planos</small></a>
+  <div class="meta-line"><span>Meta Faturamento</span>
+    <strong id="pdfMetaFat"></strong></div>
+
+  <div class="meta-line"><span>Faturamento atual</span>
+    <strong id="pdfFat"></strong></div>
+
+  <div class="meta-line"><span>Progressão</span>
+    <strong id="pdfMetaProgress"></strong></div>
 </div>
 
+</div> <!-- ./container -->
 <script src="planos.js"></script>
 
 <script>
-if(!planoTem("resumo")){
-   alert("Disponível somente no plano PRO.");
-   location.href="planos.html";
+// Bloqueio por plano
+if(typeof planoTem === "function"){
+  if(!planoTem("resumo")){
+    alert("Disponível apenas no plano PRO.");
+    location.href="planos.html";
+  }
 }
-</script>
-<script>
+
 /* helpers */
 const $ = id => document.getElementById(id);
 const brl = v => Number(v || 0).toLocaleString(
   "pt-BR",{ style:"currency", currency:"BRL" }
 );
 
-/* THEME */
-function applyTheme(theme){
-  if(theme === 'dark'){
-    document.body.classList.add('dark');
-    document.body.classList.remove('light');
-    localStorage.setItem('theme','dark');
-    $('toggleTheme').innerText = '☀️';
-  } else {
-    document.body.classList.remove('dark');
-    document.body.classList.add('light');
-    localStorage.setItem('theme','light');
-    $('toggleTheme').innerText = '🌙';
-  }
-}
-
-(function initTheme(){
-  const saved = localStorage.getItem('theme') || 'light';
-  applyTheme(saved);
-})();
-
-/* FILTERS */
-let filtro = 'dia';
-function setFiltro(f){
-  filtro = f;
-  document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));
-  const id = 'f' + f.charAt(0).toUpperCase() + f.slice(1);
-  const el = document.getElementById(id);
-  if(el) el.classList.add('active');
-  atualizarResumo();
-}
-
-function isToday(d){
-  const n = new Date();
-  return d.getFullYear()===n.getFullYear() &&
-         d.getMonth()===n.getMonth() &&
-         d.getDate()===n.getDate();
-}
-function isSameWeek(d){
-  const now = new Date();
-  const start = new Date(now);
-  start.setDate(now.getDate()-now.getDay()+1);
-  start.setHours(0,0,0,0);
-
-  const end = new Date(start);
-  end.setDate(start.getDate()+6);
-  end.setHours(23,59,59,999);
-
-  return d>=start && d<=end;
-}
-function isSameMonth(d){
-  const now = new Date();
-  return d.getFullYear()===now.getFullYear() &&
-         d.getMonth()===now.getMonth();
-}
-
-function filtrarData(d){
-  if(filtro==='dia') return isToday(d);
-  if(filtro==='semana') return isSameWeek(d);
-  return isSameMonth(d);
-}
-
-/* MAIN */
+/* RESUMO PRINCIPAL – lê localStorage e preenche tela */
 function atualizarResumo(){
   const registros = JSON.parse(localStorage.getItem('entradasSaidas')||'[]');
 
@@ -388,9 +428,6 @@ function atualizarResumo(){
   let cU=0,c99=0,cInd=0,cPar=0,cEmp=0;
 
   registros.forEach(r=>{
-    const d = new Date(r.criadoEm||r.createdAt||Date.now());
-    if(!filtrarData(d)) return;
-
     const v = Number(r.valor||r.valorBruto||0);
 
     if(r.tipo==='entrada'){
@@ -417,55 +454,149 @@ function atualizarResumo(){
 
   const lucro = fat-desp;
 
+  // Totais
   $('valFaturamento').innerText = brl(fat);
-  $('valDespesas').innerText = brl(desp);
-  $('valLucro').innerText = brl(lucro);
-  $('valLucro').style.color = lucro>=0?'var(--accent-success)':'var(--accent-danger)';
+  $('valDespesas').innerText    = brl(desp);
+  $('valLucro').innerText       = brl(lucro);
+  $('valLucro').style.color     = lucro>=0?'var(--accent-success)':'var(--accent-danger)';
 
+  // Métodos
   $('mDinheiro').innerText = brl(mDin);
-  $('mPix').innerText = brl(mPix);
-  $('mCartao').innerText = brl(mCar);
-  $('mApp').innerText = brl(mApp);
-  $('mOutras').innerText = brl(mOut);
+  $('mPix').innerText      = brl(mPix);
+  $('mCartao').innerText   = brl(mCar);
+  $('mApp').innerText      = brl(mApp);
+  $('mOutras').innerText   = brl(mOut);
 
-  $('cUber').innerText = brl(cU);
-  $('c99').innerText = brl(c99);
-  $('cInDriver').innerText = brl(cInd);
+  // Categorias
+  $('cUber').innerText       = brl(cU);
+  $('c99').innerText         = brl(c99);
+  $('cInDriver').innerText   = brl(cInd);
   $('cParticular').innerText = brl(cPar);
-  $('cEmpresa').innerText = brl(cEmp);
+  $('cEmpresa').innerText    = brl(cEmp);
 
+  // Gráfico
   const max = Math.max(Math.abs(fat), Math.abs(desp), Math.abs(lucro), 1);
-  const pctFat = Math.round(fat/max*100);
-  const pctDesp = Math.round(desp/max*100);
+  const pctFat   = Math.round(fat/max*100);
+  const pctDesp  = Math.round(desp/max*100);
   const pctLucro = Math.round(Math.abs(lucro)/max*100);
 
-  $('barFat').style.height  = Math.max(6,pctFat)+'%';
-  $('barDesp').style.height = Math.max(6,pctDesp)+'%';
-  $('barLucro').style.height= Math.max(6,pctLucro)+'%';
+  $('barFat').style.height   = Math.max(6,pctFat)+'%';
+  $('barDesp').style.height  = Math.max(6,pctDesp)+'%';
+  $('barLucro').style.height = Math.max(6,pctLucro)+'%';
 
-  $('barFatLabel').innerText  = pctFat+'%';
-  $('barDespLabel').innerText = pctDesp+'%';
-  $('barLucroLabel').innerText= pctLucro+'%';
+  $('barFatLabel').innerText   = pctFat+'%';
+  $('barDespLabel').innerText  = pctDesp+'%';
+  $('barLucroLabel').innerText = pctLucro+'%';
 
   $('barLucro').style.background = lucro>=0?'var(--accent-success)':'var(--accent-danger)';
+
+  // Cabeçalho PDF (data geração)
+  const hoje = new Date();
+  $('periodoPDF').innerText = "Gerado em " + hoje.toLocaleDateString("pt-BR");
+
+  // metas
+  aplicarMeta(fat);
+  preencherMetasPDF(fat);
 }
 
-/* INIT */
+/* META: salvar + aplicar + PDF + CONFETTI */
+function salvarMeta(){
+  const s = Number(document.getElementById("metaSemanal").value || 0);
+  const m = Number(document.getElementById("metaMensal").value || 0);
+
+  localStorage.setItem("metaSemanal", s);
+  localStorage.setItem("metaMensal", m);
+
+  alert("Meta salva com sucesso! 🎯");
+  launchConfetti();
+
+  atualizarResumo();
+}
+
+function aplicarMeta(fat){
+  const metaS = Number(localStorage.getItem("metaSemanal") || 0);
+  const metaM = Number(localStorage.getItem("metaMensal") || 0);
+
+  document.getElementById("metaSemanal").value = metaS || "";
+  document.getElementById("metaMensal").value  = metaM || "";
+
+  if(metaS > 0){
+    const pct = Math.min(100, Math.round(fat/metaS*100));
+    document.getElementById("barMetaSemanal").style.width = pct+"%";
+    document.getElementById("txtMetaSemanal").innerText = `Atingido: ${pct}%`;
+  } else {
+    document.getElementById("barMetaSemanal").style.width = "0%";
+    document.getElementById("txtMetaSemanal").innerText = "";
+  }
+}
+
+function preencherMetasPDF(fat){
+  const meta = Number(localStorage.getItem("metaMensal") || 0);
+
+  document.getElementById("pdfMetaFat").innerText = meta>0 ? brl(meta) : "Nenhuma";
+  document.getElementById("pdfFat").innerText     = brl(fat);
+
+  if(meta>0){
+    const p = Math.round(fat/meta*100);
+    document.getElementById("pdfMetaProgress").innerText = p+"%";
+  } else {
+    document.getElementById("pdfMetaProgress").innerText = "-";
+  }
+}
+
+/* PDF com download (html2canvas + jsPDF) */
+async function exportarPDF(){
+  const { jsPDF } = window.jspdf;
+
+  const tabbar = document.querySelector(".tabbar");
+  const drawerToggle = document.querySelector(".drawer-toggle");
+  const themeToggle = document.querySelector(".theme-toggle");
+
+  if(tabbar) tabbar.style.display = "none";
+  if(drawerToggle) drawerToggle.style.display = "none";
+  if(themeToggle) themeToggle.style.display = "none";
+
+  const canvas = await html2canvas(document.body, { scale:2 });
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF('p','mm','a4');
+  const imgProps  = pdf.getImageProperties(imgData);
+  const pdfWidth  = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+  pdf.addImage(imgData,'PNG',0,0,pdfWidth,pdfHeight);
+  pdf.save("relatorio-rfdriver.pdf");
+
+  if(tabbar) tabbar.style.display = "";
+  if(drawerToggle) drawerToggle.style.display = "";
+  if(themeToggle) themeToggle.style.display = "";
+}
+
+/* ligar botão do PDF */
+document.addEventListener("DOMContentLoaded", ()=>{
+  const btn = document.getElementById("btnPDF");
+  if(btn) btn.addEventListener("click", exportarPDF);
+});
+
+/* INIT GERAL */
 window.addEventListener('load', atualizarResumo);
 </script>
+<!-- MENU INFERIOR -->
+<div class="tabbar">
+  <a href="index.html">🏠<small>Home</small></a>
+  <a href="entradas.html">💵<small>Caixa</small></a>
+  <button class="action-btn" onclick="location.href='calculadora.html'">+</button>
+  <a class="active" href="resumo.html">📊<small>Resumo</small></a>
+  <a href="planos.html">💎<small>Planos</small></a>
+</div>
 
 <script>
-// ======================
 // MENU LATERAL
-// ======================
 function toggleDrawer(){
-   const drawer = document.getElementById("drawer");
-   drawer.classList.toggle("open");
+   document.getElementById("drawer").classList.toggle("open");
 }
 
-// ======================
-// TEMA
-// ======================
+// TEMA CLARO / ESCURO
 function toggleTheme(){
   const isDark = document.body.classList.contains("dark");
   if(isDark){
@@ -484,10 +615,40 @@ function toggleTheme(){
 // inicia o tema salvo
 (function(){
   const saved = localStorage.getItem("theme") || "light";
-  if(saved==="dark") document.body.classList.add("dark");
-  else document.body.classList.add("light");
+  if(saved==="dark"){
+    document.body.classList.add("dark");
+    document.getElementById("toggleTheme").innerText="☀️";
+  } else {
+    document.body.classList.add("light");
+    document.getElementById("toggleTheme").innerText="🌙";
+  }
 })();
 </script>
+
+<script>
+// CONFETTI SIMPLES
+function launchConfetti(){
+  const total = 35;
+  for(let i=0;i<total;i++){
+    const piece = document.createElement("div");
+    piece.className = "confetti-piece";
+    piece.style.left = Math.random()*100 + "vw";
+    piece.style.background = Math.random()>0.5 ? "var(--gold-main)" : "var(--gold-main2)";
+    piece.style.animationDelay = (Math.random()*0.4)+"s";
+    piece.style.transform = `translate3d(0,0,0) rotateZ(${Math.random()*360}deg)`;
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(), 1800);
+  }
+}
+</script>
+
+<footer class="report-footer" style="text-align:center;margin:18px 0 90px 0;font-size:12px;opacity:.6;">
+  Relatório gerado automaticamente pelo RF Driver
+</footer>
+
+<!-- LIBS PARA PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Instalar RF Driver</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="theme/theme.css">
+<link rel="stylesheet" href="theme/layout.css">
+<link rel="stylesheet" href="theme/components.css">
+
+<style>
+/* ===== BASE RF DRIVER ===== */
+body{
+  min-height:100vh;
+  margin:0;
+  background:radial-gradient(circle at top,#1a1a1a 0%, #000 70%);
+  display:flex;
+  justify-content:center;
+  padding:20px;
+  color:#fff;
+}
+
+.page{
+  width:100%;
+  max-width:420px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+/* ===== MARCA ===== */
+.brand{
+  text-align:center;
+  padding:26px 20px;
+  border-radius:22px;
+  background:linear-gradient(
+    180deg,
+    rgba(245,197,66,.18),
+    rgba(0,0,0,.85)
+  );
+  border:1px solid rgba(245,197,66,.35);
+  box-shadow:
+    0 0 35px rgba(245,197,66,.25),
+    inset 0 0 18px rgba(255,255,255,.04);
+}
+
+.brand h1{
+  font-size:1.6rem;
+  letter-spacing:3px;
+  font-weight:800;
+  background:linear-gradient(90deg,#d4af37,#f5e28c,#c9a227);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.brand span{
+  font-size:.8rem;
+  color:#ccc;
+}
+
+/* ===== SEÇÕES ===== */
+.section{
+  background:linear-gradient(
+    145deg,
+    rgba(20,20,20,.95),
+    rgba(0,0,0,.85)
+  );
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 0 30px rgba(0,0,0,.6);
+}
+
+.section h2{
+  font-size:1.05rem;
+  color:#f5c542;
+  margin-bottom:12px;
+}
+
+/* ===== PASSOS ===== */
+.steps{
+  list-style:none;
+  padding:0;
+  margin:0;
+  font-size:.9rem;
+  line-height:1.6;
+  color:#e0e0e0;
+}
+
+.steps li{
+  display:flex;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.steps li span{
+  color:#f5c542;
+  font-weight:700;
+}
+
+/* ===== BOTÃO ===== */
+.download{
+  margin:14px 0 18px;
+}
+
+.download a{
+  display:block;
+  width:100%;
+  text-align:center;
+  padding:16px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#f5e28c,#f5c542);
+  color:#000;
+  font-weight:800;
+  font-size:1rem;
+  text-decoration:none;
+  transition:.25s;
+}
+
+.download a:hover{
+  transform:translateY(-1px);
+  box-shadow:0 0 22px rgba(245,197,66,.5);
+}
+
+/* ===== ALERTA ===== */
+.alert{
+  margin-top:14px;
+  background:rgba(255,80,80,.12);
+  border:1px solid rgba(255,80,80,.35);
+  padding:14px;
+  border-radius:14px;
+  font-size:.85rem;
+  color:#ffdede;
+}
+
+/* ===== FOOTER ===== */
+.footer{
+  text-align:center;
+  font-size:.75rem;
+  color:#aaa;
+  margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <!-- MARCA -->
+  <div class="brand">
+    <h1>RF DRIVER</h1>
+    <span>Instalação oficial do aplicativo</span>
+  </div>
+
+  <!-- ANDROID -->
+  <div class="section">
+    <h2>📱 Android — Instalação do aplicativo</h2>
+
+    <div class="download">
+      <a href="https://github.com/rarufino27-alt/Tabela-oficial-RFDriver/releases/download/V1.0.0/_Tabela_Oficial_RF_Driver_19457441.apk">
+        ⬇️ Baixar RF Driver (APK)
+      </a>
+    </div>
+
+    <ul class="steps">
+      <li><span>1.</span> Toque no botão acima para baixar o aplicativo.</li>
+      <li><span>2.</span> Se aparecer um aviso, toque em <b>“Baixar mesmo assim”</b>.</li>
+      <li><span>3.</span> Após o download, abra o arquivo APK.</li>
+      <li><span>4.</span> Permita a instalação desta fonte, se solicitado.</li>
+      <li><span>5.</span> Conclua a instalação normalmente.</li>
+    </ul>
+  </div>
+
+  <!-- IOS -->
+  <div class="section">
+    <h2>🍎 iPhone — Instalar como aplicativo</h2>
+
+    <ul class="steps">
+      <li><span>1.</span> Abra o site do RF Driver no <b>Safari</b>.</li>
+      <li><span>2.</span> Toque em <b>Compartilhar</b> (ícone ⬆️).</li>
+      <li><span>3.</span> Selecione <b>“Adicionar à Tela de Início”</b>.</li>
+      <li><span>4.</span> Confirme tocando em <b>Adicionar</b>.</li>
+      <li><span>5.</span> O app aparecerá como um aplicativo normal.</li>
+    </ul>
+
+    <div class="alert">
+      ⚠️ O iPhone não permite instalação de APK.<br>
+      Este é o método oficial, seguro e recomendado.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    RF Driver • Mobilidade com excelência
+  </div>
+
+</div>
+
+</body>
+</html>

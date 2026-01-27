@@ -1,0 +1,91 @@
+:root{
+  /* ===============================
+     IDENTIDADE RF DRIVER – CLARO PREMIUM
+     =============================== */
+
+  /* FUNDO INSTITUCIONAL (AZUL QUASE BRANCO) */
+  --bg:#f4f7fb;              /* azul muito claro */
+  --bg-soft:#eef3f9;
+
+  /* CARDS */
+  --card:#0f2a44;            /* azul institucional */
+  --card-soft:#143a60;
+
+  /* BORDAS */
+  --border:rgba(212,175,55,.45);
+
+  /* TEXTO */
+  --text:#0b1b2b;            /* azul escuro */
+  --text-muted:#5f6f82;      /* azul acinzentado */
+
+  /* DOURADO RF */
+  --gold:#d4af37;
+  --gold-light:#f1d57a;
+  --gold-dark:#b8962e;
+
+  --primary:var(--gold);
+
+  /* STATUS */
+  --success:#2ecc71;
+  --danger:#c0392b;
+  --whatsapp:#1db954;
+
+  /* PADRÕES */
+  --radius:18px;
+  --transition:.25s ease;
+}
+
+/* ===============================
+   RESET
+   =============================== */
+*{
+  box-sizing:border-box;
+  font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* ===============================
+   BODY
+   =============================== */
+body{
+  margin:0;
+  padding:16px;
+  min-height:100vh;
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(212,175,55,.12),
+      transparent 45%
+    ),
+    linear-gradient(
+      180deg,
+      var(--bg),
+      var(--bg-soft)
+    );
+  color:var(--text);
+}
+
+/* ===============================
+   TIPOGRAFIA
+   =============================== */
+h1, h2, h3, h4{
+  margin:0 0 10px;
+  font-weight:700;
+  color:var(--text);
+  letter-spacing:.4px;
+}
+
+h1{
+  font-size:1.8rem;
+}
+
+h2{
+  font-size:1.35rem;
+}
+
+p{
+  margin:0 0 10px;
+  color:var(--text-muted);
+  font-size:14px;
+  line-height:1.5;
+}

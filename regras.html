@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Regras – RF Driver</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="theme/theme.css">
+<link rel="stylesheet" href="theme/layout.css">
+<link rel="stylesheet" href="theme/components.css">
+
+<style>
+body{
+  min-height:100vh;
+  margin:0;
+  background:radial-gradient(circle at top,#1a1a1a 0%, #000 70%);
+  display:flex;
+  justify-content:center;
+  padding:20px;
+  color:#fff;
+}
+
+.page{
+  width:100%;
+  max-width:420px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.header{
+  text-align:center;
+  padding:26px 20px;
+  border-radius:22px;
+  background:linear-gradient(
+    180deg,
+    rgba(245,197,66,.18),
+    rgba(0,0,0,.85)
+  );
+  border:1px solid rgba(245,197,66,.35);
+  box-shadow:
+    0 0 35px rgba(245,197,66,.25),
+    inset 0 0 18px rgba(255,255,255,.04);
+}
+
+.header h1{
+  font-size:1.5rem;
+  letter-spacing:3px;
+  font-weight:800;
+  background:linear-gradient(90deg,#d4af37,#f5e28c,#c9a227);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.header span{
+  font-size:.8rem;
+  color:#ccc;
+}
+
+.section{
+  background:linear-gradient(
+    145deg,
+    rgba(20,20,20,.95),
+    rgba(0,0,0,.85)
+  );
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 0 30px rgba(0,0,0,.6);
+}
+
+.section h2{
+  font-size:1.05rem;
+  color:#f5c542;
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.rules{
+  list-style:none;
+  padding:0;
+  margin:0;
+  font-size:.9rem;
+  line-height:1.6;
+  color:#e0e0e0;
+}
+
+.rules li{
+  display:flex;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.rules li span{
+  color:#f5c542;
+  font-weight:700;
+  min-width:18px;
+}
+
+.alert{
+  background:rgba(245,197,66,.12);
+  border:1px solid rgba(245,197,66,.35);
+  padding:14px;
+  border-radius:14px;
+  font-size:.85rem;
+  color:#ffe9b3;
+}
+
+.back{
+  margin-top:6px;
+}
+
+.back button{
+  width:100%;
+  padding:14px;
+  border-radius:16px;
+  border:none;
+  background:linear-gradient(180deg,#f5e28c,#f5c542);
+  color:#000;
+  font-weight:800;
+  font-size:.95rem;
+}
+
+.footer{
+  text-align:center;
+  font-size:.75rem;
+  color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <div class="header">
+    <h1>RF DRIVER</h1>
+    <span>Regras oficiais do grupo</span>
+  </div>
+
+  <!-- MOTORISTAS -->
+  <div class="section">
+    <h2>🚗 Regras para Motoristas</h2>
+
+    <ul class="rules">
+      <li><span>1.</span> É obrigatória a ativação da localização em tempo real por 8 horas consecutivas no grupo de localização.</li>
+
+      <li><span>2.</span> A localização indica que o motorista está online e apto a receber solicitações. Sem localização ativa, não é permitido pegar corridas.</li>
+
+      <li><span>3.</span> Não é permitido desligar a localização antes do prazo e ligá-la novamente. A reativação só é permitida após o período completo de 8 horas.</li>
+
+      <li><span>4.</span> O descumprimento da regra de localização pode gerar advertência, suspensão temporária ou outras punições>, conforme decisão da administração.</li>
+
+      <li><span>5.</span> Somente são consideradas corridas elegíveis aquelas que contenham origem e destino. Corridas incompletas são proibidas.</li>
+
+      <li><span>6.</span> O motorista que pegar corrida sem origem ou destino será suspenso automaticamente por 24 horas.</li>
+
+      <li><span>7.</span> Para retornar antes das 24 horas, o motorista poderá pagar uma taxa de R$ 5,00, após confirmação da administração.</li>
+
+      <li><span>8.</span> Para aceitar uma corrida, o motorista deve digitar exclusivamente EU< ou PV. Qualquer outra mensagem não será considerada válida.</li>
+
+      <li><span>9.</span> Em períodos de tarifa dinâmica, o motorista deve informar corretamente o valor da corrida ao passageiro antes do início.</li>
+
+      <li><span>10.</span> É obrigatória a utilização de vestimenta adequada e profissional. É proibido qualquer tipo de roupa sensual ou inadequada.</li>
+
+      <li><span>11.</span> Mulheres: proibido shorts, bermudas curtas ou rasgadas, decotes ou roupas que exponham excessivamente o corpo.</li>
+
+      <li><span>12.</span> Homens: proibido calção, bermudas rasgadas e camisetas regata ou de alça.</li>
+
+      <li><span>13.</span> A apresentação do motorista deve transmitir seriedade, respeito, segurança e confiança em todas as viagens.</li>
+    </ul>
+  </div>
+
+  <!-- PASSAGEIROS -->
+  <div class="section">
+    <h2>🧍 Regras para Passageiros</h2>
+
+    <ul class="rules">
+      <li><span>1.</span> O passageiro deve informar corretamente origem e destino ao solicitar a corrida.</li>
+
+      <li><span>2.</span> Corridas sem informações completas podem ser recusadas.</li>
+
+      <li><span>3.</span> Valores devem ser respeitados conforme informado pelo motorista antes da viagem.</li>
+
+      <li><span>4.</span> Cancelamentos após confirmação podem gerar cobrança.</li>
+
+      <li><span>5.</span> É obrigatório manter respeito e educação com o motorista durante toda a viagem.</li>
+
+      <li><span>6.</span> Danos ao veículo são de responsabilidade do passageiro.</li>
+    </ul>
+  </div>
+
+  <div class="alert">
+    ⚠️ Todas as regras podem ser alteradas a qualquer momento, com ou sem aviso prévio.
+    É responsabilidade do motorista acompanhar e respeitar as regras vigentes.
+  </div>
+
+  <div class="back">
+    <button onclick="history.back()">⬅ Voltar</button>
+  </div>
+
+  <div class="footer">
+    RF Driver • Mobilidade com excelência
+  </div>
+
+</div>
+
+</body>
+</html>

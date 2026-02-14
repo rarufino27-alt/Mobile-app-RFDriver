@@ -171,7 +171,11 @@ ${s.status==="aberto" ?
   : ""
 }
 
-function cancelar(id){
+    </div>
+  `).join("");
+}
+
+  function cancelar(id){
 
   const confirmar = confirm("Deseja realmente cancelar esta solicitação?");
   if(!confirmar) return;
@@ -182,11 +186,7 @@ function cancelar(id){
   setSolicitacoes(lista);
   render();
 }
-
-    </div>
-  `).join("");
-}
-
+  
 // ==========================
 // ACEITAR
 // ==========================

@@ -517,6 +517,43 @@
 { "origem": "Santo Inácio/Roca", "destino": "Hospital Samaritano (Centro)", "valor": 10, "regiao": "Cabo" },
 { "origem": "Santo Inácio/Roca", "destino": "Hospital Dom Helder Câmara", "valor": 20, "regiao": "Cabo" },
 
+  { "origem": "Garapú VILA DA CONEST", "destino": "Clinica Saúde (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Clinica Amor & Saúde (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Clinica CEMED (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Clinica Reabilite Kids (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Fisioterapia do Cabo (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Clinica Top Saúde (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Clinica Oftalmos (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "BORIS (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "UPA24h Cohab", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "UPA24h Ipojuca", "valor": 32, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "UPA24h Sotave", "valor": 37, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Maternidade Ipojuca", "valor": 37, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Maternidade Ponte dos Carvalhos", "valor": 27, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital da Aeronáutica", "valor": 57, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital Memorial guararapes", "valor": 42, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital Memorial Jaboatão Centro", "valor": 92, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital do Servidor", "valor": 92, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital da Restauração", "valor": 87, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital Esperança", "valor": 87, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital Português Agamenon", "valor": 82, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital Português Boa viagem", "valor": 72, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital HapVida Ilha do Leite", "valor": 82, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital HapVida Ariano Suassuna", "valor": 82, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital HapVida Cabo", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital HapVida Vasco Lucena", "valor": 87, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital HapVida Capibaribe", "valor": 87, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital HapVida Casa Forte", "valor": 92, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital HapVida Espinheiro", "valor": 87, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital HapVida NotreDame Intermédica-Espinheiro", "valor": 87, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital HapVida NotreDame Intermédica-PINA", "valor": 72, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital Mendo Sampaio (Mista)", "valor": 17, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital Infantil (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital InfantoJuvenil (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital São Sebastião (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital Samaritano (Centro)", "valor": 15, "regiao": "Cabo" },
+{ "origem": "Garapú VILA DA CONEST", "destino": "Hospital Dom Helder Câmara", "valor": 22, "regiao": "Cabo" },
+
 { "origem": "Garapú 1 (1º Modelo Até Nova Era)", "destino": "Clinica Saúde (Centro)", "valor": 13, "regiao": "Cabo" },
 { "origem": "Garapú 1 (1º Modelo Até Nova Era)", "destino": "Clinica Amor & Saúde (Centro)", "valor": 13, "regiao": "Cabo" },
 { "origem": "Garapú 1 (1º Modelo Até Nova Era)", "destino": "Clinica CEMED (Centro)", "valor": 13, "regiao": "Cabo" },
@@ -1220,6 +1257,9 @@
 { "origem": "Barbalho 1 e 2", "destino": "Hospital Samaritano (Centro)", "valor": 18, "regiao": "Cabo" },
 { "origem": "Barbalho 1 e 2", "destino": "Hospital Dom Helder Câmara", "valor": 33, "regiao": "Cabo" }
 ]
+
+
+
 
 
 

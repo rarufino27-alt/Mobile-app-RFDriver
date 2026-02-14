@@ -250,7 +250,10 @@ function render(){
       💰 <strong>R$ ${Number(s.total).toFixed(2)}</strong><br>
       💳 ${s.pagamento}<br>
 
-      ${s.observacao ? `<br>📝 ${s.observacao}<br>` : ""}
+      ${s.detalhes && s.detalhes.length ? `
+  <br><strong>Detalhamento:</strong><br>
+  ${s.detalhes.map(d=>`• ${d}<br>`).join("")}
+` : ""}
 
       <span class="status status-aberto">
         AGUARDANDO MOTORISTA

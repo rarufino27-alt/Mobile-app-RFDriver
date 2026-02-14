@@ -171,6 +171,18 @@ ${s.status==="aberto" ?
   : ""
 }
 
+function cancelar(id){
+
+  const confirmar = confirm("Deseja realmente cancelar esta solicitação?");
+  if(!confirmar) return;
+
+  let lista = getSolicitacoes();
+  lista = lista.filter(s => s.id !== id);
+
+  setSolicitacoes(lista);
+  render();
+}
+
     </div>
   `).join("");
 }

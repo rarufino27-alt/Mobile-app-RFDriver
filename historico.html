@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Histórico – RF DRIVER</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="./theme/theme.css">
+
+<style>
+.page{
+  min-height:100vh;
+  padding:20px;
+  display:flex;
+  justify-content:center;
+}
+
+.container{
+  width:100%;
+  max-width:500px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.header{
+  padding:20px;
+  border-radius:18px;
+  background:linear-gradient(180deg,var(--card),#0b2238);
+  color:#fff;
+  text-align:center;
+}
+
+.card{
+  background:#fff;
+  padding:16px;
+  border-radius:18px;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+<div class="container">
+
+<div class="header">
+  <h2>Histórico de Viagens</h2>
+</div>
+
+<div id="listaHistorico"></div>
+
+</div>
+</div>
+
+<script>
+const STORAGE_HISTORICO = "rf_driver_historico";
+
+function getHistorico(){
+  return JSON.parse(localStorage.getItem(STORAGE_HISTORICO) || "[]");
+}
+
+function render(){
+
+  const lista = getHistorico();
+  const container = document.getElementById("listaHistorico");
+
+  if(lista.length === 0){
+    container.innerHTML = "<div class='card'>Nenhuma viagem realizada.</div>";
+    return;
+  }
+
+  container.innerHTML = lista.map(s=>`
+    <div class="card">
+      <strong>${s.origem} → ${s.destino}</strong><br>
+      💰 R$ ${Number(s.total).toFixed(2)}<br>
+      💳 ${s.pagamento}<br>
+      🕒 ${s.finalizadaEm}
+    </div>
+  `).join("");
+}
+
+render();
+</script>
+
+</body>
+</html>

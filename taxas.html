@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Taxas – RF DRIVER</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="./theme/theme.css">
+<link rel="stylesheet" href="./theme/layout.css">
+<link rel="stylesheet" href="./theme/components.css">
+
+<style>
+.page{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  padding:20px;
+}
+
+.container{
+  width:100%;
+  max-width:420px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.header{
+  padding:18px;
+  border-radius:22px;
+  background:linear-gradient(180deg,var(--card),#0b2238);
+  color:#fff;
+  text-align:center;
+  box-shadow:0 14px 36px rgba(0,0,0,.35);
+}
+
+.header h1{
+  font-size:1.5rem;
+  font-weight:800;
+  color:#ffffff;
+}
+
+.block{
+  background:#ffffff;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+
+label{
+  font-size:.8rem;
+  font-weight:700;
+  margin-bottom:6px;
+  display:block;
+  color:#0b1b2b;
+}
+
+select,
+input[type="number"],
+textarea{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid #cfd8e3;
+  background:#ffffff;
+  color:#0b1b2b;
+  font-size:.95rem;
+}
+
+.extra{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #e2e8f0;
+  margin-bottom:8px;
+  transition:.25s;
+}
+
+.extra.active{
+  background:rgba(212,175,55,.12);
+  border-color:var(--gold);
+}
+
+.details{
+  font-size:.85rem;
+}
+
+.details div{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:6px;
+}
+
+.btn-primary{
+  padding:18px;
+  border-radius:18px;
+  border:none;
+  background:linear-gradient(145deg,var(--gold-light),var(--gold),var(--gold-dark));
+  font-size:1.05rem;
+  font-weight:800;
+  color:#0b1b2b;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+<div class="container">
+
+<div class="header">
+  <h1>Configuração de Taxas</h1>
+  <span>Selecione adicionais da viagem</span>
+</div>
+
+<div class="block">
+  <label>🚖 Tipo de viagem</label>
+  <select id="tipoViagem">
+    <option value="ida">Ida</option>
+    <option value="bate_volta">Bate e volta</option>
+    <option value="ida_volta">Ida e volta (Até 30min)</option>
+    <option value="ida_volta_espera">Ida e volta com espera</option>
+  </select>
+</div>
+
+<div class="block">
+  <div class="extra"><span>🛣️ Desvio rápido – R$ 5,00</span><input type="checkbox" id="desvioSimples"></div>
+  <div class="extra"><span>🏖️ Volta das praias – R$ 10,00</span><input type="checkbox" id="voltaPraia"></div>
+  <div class="extra"><span>🚐 Veículo 6 lugares – 50%</span><input type="checkbox" id="veiculo6"></div>
+  <div class="extra"><span>🛒 Taxa de feira – R$ 5,00</span><input type="checkbox" id="taxaFeira"></div>
+  <div class="extra"><span>🌙 Adicional noturno</span><input type="checkbox" id="taxaNoturna"></div>
+</div>
+
+<div class="block">
+  <label>🐶 Transporte de animal</label>
+  <select id="animal">
+    <option value="0">Não</option>
+    <option value="4.99">Pequeno – R$ 4.99</option>
+    <option value="6.99">Médio – R$ 6.99</option>
+    <option value="9.99">Grande – R$ 9.99</option>
+    <option value="19.90">Viagem longa – R$ 19.90</option>
+  </select>
+</div>
+
+<div class="block">
+  <label>⏱️ Tempo de espera (min)</label>
+  <input type="number" id="minutosEspera" placeholder="Ex: 10">
+</div>
+
+<div class="block">
+  <strong>Detalhamento das Taxas Selecionadas</strong>
+  <div class="details" id="detalhamento"></div>
+</div>
+
+<div class="block">
+  <label>📝 Observação</label>
+  <textarea id="observacao" placeholder="Informações adicionais..."></textarea>
+</div>
+
+<button class="btn-primary" onclick="salvarTaxas()">
+  Ir para Resumo da Viagem
+</button>
+
+</div>
+</div>
+
+<script src="core/global.js"></script>
+<script src="core/taxas.js"></script>
+
+<script>
+const detalheDiv = document.getElementById("detalhamento");
+
+function atualizarDetalhamento(){
+
+  let detalhes = [];
+
+  // =========================
+  // TIPO DE VIAGEM
+  // =========================
+  const tipo = document.getElementById("tipoViagem").value;
+
+  const mapaTipo = {
+    ida: "Ida",
+    bate_volta: "Bate e volta (+100%)",
+    ida_volta: "Ida e volta",
+    ida_volta_espera: "Ida e volta com espera (+10%)"
+  };
+
+  detalhes.push(["Tipo de viagem", mapaTipo[tipo]]);
+
+  // =========================
+  // TAXAS FIXAS
+  // =========================
+
+  if (document.getElementById("desvioSimples").checked)
+    detalhes.push(["Desvio rápido", "R$ 5,00"]);
+
+  if (document.getElementById("voltaPraia").checked)
+    detalhes.push(["Volta das praias", "R$ 10,00"]);
+
+  if (document.getElementById("taxaFeira").checked)
+    detalhes.push(["Taxa de feira", "R$ 5,00"]);
+
+  if (document.getElementById("veiculo6").checked)
+    detalhes.push(["Veículo 6 lugares", "50% sobre valor base"]);
+
+  if (document.getElementById("taxaNoturna").checked)
+    detalhes.push(["Adicional noturno", "Aplicado no resumo"]);
+
+  // =========================
+  // ANIMAL
+  // =========================
+  const animal = Number(document.getElementById("animal").value || 0);
+  if (animal > 0)
+    detalhes.push(["Transporte animal", `R$ ${animal.toFixed(2)}`]);
+
+  // =========================
+  // ESPERA
+  // =========================
+  const min = Number(document.getElementById("minutosEspera").value || 0);
+  if (min >= 5)
+    detalhes.push([`Tempo de espera (${min} min)`, "Calculado no resumo"]);
+
+  // =========================
+  // RENDERIZAÇÃO
+  // =========================
+  detalheDiv.innerHTML = detalhes.map(d=>`
+      <div>
+        <span>${d[0]}</span>
+        <strong>${d[1]}</strong>
+      </div>
+    `).join("");
+}
+
+document.querySelectorAll("input,select").forEach(el=>{
+  el.addEventListener("change", ()=>{
+    el.closest(".extra")?.classList.toggle("active", el.checked);
+    atualizarDetalhamento();
+  });
+});
+
+function salvarTaxas(){
+
+  const dados = {
+    tipoViagem: document.getElementById("tipoViagem").value,
+    desvioSimples: document.getElementById("desvioSimples").checked,
+    voltaPraia: document.getElementById("voltaPraia").checked,
+    veiculo6: document.getElementById("veiculo6").checked,
+    taxaFeira: document.getElementById("taxaFeira").checked,
+    taxaNoturna: document.getElementById("taxaNoturna").checked,
+    animal: document.getElementById("animal").value,
+    minutosEspera: document.getElementById("minutosEspera").value,
+    observacao: document.getElementById("observacao").value.trim()
+  };
+
+  App.set("taxasConfig", dados);
+  App.go("resumo.html");
+}
+
+atualizarDetalhamento();
+</script>
+
+</body>
+</html>

@@ -11,7 +11,6 @@ const DataManager = {
   "./data/lazer-festa.json",
   "./data/hospitais-clinicas.json",
   "./data/longas-locais.json",
-  "./data/mercado.json",
   "./data/shoppings.json"
 ],
 
@@ -49,13 +48,6 @@ const DataManager = {
     let rota = this.rotas.find(
       r => r.origem === origem && r.destino === destino
     );
-
-    // rota invertida (ida/volta)
-    if (!rota) {
-      rota = this.rotas.find(
-        r => r.origem === destino && r.destino === origem
-      );
-    }
 
     return rota ? rota.valor : null;
   }

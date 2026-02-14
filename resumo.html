@@ -101,6 +101,11 @@
   <div class="details" id="detalhamento"></div>
 </div>
 
+  <div class="block" id="blocoObservacao" style="display:none;">
+  <strong>📝 Observação</strong>
+  <div id="observacaoTxt" style="margin-top:8px;font-size:.9rem;"></div>
+</div>
+
 <div class="block">
   <strong>💳 Forma de Pagamento</strong>
   <select id="formaPagamento">
@@ -130,6 +135,14 @@ const origem = App.get("origem");
 const destino = App.get("destino");
 const valorBase = Number(App.get("valorBase") || 0);
 const config = App.get("taxasConfig") || {};
+
+  // =========================
+// OBSERVAÇÃO
+// =========================
+if(config.observacao && config.observacao.trim() !== ""){
+  document.getElementById("blocoObservacao").style.display = "block";
+  document.getElementById("observacaoTxt").innerText = config.observacao;
+}
 
 document.getElementById("origemTxt").innerText = origem || "-";
 document.getElementById("destinoTxt").innerText = destino || "-";
@@ -216,3 +229,4 @@ function solicitar(){
 
 </body>
 </html>
+

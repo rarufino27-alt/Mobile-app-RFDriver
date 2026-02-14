@@ -161,7 +161,7 @@
       </div>
     </div>
 
-     <button class="primary" onclick="App.go('taxas.html')">
+     <button class="primary" onclick="avancar()">
         Avançar
     </button>
 
@@ -191,64 +191,94 @@
 const origem = App.get("origem");
 if(!origem) App.go("index.html");
 
-const destinoBtn=document.getElementById("destinoBtn");
-const modal=document.getElementById("modal");
-const lista=document.getElementById("lista");
-const busca=document.getElementById("busca");
-const btn=document.getElementById("btnContinuar");
+const destinoBtn = document.getElementById("destinoBtn");
+const modal = document.getElementById("modal");
+const lista = document.getElementById("lista");
+const busca = document.getElementById("busca");
 
-let destinos=[];
+let destinos = [];
+let destinoSelecionado = null;
+let valorSelecionado = 0;
 
-destinoBtn.onclick=()=>{
-  modal.style.display="flex";
-  busca.value="";
+// ==========================
+// ABRIR MODAL
+// ==========================
+destinoBtn.onclick = () => {
+  modal.style.display = "flex";
+  busca.value = "";
   render(destinos);
   setTimeout(()=>busca.focus(),100);
 };
 
-modal.onclick=e=>{
-  if(e.target===modal) modal.style.display="none";
+modal.onclick = e => {
+  if(e.target === modal) modal.style.display = "none";
 };
 
+// ==========================
+// CARREGAR DESTINOS
+// ==========================
 async function carregar(){
   await DataManager.carregar();
-  destinos=DataManager.listarDestinos(origem);
+  destinos = DataManager.listarDestinos(origem);
 }
 
+carregar();
+
+// ==========================
+// RENDER LISTA
+// ==========================
 function render(arr){
-  lista.innerHTML="";
+  lista.innerHTML = "";
+
   arr.forEach(d=>{
-    const valor=DataManager.buscarValor(origem,d);
-    const div=document.createElement("div");
-    div.textContent=d;
-    div.style.padding="14px";
-    div.style.color="#0b1b2b";
-    div.style.cursor="pointer";
-    div.onclick=()=>{
-      destinoBtn.textContent=d;
-      App.set("destino",d);
-      App.set("valorBase",valor);
-      modal.style.display="none";
-      btn.disabled=false;
+    const valor = DataManager.buscarValor(origem, d);
+
+    const div = document.createElement("div");
+    div.textContent = d;
+    div.style.padding = "14px";
+    div.style.color = "#0b1b2b";
+    div.style.cursor = "pointer";
+
+    div.onclick = ()=>{
+      destinoSelecionado = d;
+      valorSelecionado = valor;
+
+      destinoBtn.textContent = d;
+      modal.style.display = "none";
     };
+
     lista.appendChild(div);
   });
 }
 
-busca.oninput=()=>{
-  const t=busca.value.toLowerCase();
+// ==========================
+// BUSCA
+// ==========================
+busca.oninput = ()=>{
+  const t = busca.value.toLowerCase();
   render(destinos.filter(d=>d.toLowerCase().includes(t)));
 };
 
-let btn = document.getElementById("btnResumo");
-if(btn){
-  btn.onclick = function(){
+// ==========================
+// AVANÇAR
+// ==========================
+function avancar(){
 
-carregar();
+  if(!destinoSelecionado){
+    alert("Selecione um destino.");
+    return;
+  }
+
+  App.set("destino", destinoSelecionado);
+  App.set("valorBase", Number(valorSelecionado));
+
+  App.go("taxas.html");
+}
 </script>
 
 </body>
 </html>
+
 
 
 

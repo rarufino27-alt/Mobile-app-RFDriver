@@ -8,34 +8,50 @@ const Taxas = {
   /* ================= TIPO DE VIAGEM ================= */
   tipoViagem: {
     ida: 0,                 // sem acréscimo
-    bateVolta: 0.8,         // +80% do valor base
+    bateVolta: 1,         // +100% do valor base
     idaVolta: 1,            // +100% do valor base
     idaVoltaEspera: 1.2     // 2x + 10%
   },
 
+/* ================= TAXA NOTURNA ================= */
+
+noturno: {
+  limite: 29,
+  valorFixo: 4.99,
+  percentual: 0.35
+},
+
   /* ================= TAXAS FIXAS ================= */
 
   // Desvio simples (valor fixo)
-  desvioRotaSimples: 5,
+  desvioRotaSimples: 4.99,
 
   // Volta da praia
-  voltaPraia: 10,
+  voltaPraia: 9.99,
 
   // Taxa de feira
-  feira: 5,
+  feira: 4.99,
 
   // Transporte de animal (fixo por porte)
   animal: {
-    pequeno: 5,
-    medio: 7,
-    grande: 10,
-    longa: 20
+    pequeno: 4.99,
+    medio: 6.99,
+    grande: 9.99,
+    longa: 19.90
   },
 
-  /* ================= ESPERA ================= */
-  espera: {
-    blocoMinutos: 5,
-    valorPorBloco: 3
-  }
+/* ================= VEÍCULO 6 LUGARES ================= */
+
+veiculo6Lugares: {
+  percentual: 0.5
+},
+
+/* ================= ESPERA ================= */
+espera: {
+  minutosGratis: 4,
+  valorInicial: 3,
+  valorPorMinuto: 0.59
+}
 
 };
+

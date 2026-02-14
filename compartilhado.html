@@ -72,6 +72,25 @@
   background:#22c55e;
   color:#fff;
 }
+
+  .detalhes-box{
+  margin-top:12px;
+  padding:12px;
+  background:#f8fafc;
+  border-radius:14px;
+  font-size:.85rem;
+}
+
+.detalhe-item{
+  display:flex;
+  justify-content:space-between;
+  padding:4px 0;
+  border-bottom:1px solid #e5e7eb;
+}
+
+.detalhe-item:last-child{
+  border-bottom:none;
+}
 </style>
 </head>
 
@@ -120,41 +139,52 @@ function criarSolicitacao(){
   const destino = App.get("destino");
   const total = App.get("total");
   const pagamento = App.get("formaPagamento");
+  const valorBase = Number(App.get("valorBase") || 0);
   const config = App.get("taxasConfig") || {};
 
   if(!origem || !destino || !total) return;
 
-  // ==========================
-  // GERAR DETALHAMENTO
-  // ==========================
   let detalhes = [];
 
-  if(config.tipoViagem)
-    detalhes.push("🚖 Tipo: " + config.tipoViagem.replaceAll("_"," "));
+  // Viagem base
+  detalhes.push({ nome:"Viagem base", valor: valorBase });
+
+  // Tipo de viagem
+  if(config.tipoViagem === "bate_volta"){
+    detalhes.push({ nome:"Bate e volta", valor: valorBase });
+  }
+
+  if(config.tipoViagem === "ida_volta"){
+    detalhes.push({ nome:"Ida e volta", valor: valorBase });
+  }
+
+  if(config.tipoViagem === "ida_volta_espera"){
+    detalhes.push({ nome:"Ida e volta + espera", valor: valorBase + (valorBase*0.10) });
+  }
 
   if(config.desvioSimples)
-    detalhes.push("🛣️ Desvio rápido");
+    detalhes.push({ nome:"Desvio rápido", valor: 5 });
 
   if(config.voltaPraia)
-    detalhes.push("🏖️ Volta das praias");
+    detalhes.push({ nome:"Volta das praias", valor: 10 });
 
   if(config.taxaFeira)
-    detalhes.push("🛒 Taxa de feira");
+    detalhes.push({ nome:"Taxa de feira", valor: 5 });
 
   if(config.veiculo6)
-    detalhes.push("🚐 Veículo 6 lugares");
+    detalhes.push({ nome:"Veículo 6 lugares (50%)", valor: valorBase*0.5 });
 
   if(config.taxaNoturna)
-    detalhes.push("🌙 Adicional noturno");
+    detalhes.push({ nome:"Adicional noturno", valor: "Calculado no total" });
 
   if(Number(config.animal) > 0)
-    detalhes.push("🐶 Transporte animal");
+    detalhes.push({ nome:"Transporte animal", valor: Number(config.animal) });
 
-  if(Number(config.minutosEspera) >= 5)
-    detalhes.push("⏱️ Tempo de espera (" + config.minutosEspera + " min)");
-
-  if(config.observacao)
-    detalhes.push("📝 " + config.observacao);
+  if(Number(config.minutosEspera) >= 5){
+    const min = Number(config.minutosEspera);
+    const acres = 3 + ((min-5)*0.60);
+    detalhes.push({ nome:`Tempo de espera (${min} min)`, valor: acres });
+  }
 
   const nova = {
     id: Date.now(),
@@ -250,9 +280,21 @@ function render(){
       💰 <strong>R$ ${Number(s.total).toFixed(2)}</strong><br>
       💳 ${s.pagamento}<br>
 
-      ${s.detalhes && s.detalhes.length ? `
-  <br><strong>Detalhamento:</strong><br>
-  ${s.detalhes.map(d=>`• ${d}<br>`).join("")}
+${s.detalhes && s.detalhes.length ? `
+  <div class="detalhes-box">
+    ${s.detalhes.map(d=>`
+      <div class="detalhe-item">
+        <span>${d.nome}</span>
+        <strong>
+          ${
+            typeof d.valor === "number"
+            ? "R$ " + d.valor.toFixed(2)
+            : d.valor
+          }
+        </strong>
+      </div>
+    `).join("")}
+  </div>
 ` : ""}
 
       <span class="status status-aberto">
@@ -260,11 +302,11 @@ function render(){
       </span>
 
       <button class="btn btn-aceitar" onclick="aceitar(${s.id})">
-        Aceitar Corrida
+        Aceitar
       </button>
 
       <button class="btn btn-cancelar" onclick="cancelar(${s.id})" style="background:#ef4444;color:#fff;">
-        Cancelar Solicitação
+        Cancelar
       </button>
     </div>
   `).join("");

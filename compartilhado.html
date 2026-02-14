@@ -158,12 +158,19 @@ function render(){
         ${s.status==="aberto" ? "AGUARDANDO MOTORISTA" : "EM ATENDIMENTO"}
       </span>
 
-      ${s.status==="aberto" ? 
-        `<button class="btn btn-aceitar" onclick="aceitar(${s.id})">
-          Aceitar Corrida
-        </button>` 
-        : ""
-      }
+${s.status==="aberto" ? 
+  `
+  <button class="btn btn-aceitar" onclick="aceitar(${s.id})">
+    Aceitar Corrida
+  </button>
+
+  <button class="btn btn-cancelar" onclick="cancelar(${s.id})" style="background:#ef4444;color:#fff;">
+    Cancelar Solicitação
+  </button>
+  `
+  : ""
+}
+
     </div>
   `).join("");
 }

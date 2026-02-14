@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Taxas – RF DRIVER</title>
+<title>Resumo – RF DRIVER</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="./theme/theme.css">
@@ -31,55 +31,39 @@
   background:linear-gradient(180deg,var(--card),#0b2238);
   color:#fff;
   text-align:center;
-  box-shadow:0 14px 36px rgba(0,0,0,.35);
 }
 
 .header h1{
-  font-size:1.5rem;
+  font-size:1.6rem;
   font-weight:800;
+  color:#fff;
 }
 
-.block{
+.route,.block{
   background:#ffffff;
   border-radius:18px;
   padding:16px;
   box-shadow:0 6px 18px rgba(0,0,0,.08);
 }
 
-label{
-  font-size:.8rem;
-  font-weight:700;
-  margin-bottom:6px;
-  display:block;
-  color:#0b1b2b;
-}
-
-select,
-input[type="number"],
-textarea{
-  width:100%;
-  padding:12px;
-  border-radius:14px;
-  border:1px solid #cfd8e3;
-  background:#ffffff;
-  color:#0b1b2b;
-  font-size:.95rem;
-}
-
-.extra{
+.details div{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid #e2e8f0;
-  margin-bottom:8px;
-  transition:.25s;
+  margin-bottom:6px;
+  font-size:.9rem;
 }
 
-.extra.active{
-  background:rgba(212,175,55,.12);
-  border-color:var(--gold);
+.totalBox{
+  background:linear-gradient(180deg,var(--card),#0b2238);
+  border-radius:22px;
+  padding:22px;
+  color:#fff;
+  text-align:center;
+}
+
+.total{
+  font-size:2.4rem;
+  font-weight:800;
 }
 
 .btn-primary{
@@ -91,16 +75,6 @@ textarea{
   font-weight:800;
   color:#0b1b2b;
 }
-
-   .btn-secondary{
-  padding:14px;
-  border-radius:16px;
-  border:1px solid #0b1b2b;
-  background:#ffffff;
-  color:#0b1b2b;
-  font-weight:600;
-}
-
 </style>
 </head>
 
@@ -110,123 +84,134 @@ textarea{
 <div class="container">
 
 <div class="header">
-  <h1>Configuração de Taxas</h1>
-  <span>Selecione adicionais da viagem</span>
+  <h1>Resumo da Viagem</h1>
+  <span>Confirme as informações</span>
+</div>
+
+<div class="route">
+  <strong>📌 Origem</strong><br>
+  <span id="origemTxt"></span>
+  <hr>
+  <strong>🏁 Destino</strong><br>
+  <span id="destinoTxt"></span>
 </div>
 
 <div class="block">
-  <label>🚖 Tipo de viagem</label>
-  <select id="tipoViagem">
-    <option value="ida">Ida</option>
-    <option value="bate_volta">Bate e volta</option>
-    <option value="ida_volta">Ida e volta (Até 30min)</option>
-    <option value="ida_volta_espera">Ida e volta com espera</option>
+  <strong>📋 Detalhamento</strong>
+  <div class="details" id="detalhamento"></div>
+</div>
+
+<div class="block">
+  <strong>💳 Forma de Pagamento</strong>
+  <select id="formaPagamento">
+    <option value="Dinheiro">Dinheiro</option>
+    <option value="Pix">Pix</option>
+    <option value="Cartão">Cartão</option>
   </select>
 </div>
 
-<div class="block">
-  <div class="extra"><span>🛣️ Desvio rápido</span><input type="checkbox" id="desvioSimples"></div>
-  <div class="extra"><span>🏖️ Volta das praias</span><input type="checkbox" id="voltaPraia"></div>
-  <div class="extra"><span>🚐 Veículo 6 lugares</span><input type="checkbox" id="veiculo6"></div>
-  <div class="extra"><span>🛒 Taxa de feira</span><input type="checkbox" id="taxaFeira"></div>
-  <div class="extra"><span>🌙 Adicional noturno</span><input type="checkbox" id="taxaNoturna"></div>
+<div class="totalBox">
+  <div class="total" id="total">R$ 0,00</div>
 </div>
 
-<div class="block">
-  <label>🐶 Transporte de animal</label>
-  <select id="animal">
-    <option value="0">Não</option>
-    <option value="4.99">Pequeno – R$ 4.99</option>
-    <option value="6.99">Médio – R$ 6.99</option>
-    <option value="9.99">Grande – R$ 9.99</option>
-    <option value="19.90">Viagem longa – R$ 19.90</option>
-  </select>
-</div>
-
-<div class="block">
-  <label>⏱️ Tempo de espera (min)</label>
-  <input type="number" id="minutosEspera" placeholder="Ex: 10">
-</div>
-
-<div class="block">
-  <div class="extra">
-    <span>📅 Viagem agendada</span>
-    <input type="checkbox" id="viagemAgendada">
-  </div>
-
-  <div id="agendamentoCampos" style="display:none;margin-top:12px;">
-    <label>Data</label>
-    <input type="date" id="dataAgendamento">
-
-    <label style="margin-top:10px;">Hora</label>
-    <input type="time" id="horaAgendamento">
-  </div>
-</div>
-
-<div class="block">
-  <label>📝 Observação</label>
-  <textarea id="observacao" placeholder="Informações adicionais..."></textarea>
-</div>
-
-   <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
-    <button class="btn-primary" onclick="salvarTaxas()">
-    Ir para Resumo da Viagem
-  </button>
-
-  <button class="btn-secondary" onclick="App.go('destino.html')">
-    ⬅ Voltar
-  </button>
+<button class="btn-primary" onclick="solicitar()">
+  Solicitar Viagem
+</button>
 
 </div>
 </div>
 
 <script src="core/global.js"></script>
+<script src="core/taxas.js"></script>
+<script src="core/dinamico.js"></script>
 
 <script>
-const viagemAgendada = document.getElementById("viagemAgendada");
-const agendamentoCampos = document.getElementById("agendamentoCampos");
+const origem = App.get("origem");
+const destino = App.get("destino");
+const valorBase = Number(App.get("valorBase") || 0);
+const config = App.get("taxasConfig") || {};
 
-viagemAgendada.addEventListener("change", () => {
-  agendamentoCampos.style.display = viagemAgendada.checked ? "block" : "none";
-});
+document.getElementById("origemTxt").innerText = origem || "-";
+document.getElementById("destinoTxt").innerText = destino || "-";
 
-document.querySelectorAll("input[type='checkbox']").forEach(el=>{
-  el.addEventListener("change",()=>{
-    el.closest(".extra")?.classList.toggle("active", el.checked);
-  });
-});
+let total = valorBase;
+let detalhes = [];
 
-function salvarTaxas(){
+detalhes.push(["Viagem base", valorBase]);
 
-  const viagemAgendadaChecked = document.getElementById("viagemAgendada").checked;
-  const data = document.getElementById("dataAgendamento").value;
-  const hora = document.getElementById("horaAgendamento").value;
-
-  if (viagemAgendadaChecked && (!data || !hora)) {
-    alert("Selecione data e hora da viagem agendada.");
-    return;
-  }
-
-  const dados = {
-    tipoViagem: document.getElementById("tipoViagem").value,
-    desvioSimples: document.getElementById("desvioSimples").checked,
-    voltaPraia: document.getElementById("voltaPraia").checked,
-    veiculo6: document.getElementById("veiculo6").checked,
-    taxaFeira: document.getElementById("taxaFeira").checked,
-    taxaNoturna: document.getElementById("taxaNoturna").checked,
-    animal: document.getElementById("animal").value,
-    minutosEspera: document.getElementById("minutosEspera").value,
-    viagemAgendada: viagemAgendadaChecked,
-    dataAgendamento: data,
-    horaAgendamento: hora,
-    observacao: document.getElementById("observacao").value.trim()
-  };
-
-  App.set("taxasConfig", dados);
-
-  App.go("resumo.html");
+// Tipo de viagem
+if(config.tipoViagem === "bate_volta"){
+  const acres = valorBase;
+  total += acres;
+  detalhes.push(["Bate e volta", acres]);
 }
 
+if(config.tipoViagem === "ida_volta"){
+  const acres = valorBase;
+  total += acres;
+  detalhes.push(["Ida e volta", acres]);
+}
+
+if(config.tipoViagem === "ida_volta_espera"){
+  const acres = valorBase + (valorBase*0.10);
+  total += acres;
+  detalhes.push(["Ida e volta + espera", acres]);
+}
+
+// Taxas fixas
+if(config.desvioSimples){
+  total += 5;
+  detalhes.push(["Desvio rápido",5]);
+}
+
+if(config.voltaPraia){
+  total += 10;
+  detalhes.push(["Volta das praias",10]);
+}
+
+if(config.taxaFeira){
+  total += 5;
+  detalhes.push(["Taxa de feira",5]);
+}
+
+if(config.veiculo6){
+  const acres = valorBase*0.5;
+  total += acres;
+  detalhes.push(["Veículo 6 lugares (50%)",acres]);
+}
+
+// Animal
+if(Number(config.animal)>0){
+  total += Number(config.animal);
+  detalhes.push(["Transporte animal",Number(config.animal)]);
+}
+
+// Espera
+if(Number(config.minutosEspera)>=5){
+  const min = Number(config.minutosEspera);
+  const acres = 3 + ((min-5)*0.60);
+  total += acres;
+  detalhes.push([`Tempo de espera (${min} min)`,acres]);
+}
+
+document.getElementById("detalhamento").innerHTML =
+detalhes.map(d=>`
+  <div>
+    <span>${d[0]}</span>
+    <strong>R$ ${Number(d[1]).toFixed(2)}</strong>
+  </div>
+`).join("");
+
+document.getElementById("total").innerText =
+`R$ ${total.toFixed(2)}`;
+
+App.set("total", total);
+
+function solicitar(){
+  const pagamento = document.getElementById("formaPagamento").value;
+  App.set("formaPagamento", pagamento);
+  App.go("grupos.html");
+}
 </script>
 
 </body>

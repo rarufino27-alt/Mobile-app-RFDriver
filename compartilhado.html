@@ -124,13 +124,45 @@ function criarSolicitacao(){
 
   if(!origem || !destino || !total) return;
 
+  // ==========================
+  // GERAR DETALHAMENTO
+  // ==========================
+  let detalhes = [];
+
+  if(config.tipoViagem)
+    detalhes.push("🚖 Tipo: " + config.tipoViagem.replaceAll("_"," "));
+
+  if(config.desvioSimples)
+    detalhes.push("🛣️ Desvio rápido");
+
+  if(config.voltaPraia)
+    detalhes.push("🏖️ Volta das praias");
+
+  if(config.taxaFeira)
+    detalhes.push("🛒 Taxa de feira");
+
+  if(config.veiculo6)
+    detalhes.push("🚐 Veículo 6 lugares");
+
+  if(config.taxaNoturna)
+    detalhes.push("🌙 Adicional noturno");
+
+  if(Number(config.animal) > 0)
+    detalhes.push("🐶 Transporte animal");
+
+  if(Number(config.minutosEspera) >= 5)
+    detalhes.push("⏱️ Tempo de espera (" + config.minutosEspera + " min)");
+
+  if(config.observacao)
+    detalhes.push("📝 " + config.observacao);
+
   const nova = {
     id: Date.now(),
     origem,
     destino,
     total,
     pagamento,
-    observacao: config.observacao || "",
+    detalhes,
     status: "aberto",
     criadoEm: new Date().toLocaleString("pt-BR")
   };

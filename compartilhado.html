@@ -27,69 +27,118 @@
   padding:20px;
   border-radius:18px;
   background:linear-gradient(180deg,var(--card),#0b2238);
-  color:#fff;
+  color:#ffffff;
   text-align:center;
 }
 
-  .header h2{
+.header h2{
   color:#ffffff !important;
 }
 
+/* CARD PREMIUM */
 .card{
-  background:#fff;
-  padding:16px;
-  border-radius:18px;
-  box-shadow:0 8px 22px rgba(0,0,0,.08);
+  background:#ffffff;
+  padding:18px;
+  border-radius:22px;
+  box-shadow:0 12px 28px rgba(0,0,0,.08);
+  transition:all .25s ease;
+  animation:fadeUp .35s ease;
 }
 
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 36px rgba(0,0,0,.12);
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* TOPO DO CARD */
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.card-header strong{
+  font-size:1rem;
+}
+
+/* BADGE STATUS */
 .status{
-  font-size:.75rem;
-  padding:4px 8px;
-  border-radius:12px;
+  font-size:.7rem;
+  padding:6px 10px;
+  border-radius:20px;
   font-weight:700;
 }
 
 .status-aberto{
-  background:#facc15;
+  background:linear-gradient(145deg,#facc15,#eab308);
   color:#000;
 }
 
-.status-atendimento{
-  background:#22c55e;
-  color:#fff;
+/* TOTAL PREMIUM */
+.total-box{
+  margin-top:14px;
+  padding:14px;
+  border-radius:18px;
+  background:linear-gradient(145deg,var(--gold-light),var(--gold));
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:800;
+  color:#0b1b2b;
 }
 
-.btn{
-  margin-top:10px;
-  padding:10px;
-  border:none;
-  border-radius:12px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.btn-aceitar{
-  background:#22c55e;
-  color:#fff;
-}
-
-  .detalhes-box{
-  margin-top:12px;
-  padding:12px;
+/* DETALHAMENTO */
+.detalhes-box{
+  margin-top:14px;
+  padding:14px;
   background:#f8fafc;
-  border-radius:14px;
+  border-radius:16px;
   font-size:.85rem;
 }
 
 .detalhe-item{
   display:flex;
   justify-content:space-between;
-  padding:4px 0;
+  padding:6px 0;
   border-bottom:1px solid #e5e7eb;
 }
 
 .detalhe-item:last-child{
   border-bottom:none;
+}
+
+/* BOTÕES */
+.btn{
+  margin-top:10px;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.btn-aceitar{
+  background:#22c55e;
+  color:#ffffff;
+}
+
+.btn-aceitar:hover{
+  background:#16a34a;
+}
+
+.btn-cancelar{
+  background:#ef4444;
+  color:#ffffff;
+}
+
+.btn-cancelar:hover{
+  background:#dc2626;
 }
 </style>
 </head>

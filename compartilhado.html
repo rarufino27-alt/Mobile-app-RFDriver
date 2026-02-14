@@ -93,6 +93,7 @@
 
 <script>
 const STORAGE_SOLICITACOES = "rf_driver_solicitacoes";
+const STORAGE_HISTORICO = "rf_driver_historico";
 
 function getSolicitacoes(){
   return JSON.parse(localStorage.getItem(STORAGE_SOLICITACOES) || "[]");
@@ -100,6 +101,14 @@ function getSolicitacoes(){
 
 function setSolicitacoes(arr){
   localStorage.setItem(STORAGE_SOLICITACOES, JSON.stringify(arr));
+}
+
+function getHistorico(){
+  return JSON.parse(localStorage.getItem(STORAGE_HISTORICO) || "[]");
+}
+
+function setHistorico(arr){
+  localStorage.setItem(STORAGE_HISTORICO, JSON.stringify(arr));
 }
 
 // ==========================
@@ -113,7 +122,7 @@ function criarSolicitacao(){
   const pagamento = App.get("formaPagamento");
   const config = App.get("taxasConfig") || {};
 
-  if(!origem || !destino) return;
+  if(!origem || !destino || !total) return;
 
   const nova = {
     id: Date.now(),
@@ -132,6 +141,63 @@ function criarSolicitacao(){
 }
 
 // ==========================
+// ADICIONAR AO HISTÓRICO
+// ==========================
+function adicionarHistorico(corrida){
+
+  let historico = getHistorico();
+
+  historico.unshift({
+    ...corrida,
+    status: "realizada",
+    finalizadaEm: new Date().toLocaleString("pt-BR")
+  });
+
+  if(historico.length > 25){
+    historico = historico.slice(0,25);
+  }
+
+  setHistorico(historico);
+}
+
+// ==========================
+// CANCELAR
+// ==========================
+function cancelar(id){
+
+  const confirmar = confirm("Deseja realmente cancelar esta solicitação?");
+  if(!confirmar) return;
+
+  let lista = getSolicitacoes();
+  lista = lista.filter(s => s.id !== id);
+
+  setSolicitacoes(lista);
+  render();
+}
+
+// ==========================
+// ACEITAR
+// ==========================
+function aceitar(id){
+
+  let lista = getSolicitacoes();
+  const index = lista.findIndex(s=>s.id === id);
+
+  if(index === -1) return;
+
+  const corrida = lista[index];
+
+  // Remove da central
+  lista.splice(index,1);
+  setSolicitacoes(lista);
+
+  // Envia para histórico
+  adicionarHistorico(corrida);
+
+  render();
+}
+
+// ==========================
 // RENDERIZAR
 // ==========================
 function render(){
@@ -140,7 +206,7 @@ function render(){
   const container = document.getElementById("listaSolicitacoes");
 
   if(lista.length === 0){
-    container.innerHTML = "<div class='card'>Nenhuma solicitação ainda.</div>";
+    container.innerHTML = "<div class='card'>Nenhuma solicitação aberta.</div>";
     return;
   }
 
@@ -154,51 +220,19 @@ function render(){
 
       ${s.observacao ? `<br>📝 ${s.observacao}<br>` : ""}
 
-      <span class="status ${s.status==="aberto" ? "status-aberto":"status-atendimento"}">
-        ${s.status==="aberto" ? "AGUARDANDO MOTORISTA" : "EM ATENDIMENTO"}
+      <span class="status status-aberto">
+        AGUARDANDO MOTORISTA
       </span>
 
-${s.status==="aberto" ? 
-  `
-  <button class="btn btn-aceitar" onclick="aceitar(${s.id})">
-    Aceitar Corrida
-  </button>
+      <button class="btn btn-aceitar" onclick="aceitar(${s.id})">
+        Aceitar Corrida
+      </button>
 
-  <button class="btn btn-cancelar" onclick="cancelar(${s.id})" style="background:#ef4444;color:#fff;">
-    Cancelar Solicitação
-  </button>
-  `
-  : ""
-}
-
+      <button class="btn btn-cancelar" onclick="cancelar(${s.id})" style="background:#ef4444;color:#fff;">
+        Cancelar Solicitação
+      </button>
     </div>
   `).join("");
-}
-
-  function cancelar(id){
-
-  const confirmar = confirm("Deseja realmente cancelar esta solicitação?");
-  if(!confirmar) return;
-
-  let lista = getSolicitacoes();
-  lista = lista.filter(s => s.id !== id);
-
-  setSolicitacoes(lista);
-  render();
-}
-  
-// ==========================
-// ACEITAR
-// ==========================
-function aceitar(id){
-  const lista = getSolicitacoes();
-  const index = lista.findIndex(s=>s.id === id);
-
-  if(index !== -1){
-    lista[index].status = "em_atendimento";
-    setSolicitacoes(lista);
-    render();
-  }
 }
 
 // ==========================

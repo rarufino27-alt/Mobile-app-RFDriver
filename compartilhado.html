@@ -228,21 +228,16 @@ function criarSolicitacao(){
 
   let detalhes = [];
 
-  // Viagem base
   detalhes.push({ nome:"Viagem base", valor: valorBase });
 
-  // Tipo de viagem
-  if(config.tipoViagem === "bate_volta"){
+  if(config.tipoViagem === "bate_volta")
     detalhes.push({ nome:"Bate e volta", valor: valorBase });
-  }
 
-  if(config.tipoViagem === "ida_volta"){
+  if(config.tipoViagem === "ida_volta")
     detalhes.push({ nome:"Ida e volta", valor: valorBase });
-  }
 
-  if(config.tipoViagem === "ida_volta_espera"){
+  if(config.tipoViagem === "ida_volta_espera")
     detalhes.push({ nome:"Ida e volta + espera", valor: valorBase + (valorBase*0.10) });
-  }
 
   if(config.desvioSimples)
     detalhes.push({ nome:"Desvio rápido", valor: 5 });
@@ -285,7 +280,7 @@ function criarSolicitacao(){
 }
 
 // ==========================
-// ADICIONAR AO HISTÓRICO
+// HISTÓRICO
 // ==========================
 function adicionarHistorico(corrida){
 
@@ -435,22 +430,6 @@ function render(){
       </div>
     `;
   }).join("");
-}
-
-      <span class="status status-aberto">
-        AGUARDANDO MOTORISTA
-      </span>
-
-    <button class="btn btn-aceitar" onclick="aceitar(${s.id})">
-      Aceitar Corrida
-    </button>
-
-    <button class="btn btn-cancelar" onclick="cancelar(${s.id})">
-      Cancelar Solicitação
-    </button>
-
-  </div>
-`).join("");
 }
 
 // ==========================

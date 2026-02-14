@@ -16,7 +16,7 @@
 body{
   background:#081826;
   color:#ffffff;
-  overflow:hidden;
+  overflow-x:hidden;
 }
 
 /* Glow Azul */
@@ -32,23 +32,23 @@ body::before{
   z-index:0;
 }
 
-/* Layout */
+/* Layout principal */
 .container{
   position:relative;
   z-index:1;
   min-height:100vh;
-  padding:40px 24px 180px 24px;
+  padding:40px 24px 220px 24px;
   display:flex;
   flex-direction:column;
 }
 
 /* Logo */
 .logo{
-  font-size:2.6rem;
+  font-size:2.8rem;
   font-weight:900;
   letter-spacing:4px;
   color:#facc15;
-  margin-bottom:20px;
+  margin-bottom:24px;
 }
 
 /* Headline */
@@ -56,13 +56,13 @@ body::before{
   font-size:2rem;
   font-weight:800;
   line-height:1.2;
-  margin-bottom:16px;
+  margin-bottom:18px;
 }
 
 .sub{
   font-size:1rem;
   color:#94a3b8;
-  margin-bottom:28px;
+  margin-bottom:30px;
 }
 
 /* Benefícios */
@@ -70,7 +70,7 @@ body::before{
   font-size:.95rem;
   display:flex;
   flex-direction:column;
-  gap:10px;
+  gap:12px;
   margin-bottom:40px;
 }
 
@@ -78,7 +78,7 @@ body::before{
   color:#cbd5e1;
 }
 
-/* CTA */
+/* Área dos botões */
 .cta-area{
   position:fixed;
   bottom:0;
@@ -86,51 +86,50 @@ body::before{
   right:0;
   padding:20px;
   background:linear-gradient(180deg,transparent,#081826 50%);
+  z-index:2;
 }
 
+/* Botão principal */
 .cta-primary{
+  display:block;
+  text-align:center;
   width:100%;
   padding:20px;
   border-radius:18px;
-  border:none;
   font-size:1.15rem;
   font-weight:900;
   background:#facc15;
   color:#081826;
-  cursor:pointer;
+  text-decoration:none;
+  margin-bottom:12px;
 }
 
-.cta-primary:active{
-  transform:scale(.97);
-}
-
+/* Botões secundários */
 .cta-secondary{
+  display:block;
+  text-align:center;
   width:100%;
-  margin-top:12px;
   padding:14px;
   border-radius:14px;
   background:transparent;
   border:1px solid #1d4ed8;
   color:#1d4ed8;
   font-weight:600;
-  cursor:pointer;
-}
-
-.cta-secondary:active{
-  transform:scale(.97);
+  text-decoration:none;
+  margin-bottom:10px;
 }
 
 .micro{
   text-align:center;
-  margin-top:10px;
+  margin-top:8px;
   font-size:.75rem;
   color:#64748b;
 }
 
-/* Mobile ajuste */
+/* Ajustes mobile */
 @media(max-width:390px){
   .logo{font-size:2.2rem;}
-  .headline{font-size:1.7rem;}
+  .headline{font-size:1.6rem;}
 }
 </style>
 </head>
@@ -159,23 +158,25 @@ body::before{
 
 </div>
 
-<a href="/Mobile-app-RFDriver/origem.html" class="cta-primary">
-  🚖 Solicitar Agora
-</a>
+<div class="cta-area">
 
-<a href="/Mobile-app-RFDriver/instalar-app.html" class="cta-secondary">
-  ⬇ Instalar Aplicativo
-</a>
+  <a href="/Mobile-app-RFDriver/origem.html" class="cta-primary">
+    🚖 Solicitar Agora
+  </a>
 
-<a href="/Mobile-app-RFDriver/regras.html" class="cta-secondary">
-  📜 Regras do App
-</a>
+  <a href="/Mobile-app-RFDriver/instalar-app.html" class="cta-secondary">
+    ⬇ Instalar Aplicativo
+  </a>
+
+  <a href="/Mobile-app-RFDriver/regras.html" class="cta-secondary">
+    📜 Regras do App
+  </a>
 
   <div class="micro">
     Sem taxas ocultas. Você vê o valor antes.
   </div>
+
 </div>
 
 </body>
 </html>
-

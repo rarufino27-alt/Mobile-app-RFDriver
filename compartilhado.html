@@ -321,44 +321,59 @@ function render(){
     return;
   }
 
-  container.innerHTML = lista.map(s=>`
-    <div class="card">
-      <strong>${s.origem} → ${s.destino}</strong><br>
-      <small>${s.criadoEm}</small><br><br>
+container.innerHTML = lista.map(s=>`
+  <div class="card">
 
-      💰 <strong>R$ ${Number(s.total).toFixed(2)}</strong><br>
-      💳 ${s.pagamento}<br>
+    <div class="card-header">
+      <strong>${s.origem} → ${s.destino}</strong>
+      <span class="status status-aberto">
+        AGUARDANDO
+      </span>
+    </div>
 
-${s.detalhes && s.detalhes.length ? `
-  <div class="detalhes-box">
-    ${s.detalhes.map(d=>`
-      <div class="detalhe-item">
-        <span>${d.nome}</span>
-        <strong>
-          ${
-            typeof d.valor === "number"
-            ? "R$ " + d.valor.toFixed(2)
-            : d.valor
-          }
-        </strong>
+    <small>${s.criadoEm}</small>
+
+    <div class="total-box">
+      <span>💰 Total</span>
+      <span>R$ ${Number(s.total).toFixed(2)}</span>
+    </div>
+
+    <div style="margin-top:8px;font-size:.85rem;">
+      💳 ${s.pagamento}
+    </div>
+
+    ${s.detalhes && s.detalhes.length ? `
+      <div class="detalhes-box">
+        ${s.detalhes.map(d=>`
+          <div class="detalhe-item">
+            <span>${d.nome}</span>
+            <strong>
+              ${
+                typeof d.valor === "number"
+                ? "R$ " + d.valor.toFixed(2)
+                : d.valor
+              }
+            </strong>
+          </div>
+        `).join("")}
       </div>
-    `).join("")}
-  </div>
-` : ""}
+    ` : ""}
+
 
       <span class="status status-aberto">
         AGUARDANDO MOTORISTA
       </span>
 
-      <button class="btn btn-aceitar" onclick="aceitar(${s.id})">
-        Aceitar
-      </button>
+    <button class="btn btn-aceitar" onclick="aceitar(${s.id})">
+      Aceitar Corrida
+    </button>
 
-      <button class="btn btn-cancelar" onclick="cancelar(${s.id})" style="background:#ef4444;color:#fff;">
-        Cancelar
-      </button>
-    </div>
-  `).join("");
+    <button class="btn btn-cancelar" onclick="cancelar(${s.id})">
+      Cancelar Solicitação
+    </button>
+
+  </div>
+`).join("");
 }
 
 // ==========================

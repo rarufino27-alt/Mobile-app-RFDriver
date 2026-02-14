@@ -140,6 +140,28 @@
 .btn-cancelar:hover{
   background:#dc2626;
 }
+
+.card.fade-out{
+  opacity:0;
+  transform:translateY(-10px);
+  transition:all .3s ease;
+}
+
+.base-box{
+  margin-top:14px;
+  padding:12px;
+  background:#eef2ff;
+  border-radius:14px;
+  font-size:.85rem;
+}
+
+.adicionais-box{
+  margin-top:10px;
+  padding:12px;
+  background:#f8fafc;
+  border-radius:14px;
+  font-size:.85rem;
+}
 </style>
 </head>
 
@@ -150,6 +172,17 @@
 
 <div class="header">
   <h2>Central de Solicitações</h2>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+  
+  <div id="contadorSolicitacoes" style="font-weight:700;"></div>
+
+  <label style="font-size:.85rem;display:flex;align-items:center;gap:6px;">
+    <input type="checkbox" id="filtroAbertas" checked>
+    Somente abertas
+  </label>
+
 </div>
 
 <div id="listaSolicitacoes"></div>
@@ -291,21 +324,28 @@ function cancelar(id){
 // ==========================
 function aceitar(id){
 
-  let lista = getSolicitacoes();
-  const index = lista.findIndex(s=>s.id === id);
+  const card = document.getElementById("card-"+id);
+  if(card){
+    card.classList.add("fade-out");
+  }
 
-  if(index === -1) return;
+  setTimeout(()=>{
 
-  const corrida = lista[index];
+    let lista = getSolicitacoes();
+    const index = lista.findIndex(s=>s.id === id);
 
-  // Remove da central
-  lista.splice(index,1);
-  setSolicitacoes(lista);
+    if(index === -1) return;
 
-  // Envia para histórico
-  adicionarHistorico(corrida);
+    const corrida = lista[index];
 
-  render();
+    lista.splice(index,1);
+    setSolicitacoes(lista);
+
+    adicionarHistorico(corrida);
+
+    render();
+
+  },300);
 }
 
 // ==========================
@@ -313,52 +353,89 @@ function aceitar(id){
 // ==========================
 function render(){
 
-  const lista = getSolicitacoes();
+  const filtroAbertas = document.getElementById("filtroAbertas").checked;
+  let lista = getSolicitacoes();
+
+  if(filtroAbertas){
+    lista = lista.filter(s => s.status === "aberto");
+  }
+
   const container = document.getElementById("listaSolicitacoes");
+  const contador = document.getElementById("contadorSolicitacoes");
+
+  contador.innerText = `Solicitações: ${lista.length}`;
 
   if(lista.length === 0){
     container.innerHTML = "<div class='card'>Nenhuma solicitação aberta.</div>";
     return;
   }
 
-container.innerHTML = lista.map(s=>`
-  <div class="card">
+  container.innerHTML = lista.map(s=>{
 
-    <div class="card-header">
-      <strong>${s.origem} → ${s.destino}</strong>
-      <span class="status status-aberto">
-        AGUARDANDO
-      </span>
-    </div>
+    const base = s.detalhes.filter(d=>d.nome === "Viagem base");
+    const adicionais = s.detalhes.filter(d=>d.nome !== "Viagem base");
 
-    <small>${s.criadoEm}</small>
+    return `
+      <div class="card" id="card-${s.id}">
 
-    <div class="total-box">
-      <span>💰 Total</span>
-      <span>R$ ${Number(s.total).toFixed(2)}</span>
-    </div>
+        <div class="card-header">
+          <strong>${s.origem} → ${s.destino}</strong>
+          <span class="status status-aberto">AGUARDANDO</span>
+        </div>
 
-    <div style="margin-top:8px;font-size:.85rem;">
-      💳 ${s.pagamento}
-    </div>
+        <small>${s.criadoEm}</small>
 
-    ${s.detalhes && s.detalhes.length ? `
-      <div class="detalhes-box">
-        ${s.detalhes.map(d=>`
-          <div class="detalhe-item">
-            <span>${d.nome}</span>
-            <strong>
-              ${
-                typeof d.valor === "number"
-                ? "R$ " + d.valor.toFixed(2)
-                : d.valor
-              }
-            </strong>
+        <div class="total-box">
+          <span>💰 Total</span>
+          <span>R$ ${Number(s.total).toFixed(2)}</span>
+        </div>
+
+        <div style="margin-top:8px;font-size:.85rem;">
+          💳 ${s.pagamento}
+        </div>
+
+        ${base.length ? `
+          <div class="base-box">
+            <strong>Base</strong><br>
+            ${base.map(d=>`
+              <div class="detalhe-item">
+                <span>${d.nome}</span>
+                <strong>R$ ${Number(d.valor).toFixed(2)}</strong>
+              </div>
+            `).join("")}
           </div>
-        `).join("")}
-      </div>
-    ` : ""}
+        ` : ""}
 
+        ${adicionais.length ? `
+          <div class="adicionais-box">
+            <strong>Adicionais</strong><br>
+            ${adicionais.map(d=>`
+              <div class="detalhe-item">
+                <span>${d.nome}</span>
+                <strong>
+                  ${
+                    typeof d.valor === "number"
+                    ? "R$ " + d.valor.toFixed(2)
+                    : d.valor
+                  }
+                </strong>
+              </div>
+            `).join("")}
+          </div>
+        ` : ""}
+
+        <button class="btn btn-aceitar" onclick="aceitar(${s.id})">
+          Aceitar Corrida
+        </button>
+
+        <button class="btn btn-cancelar" onclick="cancelar(${s.id})">
+          Cancelar Solicitação
+        </button>
+
+      </div>
+    `;
+  }).join("");
+}
 
       <span class="status status-aberto">
         AGUARDANDO MOTORISTA
@@ -381,6 +458,9 @@ container.innerHTML = lista.map(s=>`
 // ==========================
 criarSolicitacao();
 render();
+
+document.getElementById("filtroAbertas")
+  .addEventListener("change", render);
 </script>
 
 </body>

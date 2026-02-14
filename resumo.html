@@ -75,6 +75,21 @@
   font-weight:800;
   color:#0b1b2b;
 }
+
+  .block-dark{
+  background:linear-gradient(180deg,var(--card),#0b2238);
+  color:#ffffff;
+}
+
+.block-dark strong{
+  color:#ffffff;
+}
+
+.select-dark{
+  margin-top:10px;
+  background:#ffffff;
+  color:#0b1b2b;
+}
 </style>
 </head>
 
@@ -106,9 +121,9 @@
   <div id="observacaoTxt" style="margin-top:8px;font-size:.9rem;"></div>
 </div>
 
-<div class="block">
+<div class="block block-dark">
   <strong>💳 Forma de Pagamento</strong>
-  <select id="formaPagamento">
+  <select id="formaPagamento" class="select-dark">
     <option value="Dinheiro">Dinheiro</option>
     <option value="Pix">Pix</option>
     <option value="Cartão">Cartão</option>
@@ -229,4 +244,5 @@ function solicitar(){
 
 </body>
 </html>
+
 

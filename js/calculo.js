@@ -9,9 +9,9 @@
     },
 
     animal(tipo) {
-      if (tipo === "pequeno") return 5;
-      if (tipo === "medio") return 7;
-      if (tipo === "grande") return 10;
+      if (tipo === "pequeno") return 4.99;
+      if (tipo === "medio") return 6.99;
+      if (tipo === "grande") return 9.99;
       return 0;
     },
 
@@ -20,10 +20,10 @@
     },
 
     saidaPraia() {
-      return 10;
+      return 9.99;
     },
 
-    desvioSimples() { return 5; },
+    desvioSimples() { return 4.99; },
 
     desvioComEspera(minutos) {
       return minutos >= 5 ? 10 : 0;
@@ -76,4 +76,5 @@
   window.Calculo = Calculo;
 
 })();
+
 

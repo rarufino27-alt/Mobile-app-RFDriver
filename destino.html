@@ -240,13 +240,16 @@ busca.oninput=()=>{
   render(destinos.filter(d=>d.toLowerCase().includes(t)));
 };
 
-btn.onclick=()=>App.go("resumo.html");
+const btn = document.getElementById("btnResumo");
+if(btn){
+  btn.onclick = function(){
 
 carregar();
 </script>
 
 </body>
 </html>
+
 
 
 

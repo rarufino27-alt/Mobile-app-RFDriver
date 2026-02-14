@@ -5,217 +5,177 @@
 <title>RF Driver – Mobilidade com excelência</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="./theme/theme.css">
-
 <style>
-
-/* ===============================
-   INDEX PREMIUM TECH + HUMANO
-   =============================== */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
 
 body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#0b1b2b;
+  background:#081826;
   color:#ffffff;
   overflow:hidden;
 }
 
-/* FUNDO MAPA ABSTRATO */
-.background{
+/* Glow Azul */
+body::before{
+  content:"";
   position:fixed;
-  inset:0;
-  background:linear-gradient(180deg,#0b1b2b,#0f2438);
+  top:-120px;
+  right:-120px;
+  width:320px;
+  height:320px;
+  background:radial-gradient(circle,#1d4ed8 0%, transparent 70%);
+  opacity:.25;
   z-index:0;
 }
 
-@keyframes moveBg{
-  from{transform:scale(1);}
-  to{transform:scale(1.05);}
-}
-
-/* CONTAINER */
+/* Layout */
 .container{
   position:relative;
   z-index:1;
   min-height:100vh;
+  padding:40px 24px 180px 24px;
   display:flex;
   flex-direction:column;
-  justify-content:space-between;
-  padding:26px 20px 160px 20px;
 }
 
-/* HERO */
-.hero{
-  padding:20px 16px;
-  border-radius:20px;
-  background:#132b42;
-}
-
+/* Logo */
 .logo{
-  font-size:2.4rem;
+  font-size:2.6rem;
   font-weight:900;
-  letter-spacing:6px;
-  text-align:center;
-  margin-bottom:6px;
-  color:#f6e27f;
-  text-shadow:0 0 20px rgba(212,175,55,.35);
+  letter-spacing:4px;
+  color:#facc15;
+  margin-bottom:20px;
 }
 
+/* Headline */
 .headline{
-  font-size:0.85rem;
-  line-height:1.35;
-  margin-top:12px;
-  font-weight:2000;
-  color:#ffffff;
-}
-
-.hero h1{
   font-size:2rem;
-  margin-top:20px;
+  font-weight:800;
   line-height:1.2;
+  margin-bottom:16px;
 }
 
-.hero p{
-  margin-top:12px;
-  font-size:.85rem;
+.sub{
+  font-size:1rem;
+  color:#94a3b8;
+  margin-bottom:28px;
+}
+
+/* Benefícios */
+.benefits{
+  font-size:.95rem;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:40px;
+}
+
+.benefits div{
   color:#cbd5e1;
 }
 
-/* BENEFÍCIOS */
-.benefits{
-  margin-top:18px;
-  font-size:.82rem;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.benefits div{
-  padding:8px 10px;
-  border-radius:12px;
-  background:rgba(255,255,255,.04);
-}
-
-.benefits div{
-  margin-bottom:6px;
-}
-
-/* CTA FIXO ESTILO UBER */
-.cta-container{
+/* CTA */
+.cta-area{
   position:fixed;
   bottom:0;
   left:0;
   right:0;
   padding:20px;
-  background:linear-gradient(180deg,transparent,#0b1b2b 40%);
+  background:linear-gradient(180deg,transparent,#081826 50%);
 }
 
-.cta-btn{
+.cta-primary{
   width:100%;
   padding:20px;
-  font-size:1.1rem;
-  font-weight:900;
-  border-radius:20px;
+  border-radius:18px;
   border:none;
-  background:#d4af37;
-  color:#0b1b2b;
+  font-size:1.15rem;
+  font-weight:900;
+  background:#facc15;
+  color:#081826;
+  cursor:pointer;
 }
 
-.cta-btn:active{
+.cta-primary:active{
   transform:scale(.97);
 }
 
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(212,175,55,.5);}
-  70%{box-shadow:0 0 0 15px rgba(212,175,55,0);}
-  100%{box-shadow:0 0 0 0 rgba(212,175,55,0);}
-}
-
-.microcopy{
-  text-align:center;
-  font-size:.75rem;
-  margin-top:8px;
-  color:#94a3b8;
-}
-
-   .secondary-btn{
+.cta-secondary{
   width:100%;
-  margin-top:10px;
+  margin-top:12px;
   padding:14px;
-  border-radius:16px;
-  border:1px solid #d4af37;
+  border-radius:14px;
   background:transparent;
-  color:#ffffff;
+  border:1px solid #1d4ed8;
+  color:#1d4ed8;
   font-weight:600;
+  cursor:pointer;
 }
 
+.cta-secondary:active{
+  transform:scale(.97);
+}
+
+.micro{
+  text-align:center;
+  margin-top:10px;
+  font-size:.75rem;
+  color:#64748b;
+}
+
+/* Mobile ajuste */
 @media(max-width:390px){
-  .logo{font-size:2.1rem;}
-  .headline{font-size:1.5rem;}
-  .benefits{font-size:.8rem;}
+  .logo{font-size:2.2rem;}
+  .headline{font-size:1.7rem;}
 }
 </style>
 </head>
-<body>
 
-<div class="background"></div>
+<body>
 
 <div class="container">
 
-<div class="hero">
   <div class="logo">RF DRIVER</div>
 
-  <h1 class="headline">
+  <div class="headline">
     Seu motorista confiável<br>
     em poucos segundos.
-  </h1>
+  </div>
 
-  <p>
+  <div class="sub">
     Tecnologia + Atendimento humano.<br>
     Mobilidade com excelência.
-  </p>
+  </div>
 
   <div class="benefits">
     <div>✔ Motoristas verificados</div>
     <div>✔ Atendimento humanizado</div>
     <div>✔ Valor transparente antes da confirmação</div>
   </div>
-</div>
 
 </div>
 
-<div class="cta-container">
-  <button class="cta-btn" onclick="iniciar()">
+<div class="cta-area">
+  <button class="cta-primary" onclick="window.location.href='origem.html'">
     🚖 Solicitar Agora
   </button>
-   
-   <button class="secondary-btn" onclick="window.location.href='instalar-app.html'">
-  ⬇ Instalar Aplicativo
-</button>
 
-<button class="secondary-btn" onclick="window.location.href='regras.html'">
-  📜 Regras do App
-</button>
+  <button class="cta-secondary" onclick="window.location.href='instalar-app.html'">
+    ⬇ Instalar Aplicativo
+  </button>
 
-  <div class="microcopy">
+  <button class="cta-secondary" onclick="window.location.href='regras.html'">
+    📜 Regras do App
+  </button>
+
+  <div class="micro">
     Sem taxas ocultas. Você vê o valor antes.
   </div>
 </div>
 
-<script src="core/global.js"></script>
-<script>
-function iniciar(){
-  App.reset();
-  App.go("origem.html");
-}
-</script>
-
 </body>
 </html>
-
-
-
-
-
-

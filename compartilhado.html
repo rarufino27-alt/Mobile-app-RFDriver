@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Central de Solicitações – RF DRIVER</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="./theme/theme.css">
+
+<style>
+.page{
+  min-height:100vh;
+  padding:20px;
+  display:flex;
+  justify-content:center;
+}
+
+.container{
+  width:100%;
+  max-width:500px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.header{
+  padding:20px;
+  border-radius:18px;
+  background:linear-gradient(180deg,var(--card),#0b2238);
+  color:#fff;
+  text-align:center;
+}
+
+.card{
+  background:#fff;
+  padding:16px;
+  border-radius:18px;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+
+.status{
+  font-size:.75rem;
+  padding:4px 8px;
+  border-radius:12px;
+  font-weight:700;
+}
+
+.status-aberto{
+  background:#facc15;
+  color:#000;
+}
+
+.status-atendimento{
+  background:#22c55e;
+  color:#fff;
+}
+
+.btn{
+  margin-top:10px;
+  padding:10px;
+  border:none;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.btn-aceitar{
+  background:#22c55e;
+  color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+<div class="container">
+
+<div class="header">
+  <h2>Central de Solicitações</h2>
+</div>
+
+<div id="listaSolicitacoes"></div>
+
+</div>
+</div>
+
+<script src="core/global.js"></script>
+
+<script>
+const STORAGE_SOLICITACOES = "rf_driver_solicitacoes";
+
+function getSolicitacoes(){
+  return JSON.parse(localStorage.getItem(STORAGE_SOLICITACOES) || "[]");
+}
+
+function setSolicitacoes(arr){
+  localStorage.setItem(STORAGE_SOLICITACOES, JSON.stringify(arr));
+}
+
+// ==========================
+// CRIAR NOVA SOLICITAÇÃO
+// ==========================
+function criarSolicitacao(){
+
+  const origem = App.get("origem");
+  const destino = App.get("destino");
+  const total = App.get("total");
+  const pagamento = App.get("formaPagamento");
+  const config = App.get("taxasConfig") || {};
+
+  if(!origem || !destino) return;
+
+  const nova = {
+    id: Date.now(),
+    origem,
+    destino,
+    total,
+    pagamento,
+    observacao: config.observacao || "",
+    status: "aberto",
+    criadoEm: new Date().toLocaleString("pt-BR")
+  };
+
+  const lista = getSolicitacoes();
+  lista.unshift(nova);
+  setSolicitacoes(lista);
+}
+
+// ==========================
+// RENDERIZAR
+// ==========================
+function render(){
+
+  const lista = getSolicitacoes();
+  const container = document.getElementById("listaSolicitacoes");
+
+  if(lista.length === 0){
+    container.innerHTML = "<div class='card'>Nenhuma solicitação ainda.</div>";
+    return;
+  }
+
+  container.innerHTML = lista.map(s=>`
+    <div class="card">
+      <strong>${s.origem} → ${s.destino}</strong><br>
+      <small>${s.criadoEm}</small><br><br>
+
+      💰 <strong>R$ ${Number(s.total).toFixed(2)}</strong><br>
+      💳 ${s.pagamento}<br>
+
+      ${s.observacao ? `<br>📝 ${s.observacao}<br>` : ""}
+
+      <span class="status ${s.status==="aberto" ? "status-aberto":"status-atendimento"}">
+        ${s.status==="aberto" ? "AGUARDANDO MOTORISTA" : "EM ATENDIMENTO"}
+      </span>
+
+      ${s.status==="aberto" ? 
+        `<button class="btn btn-aceitar" onclick="aceitar(${s.id})">
+          Aceitar Corrida
+        </button>` 
+        : ""
+      }
+    </div>
+  `).join("");
+}
+
+// ==========================
+// ACEITAR
+// ==========================
+function aceitar(id){
+  const lista = getSolicitacoes();
+  const index = lista.findIndex(s=>s.id === id);
+
+  if(index !== -1){
+    lista[index].status = "em_atendimento";
+    setSolicitacoes(lista);
+    render();
+  }
+}
+
+// ==========================
+// INICIALIZAÇÃO
+// ==========================
+criarSolicitacao();
+render();
+</script>
+
+</body>
+</html>

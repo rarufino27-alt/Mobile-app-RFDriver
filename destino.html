@@ -240,7 +240,7 @@ busca.oninput=()=>{
   render(destinos.filter(d=>d.toLowerCase().includes(t)));
 };
 
-const btn = document.getElementById("btnResumo");
+let btn = document.getElementById("btnResumo");
 if(btn){
   btn.onclick = function(){
 
@@ -249,6 +249,7 @@ carregar();
 
 </body>
 </html>
+
 
 
 

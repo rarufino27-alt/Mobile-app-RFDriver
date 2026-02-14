@@ -5,249 +5,170 @@
 <title>RF Driver – Mobilidade com excelência</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- PWA -->
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#f4f7fb">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="RF Driver">
-<link rel="apple-touch-icon" href="./icons/192.png">
-
-<!-- THEME -->
 <link rel="stylesheet" href="./theme/theme.css">
-<link rel="stylesheet" href="./theme/layout.css">
-<link rel="stylesheet" href="./theme/components.css">
 
 <style>
+
 /* ===============================
-   INDEX – RF DRIVER CLARO PREMIUM
+   INDEX PREMIUM TECH + HUMANO
    =============================== */
 
-.page{
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0b1b2b;
+  color:#ffffff;
+  overflow:hidden;
+}
+
+/* FUNDO MAPA ABSTRATO */
+.background{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(212,175,55,.15), transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(212,175,55,.10), transparent 50%),
+    linear-gradient(180deg,#0b1b2b,#08121d);
+  animation:moveBg 10s infinite alternate ease-in-out;
+  z-index:0;
+}
+
+@keyframes moveBg{
+  from{transform:scale(1);}
+  to{transform:scale(1.05);}
+}
+
+/* CONTAINER */
+.container{
+  position:relative;
+  z-index:1;
   min-height:100vh;
   display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-}
-
-.box{
-  width:100%;
-  max-width:420px;
-  display:flex;
   flex-direction:column;
-  gap:28px;
-}
-
-/* MENU BUTTON */
-.menu-btn{
-  position:fixed;
-  top:18px;
-  right:18px;
-  font-size:1.6rem;
-  background:none;
-  border:none;
-  color:#0b1b2b;
-  cursor:pointer;
-  z-index:300;
+  justify-content:space-between;
+  padding:30px 24px 120px 24px;
 }
 
 /* HERO */
 .hero{
-  text-align:center;
-  padding:42px 30px;
-  border-radius:22px;
-  background:linear-gradient(180deg,var(--card),#0b2238);
-  border:1px solid var(--border);
-  box-shadow:0 18px 40px rgba(0,0,0,.35);
+  margin-top:80px;
 }
 
-.hero-title{
-  font-size:1.9rem;
-  font-weight:800;
+.logo{
+  font-size:1.4rem;
+  font-weight:700;
   letter-spacing:3px;
-  background:linear-gradient(120deg,var(--gold),var(--gold-light),var(--gold));
+  background:linear-gradient(120deg,#d4af37,#f6e27f,#d4af37);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
 
-.hero-sub{
-  margin-top:8px;
+.hero h1{
+  font-size:2rem;
+  margin-top:20px;
+  line-height:1.2;
+}
+
+.hero p{
+  margin-top:12px;
+  font-size:.95rem;
+  color:#cbd5e1;
+}
+
+/* BENEFÍCIOS */
+.benefits{
+  margin-top:40px;
   font-size:.9rem;
-  color:#e6ecf3;
+  line-height:1.8;
+  color:#e2e8f0;
 }
 
-.divider{
-  width:80px;
-  height:2px;
-  margin:14px auto 0;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+.benefits div{
+  margin-bottom:6px;
 }
 
-/* CTA */
-.primary-action{
-  padding:18px;
-  font-size:1.05rem;
-  font-weight:700;
-  border-radius:18px;
-  background:linear-gradient(145deg,var(--gold-light),var(--gold),var(--gold-dark));
-  color:#0b1b2b;
+/* CTA FIXO ESTILO UBER */
+.cta-container{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  padding:20px;
+  background:linear-gradient(180deg,transparent,#0b1b2b 40%);
+}
+
+.cta-btn{
+  width:100%;
+  padding:20px;
+  font-size:1.1rem;
+  font-weight:800;
+  border-radius:20px;
   border:none;
-  box-shadow:0 12px 28px rgba(212,175,55,.45);
+  background:linear-gradient(145deg,#f6e27f,#d4af37,#bfa130);
+  color:#0b1b2b;
+  box-shadow:0 12px 30px rgba(212,175,55,.45);
+  animation:pulse 2.5s infinite;
 }
 
-/* FOOTER */
-.footer{
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(212,175,55,.5);}
+  70%{box-shadow:0 0 0 15px rgba(212,175,55,0);}
+  100%{box-shadow:0 0 0 0 rgba(212,175,55,0);}
+}
+
+.microcopy{
   text-align:center;
   font-size:.75rem;
-  color:var(--text-muted);
+  margin-top:8px;
+  color:#94a3b8;
 }
 
-/* ===============================
-   MENU OVERLAY PREMIUM
-   =============================== */
-
-.menu-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(11,27,43,.85);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:200;
-}
-
-.menu-panel{
-  background:linear-gradient(180deg,var(--card),#0b2238);
-  width:92%;
-  max-width:380px;
-  border-radius:24px;
-  padding:24px;
-  box-shadow:0 22px 60px rgba(0,0,0,.6);
-  border:1px solid var(--border);
-  color:#fff;
-}
-
-.menu-panel h3{
-  text-align:center;
-  margin-bottom:18px;
-  background:linear-gradient(120deg,var(--gold),var(--gold-light),var(--gold));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  letter-spacing:2px;
-}
-
-/* MENU ITEMS */
-.menu-item{
-  display:block;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid rgba(212,175,55,.45);
-  margin-bottom:10px;
-  text-align:center;
-  color:#fff;
-  text-decoration:none;
-  font-weight:600;
-  background:rgba(255,255,255,.05);
-}
-
-.menu-item:hover{
-  background:rgba(212,175,55,.15);
-}
-
-/* WHATSAPP ADMIN */
-.menu-whats{
-  margin-top:18px;
-}
-
-.menu-whats strong{
-  display:block;
-  margin-bottom:10px;
-  font-size:.9rem;
-  color:var(--gold-light);
-}
-
-.menu-whats a{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  padding:12px;
-  border-radius:14px;
-  background:#1db954;
-  color:#fff;
-  text-decoration:none;
-  font-weight:700;
-  margin-bottom:8px;
-  box-shadow:0 6px 18px rgba(29,185,84,.45);
-}
-
-.menu-whats a:hover{
-  filter:brightness(1.1);
-}
 </style>
 </head>
 <body>
 
-<button class="menu-btn" onclick="abrirMenu()">☰</button>
+<div class="background"></div>
 
-<div class="page">
-  <div class="box">
+<div class="container">
 
-    <div class="hero">
-      <div class="hero-title">RF Driver Mobile</div>
-      <div class="hero-sub">Mobilidade com excelência</div>
-      <div class="divider"></div>
+  <div class="hero">
+    <div class="logo">RF DRIVER</div>
+
+    <h1>
+      Seu motorista confiável<br>
+      em poucos segundos.
+    </h1>
+
+    <p>
+      Tecnologia + Atendimento humano.<br>
+      Mobilidade com excelência.
+    </p>
+
+    <div class="benefits">
+      <div>✔ Motoristas verificados</div>
+      <div>✔ Atendimento humanizado</div>
+      <div>✔ Valor transparente antes da confirmação</div>
     </div>
-
-    <button class="btn primary-action" id="btnIniciar">
-      Iniciar Solicitação
-    </button>
-
-    <div class="footer">
-      App de Viagens oficial RF Driver
-    </div>
-
   </div>
+
 </div>
 
-<!-- MENU -->
-<div class="menu-overlay" id="menu">
-  <div class="menu-panel">
-    <h3>MENU</h3>
-
-        <a class="menu-item" href="regras.html">Regras</a>
-    <a class="menu-item" href="instalar-app.html">Instalar Aplicativo</a>
-
-    <div class="menu-whats">
-      <strong>WhatsApp – SUPORTE</strong>
-
-      <a href="https://wa.me/5581992716132" target="_blank">📱 Suporte</a>
-    </div>
+<div class="cta-container">
+  <button class="cta-btn" onclick="iniciar()">
+    🚖 Solicitar Agora
+  </button>
+  <div class="microcopy">
+    Sem taxas ocultas. Você vê o valor antes.
   </div>
 </div>
 
 <script src="core/global.js"></script>
 <script>
-document.getElementById("btnIniciar").onclick = () => {
+function iniciar(){
   App.reset();
   App.go("origem.html");
-};
-
-function abrirMenu(){
-  document.getElementById("menu").style.display="flex";
 }
-
-document.getElementById("menu").onclick = e=>{
-  if(e.target.id==="menu"){
-    e.target.style.display="none";
-  }
-};
 </script>
 
 </body>
 </html>
-
-
-

@@ -43,7 +43,7 @@ body{
 }
 
 .logo-img{
-  width:75%;
+  width:70%;
   height:auto;
   object-fit:contain;
 }
@@ -168,10 +168,42 @@ body{
 .modal-content div:hover{
   background:#1a1a1a;
 }
+
+  /* TOP BAR */
+.top-bar{
+  position:fixed;
+  top:20px;
+  left:20px;
+  z-index:10;
+}
+
+.back-btn{
+  background:transparent;
+  border:none;
+  color:#a1a1aa;
+  font-size:.9rem;
+  cursor:pointer;
+  font-weight:500;
+}
+
+.back-btn:hover{
+  color:#facc15;
+}
+
+.back-btn:active{
+  transform:scale(.95);
+}
+
 </style>
 </head>
 
 <body>
+
+  <div class="top-bar">
+  <button class="back-btn" onclick="App.go('origem.html')">
+    ← Editar origem
+  </button>
+</div>
 
 <div class="container">
 
@@ -197,13 +229,6 @@ body{
     Avançar
   </button>
 
-  <button class="cta-secondary" onclick="App.go('origem.html')">
-    Editar Origem
-  </button>
-
-  <button class="cta-secondary" onclick="App.go('index.html')">
-    Início
-  </button>
 </div>
 
 <div class="modal" id="modal">
@@ -287,3 +312,4 @@ function avancar(){
 
 </body>
 </html>
+

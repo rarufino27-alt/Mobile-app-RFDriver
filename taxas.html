@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Categoria – RF DRIVER</title>
+<title>Taxas – RF DRIVER</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="core/global.js"></script>
@@ -22,7 +22,7 @@ body{
 }
 
 .container{
-  padding:30px 20px 160px;
+  padding:30px 20px 140px;
   max-width:420px;
   margin:0 auto;
 }
@@ -37,17 +37,19 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:0 0 30px rgba(250,204,21,.35);
+  box-shadow:
+    0 0 30px rgba(250,204,21,.35);
 }
 
 .logo-img{
   width:70%;
+  object-fit:contain;
 }
 
 /* HEADER */
 .header{
   text-align:center;
-  margin-bottom:30px;
+  margin-bottom:25px;
 }
 
 .header h1{
@@ -60,55 +62,71 @@ body{
   color:#a1a1aa;
 }
 
-/* CATEGORIAS */
-.section-title{
-  font-size:.85rem;
-  color:#a1a1aa;
-  margin-bottom:15px;
+/* SECTION */
+.section{
+  margin-bottom:25px;
 }
 
-.category-card{
-  background:#111;
-  padding:18px;
-  border-radius:18px;
-  border:1px solid #1c1c1c;
+.section-title{
+  font-size:.85rem;
+  font-weight:600;
   margin-bottom:12px;
+  color:#a1a1aa;
+}
+
+/* CARD OPTION */
+.card-option{
+  background:#111;
+  padding:16px;
+  border-radius:16px;
+  border:1px solid #1c1c1c;
+  margin-bottom:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   cursor:pointer;
   transition:.2s;
 }
 
-.category-card.active{
+.card-option.active{
   border:1px solid #facc15;
   background:#151515;
 }
 
-.category-card strong{
-  display:block;
-  font-size:1rem;
+.card-option span{
+  font-size:.95rem;
 }
 
-.category-card span{
-  font-size:.8rem;
-  color:#9ca3af;
+.card-option input{
+  transform:scale(1.2);
 }
 
-/* OUTRAS CONFIGURAÇÕES */
-.section{
-  margin-top:30px;
-}
-
+/* SELECT / INPUT */
 select,
-input,
+input[type="number"],
 textarea{
   width:100%;
   padding:14px;
   border-radius:14px;
   background:#111;
-  border:1px solid #1c1c1c;
   color:#fff;
+  border:1px solid #1c1c1c;
+  font-size:.95rem;
 }
 
-/* BOTÃO */
+/* DETALHAMENTO */
+.details{
+  font-size:.85rem;
+}
+
+.details div{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:6px;
+  color:#e4e4e7;
+}
+
+/* BOTÃO FIXO */
 .cta-area{
   position:fixed;
   bottom:0;
@@ -145,42 +163,71 @@ textarea{
   </div>
 
   <div class="header">
-    <h1>Escolha a Categoria</h1>
-    <span>Selecione o tipo de veículo desejado</span>
+    <h1>Configuração de Taxas</h1>
+    <span>Selecione adicionais da viagem</span>
   </div>
 
-  <div class="section-title">Categoria de Veículo</div>
-
-  <div class="category-card" onclick="selecionarCategoria('moto',0.65,this)">
-    <strong>🏍 Moto</strong>
-    <span>Mais rápido e econômico</span>
+  <!-- TIPO DE VIAGEM -->
+  <div class="section">
+    <div class="section-title">Tipo de viagem</div>
+    <select id="tipoViagem">
+      <option value="ida">Ida</option>
+      <option value="bate_volta">Bate e volta</option>
+      <option value="ida_volta">Ida e volta (Até 30min)</option>
+      <option value="ida_volta_espera">Ida e volta com espera</option>
+    </select>
   </div>
 
-  <div class="category-card active" onclick="selecionarCategoria('hatch',1.0,this)">
-    <strong>🚗 Hatch</strong>
-    <span>Compacto e confortável</span>
+  <!-- ADICIONAIS -->
+  <div class="section">
+    <div class="section-title">Adicionais</div>
+
+    <div class="card-option">
+      <span>🛣️ Desvio rápido – R$ 5,00</span>
+      <input type="checkbox" id="desvioSimples">
+    </div>
+
+    <div class="card-option">
+      <span>🏖️ Volta das praias – R$ 10,00</span>
+      <input type="checkbox" id="voltaPraia">
+    </div>
+
+    <div class="card-option">
+      <span>🛒 Taxa de feira – R$ 5,00</span>
+      <input type="checkbox" id="taxaFeira">
+    </div>
+
+    <div class="card-option">
+      <span>🌙 Adicional noturno</span>
+      <input type="checkbox" id="taxaNoturna">
+    </div>
   </div>
 
-  <div class="category-card" onclick="selecionarCategoria('sedan',1.1,this)">
-    <strong>🚘 Sedan</strong>
-    <span>Mais espaço e conforto</span>
+  <!-- ANIMAL -->
+  <div class="section">
+    <div class="section-title">Transporte de animal</div>
+    <select id="animal">
+      <option value="0">Não</option>
+      <option value="4.99">Pequeno – R$ 4.99</option>
+      <option value="6.99">Médio – R$ 6.99</option>
+      <option value="9.99">Grande – R$ 9.99</option>
+      <option value="19.90">Viagem longa – R$ 19.90</option>
+    </select>
   </div>
 
-  <div class="category-card" onclick="selecionarCategoria('suv',1.25,this)">
-    <strong>🚙 SUV</strong>
-    <span>Mais robusto</span>
+  <!-- ESPERA -->
+  <div class="section">
+    <div class="section-title">Tempo de espera (min)</div>
+    <input type="number" id="minutosEspera" placeholder="Ex: 10">
   </div>
 
-  <div class="category-card" onclick="selecionarCategoria('6lugares',1.50,this)">
-    <strong>🚐 6 Lugares</strong>
-    <span>Ideal para grupo</span>
+  <!-- DETALHAMENTO -->
+  <div class="section">
+    <div class="section-title">Detalhamento</div>
+    <div class="details" id="detalhamento"></div>
   </div>
 
-  <div class="category-card" onclick="selecionarCategoria('qualquer',1.0,this)">
-    <strong>🔄 Qualquer disponível</strong>
-    <span>Primeiro motorista disponível</span>
-  </div>
-
+  <!-- OBSERVAÇÃO -->
   <div class="section">
     <div class="section-title">Observação</div>
     <textarea id="observacao" placeholder="Informações adicionais..."></textarea>
@@ -195,32 +242,77 @@ textarea{
 </div>
 
 <script>
+const detalheDiv = document.getElementById("detalhamento");
 
-let categoriaSelecionada = "hatch";
-let multiplicadorSelecionado = 1.0;
+function atualizarDetalhamento(){
 
-function selecionarCategoria(tipo,multiplicador,element){
+  let detalhes = [];
 
-  categoriaSelecionada = tipo;
-  multiplicadorSelecionado = multiplicador;
+  const tipo = document.getElementById("tipoViagem").value;
 
-  document.querySelectorAll(".category-card")
-    .forEach(c=>c.classList.remove("active"));
+  const mapaTipo = {
+    ida: "Ida",
+    bate_volta: "Bate e volta (+100%)",
+    ida_volta: "Ida e volta",
+    ida_volta_espera: "Ida e volta com espera (+10%)"
+  };
 
-  element.classList.add("active");
+  detalhes.push(["Tipo de viagem", mapaTipo[tipo]]);
+
+  if (document.getElementById("desvioSimples").checked)
+    detalhes.push(["Desvio rápido", "R$ 5,00"]);
+
+  if (document.getElementById("voltaPraia").checked)
+    detalhes.push(["Volta das praias", "R$ 10,00"]);
+
+  if (document.getElementById("taxaFeira").checked)
+    detalhes.push(["Taxa de feira", "R$ 5,00"]);
+
+  if (document.getElementById("taxaNoturna").checked)
+    detalhes.push(["Adicional noturno", "Aplicado no resumo"]);
+
+  const animal = Number(document.getElementById("animal").value || 0);
+  if (animal > 0)
+    detalhes.push(["Transporte animal", `R$ ${animal.toFixed(2)}`]);
+
+  const min = Number(document.getElementById("minutosEspera").value || 0);
+  if (min >= 5)
+    detalhes.push([`Tempo de espera (${min} min)`, "Calculado no resumo"]);
+
+  detalheDiv.innerHTML = detalhes.map(d=>`
+    <div>
+      <span>${d[0]}</span>
+      <strong>${d[1]}</strong>
+    </div>
+  `).join("");
 }
+
+document.querySelectorAll("input,select").forEach(el=>{
+  el.addEventListener("change", ()=>{
+    el.closest(".card-option")?.classList.toggle("active", el.checked);
+    atualizarDetalhamento();
+  });
+});
 
 function salvarTaxas(){
 
   const dados = {
-    categoria: categoriaSelecionada,
-    multiplicador: multiplicadorSelecionado,
+    tipoViagem: document.getElementById("tipoViagem").value,
+    desvioSimples: document.getElementById("desvioSimples").checked,
+    voltaPraia: document.getElementById("voltaPraia").checked,
+    veiculo6: document.getElementById("veiculo6").checked,
+    taxaFeira: document.getElementById("taxaFeira").checked,
+    taxaNoturna: document.getElementById("taxaNoturna").checked,
+    animal: document.getElementById("animal").value,
+    minutosEspera: document.getElementById("minutosEspera").value,
     observacao: document.getElementById("observacao").value.trim()
   };
 
   App.set("taxasConfig", dados);
-  App.go("resumo.html");
+  App.go("categoria.html");
 }
+
+atualizarDetalhamento();
 </script>
 
 </body>

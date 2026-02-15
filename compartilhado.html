@@ -5,229 +5,204 @@
 <title>Central de Solicitações – RF DRIVER</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="./theme/theme.css">
+<script src="core/global.js"></script>
 
 <style>
-.page{
-  min-height:100vh;
-  padding:20px;
-  display:flex;
-  justify-content:center;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
+body{
+  background:#000;
+  color:#fff;
+}
+
+/* CONTAINER */
 .container{
-  width:100%;
-  max-width:500px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
+  max-width:480px;
+  margin:0 auto;
+  padding:25px 18px 40px;
 }
 
+/* LOGO */
+.logo-wrapper{
+  width:70px;
+  height:70px;
+  margin:0 auto 18px auto;
+  border-radius:50%;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 25px rgba(250,204,21,.35);
+}
+
+.logo-img{
+  width:70%;
+}
+
+/* HEADER */
 .header{
-  padding:20px;
-  border-radius:18px;
-  background:linear-gradient(180deg,var(--card),#0b2238);
-  color:#ffffff;
   text-align:center;
+  margin-bottom:15px;
 }
 
 .header h2{
-  color:#ffffff !important;
-}
-
-/* CARD PREMIUM */
-.card{
-  background:#ffffff;
-  padding:18px;
-  border-radius:22px;
-  box-shadow:0 12px 28px rgba(0,0,0,.08);
-  transition:all .25s ease;
-  animation:fadeUp .35s ease;
-}
-
-.card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 16px 36px rgba(0,0,0,.12);
-}
-
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-/* TOPO DO CARD */
-.card-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.card-header strong{
-  font-size:1rem;
-}
-
-/* BADGE STATUS */
-.status{
-  font-size:.7rem;
-  padding:6px 10px;
-  border-radius:20px;
+  font-size:1.2rem;
   font-weight:700;
-}
-
-.status-aberto{
-  background:linear-gradient(145deg,#facc15,#eab308);
-  color:#000;
-}
-
-/* TOTAL PREMIUM */
-.total-box{
-  margin-top:14px;
-  padding:14px;
-  border-radius:18px;
-  background:linear-gradient(145deg,var(--gold-light),var(--gold));
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:800;
-  color:#0b1b2b;
-}
-
-/* DETALHAMENTO */
-.detalhes-box{
-  margin-top:14px;
-  padding:14px;
-  background:#f8fafc;
-  border-radius:16px;
-  font-size:.85rem;
-}
-
-.detalhe-item{
-  display:flex;
-  justify-content:space-between;
-  padding:6px 0;
-  border-bottom:1px solid #e5e7eb;
-}
-
-.detalhe-item:last-child{
-  border-bottom:none;
-}
-
-/* BOTÕES */
-.btn{
-  margin-top:10px;
-  padding:12px;
-  border:none;
-  border-radius:14px;
-  font-weight:700;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.btn-aceitar{
-  background:#22c55e;
-  color:#ffffff;
-}
-
-.btn-aceitar:hover{
-  background:#16a34a;
-}
-
-.btn-cancelar{
-  background:#ef4444;
-  color:#ffffff;
-}
-
-.btn-cancelar:hover{
-  background:#dc2626;
-}
-
-.card.fade-out{
-  opacity:0;
-  transform:translateY(-10px);
-  transition:all .3s ease;
-}
-
-.base-box{
-  margin-top:14px;
-  padding:12px;
-  background:#eef2ff;
-  border-radius:14px;
-  font-size:.85rem;
-}
-
-.adicionais-box{
-  margin-top:10px;
-  padding:12px;
-  background:#f8fafc;
-  border-radius:14px;
-  font-size:.85rem;
 }
 
 .tabs{
   display:flex;
-  gap:10px;
-  margin-top:10px;
+  gap:8px;
+  margin-bottom:15px;
 }
 
 .tab-btn{
   flex:1;
   padding:10px;
-  border-radius:14px;
+  border-radius:12px;
   border:none;
-  font-weight:700;
+  background:#111;
+  color:#fff;
+  font-weight:600;
   cursor:pointer;
-  background:#e5e7eb;
-  color:#0b1b2b;
-  transition:.2s;
 }
 
 .tab-btn.active{
-  background:linear-gradient(145deg,var(--gold-light),var(--gold));
-  color:#0b1b2b;
+  background:#facc15;
+  color:#000;
 }
 
-.tab-btn:hover{
+/* CARD */
+.card{
+  background:#111;
+  border:1px solid #1c1c1c;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:16px;
+  transition:.25s;
+}
+
+.card.fade-out{
+  opacity:0;
+  transform:translateY(-10px);
+}
+
+/* HEADER CARD */
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.status{
+  background:#facc15;
+  color:#000;
+  font-size:.7rem;
+  padding:5px 10px;
+  border-radius:20px;
+  font-weight:700;
+}
+
+/* ROTA */
+.route{
+  font-size:.9rem;
+  margin-bottom:10px;
+}
+
+/* TOTAL */
+.total{
+  font-size:1.4rem;
+  font-weight:800;
+  color:#facc15;
+  margin-bottom:8px;
+}
+
+/* PAGAMENTO */
+.pagamento{
+  font-size:.8rem;
+  color:#a1a1aa;
+  margin-bottom:10px;
+}
+
+/* OFERTA */
+.oferta-box{
+  margin-top:12px;
+  padding:10px;
+  background:#0f172a;
+  border-radius:12px;
+  border:1px solid #1d4ed8;
+}
+
+.oferta-box input{
+  width:100%;
+  padding:8px;
+  border-radius:8px;
+  border:none;
+  margin-top:6px;
+  background:#000;
+  color:#fff;
+}
+
+.btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  font-weight:700;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+.btn-oferta{
+  background:#1d4ed8;
+  color:#fff;
+}
+
+.btn-cancelar{
+  background:#ef4444;
+  color:#fff;
+}
+
+.btn:hover{
   opacity:.9;
+}
+
+.empty{
+  background:#111;
+  padding:20px;
+  border-radius:12px;
+  text-align:center;
+  color:#a1a1aa;
 }
 </style>
 </head>
 
 <body>
 
-<div class="page">
 <div class="container">
 
-<div class="header">
-  <h2>Central de Solicitações</h2>
-</div>
+  <div class="logo-wrapper">
+    <img src="./icons/logo-1024.png" class="logo-img">
+  </div>
 
-<div class="tabs">
-  <button class="tab-btn active">
-    Solicitações
-  </button>
+  <div class="header">
+    <h2>Central de Solicitação</h2>
+  </div>
 
-  <button class="tab-btn" onclick="App.go('historico.html')">
-    Histórico
-  </button>
-</div>
+  <div class="tabs">
+    <button class="tab-btn active">Solicitações</button>
+    <button class="tab-btn" onclick="App.go('historico.html')">Histórico</button>
+  </div>
 
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
-  
-  <div id="contadorSolicitacoes" style="font-weight:700;"></div>
-
-  <label style="font-size:.85rem;display:flex;align-items:center;gap:6px;">
-    <input type="checkbox" id="filtroAbertas" checked>
-    Somente abertas
-  </label>
+  <div id="listaSolicitacoes"></div>
 
 </div>
-
-<div id="listaSolicitacoes"></div>
-
-</div>
-</div>
-
-<script src="core/global.js"></script>
 
 <script>
 const STORAGE_SOLICITACOES = "rf_driver_solicitacoes";
@@ -249,56 +224,17 @@ function setHistorico(arr){
   localStorage.setItem(STORAGE_HISTORICO, JSON.stringify(arr));
 }
 
-// ==========================
-// CRIAR NOVA SOLICITAÇÃO
-// ==========================
+/* ==========================
+   CRIAR SOLICITAÇÃO
+========================== */
 function criarSolicitacao(){
 
   const origem = App.get("origem");
   const destino = App.get("destino");
   const total = App.get("total");
   const pagamento = App.get("formaPagamento");
-  const valorBase = Number(App.get("valorBase") || 0);
-  const config = App.get("taxasConfig") || {};
 
   if(!origem || !destino || !total) return;
-
-  let detalhes = [];
-
-  detalhes.push({ nome:"Viagem base", valor: valorBase });
-
-  if(config.tipoViagem === "bate_volta")
-    detalhes.push({ nome:"Bate e volta", valor: valorBase });
-
-  if(config.tipoViagem === "ida_volta")
-    detalhes.push({ nome:"Ida e volta", valor: valorBase });
-
-  if(config.tipoViagem === "ida_volta_espera")
-    detalhes.push({ nome:"Ida e volta + espera", valor: valorBase + (valorBase*0.10) });
-
-  if(config.desvioSimples)
-    detalhes.push({ nome:"Desvio rápido", valor: 5 });
-
-  if(config.voltaPraia)
-    detalhes.push({ nome:"Volta das praias", valor: 10 });
-
-  if(config.taxaFeira)
-    detalhes.push({ nome:"Taxa de feira", valor: 5 });
-
-  if(config.veiculo6)
-    detalhes.push({ nome:"Veículo 6 lugares (50%)", valor: valorBase*0.5 });
-
-  if(config.taxaNoturna)
-    detalhes.push({ nome:"Adicional noturno", valor: "Calculado no total" });
-
-  if(Number(config.animal) > 0)
-    detalhes.push({ nome:"Transporte animal", valor: Number(config.animal) });
-
-  if(Number(config.minutosEspera) >= 5){
-    const min = Number(config.minutosEspera);
-    const acres = 3 + ((min-5)*0.60);
-    detalhes.push({ nome:`Tempo de espera (${min} min)`, valor: acres });
-  }
 
   const nova = {
     id: Date.now(),
@@ -306,8 +242,6 @@ function criarSolicitacao(){
     destino,
     total,
     pagamento,
-    detalhes,
-    status: "aberto",
     criadoEm: new Date().toLocaleString("pt-BR")
   };
 
@@ -316,167 +250,86 @@ function criarSolicitacao(){
   setSolicitacoes(lista);
 }
 
-// ==========================
-// HISTÓRICO
-// ==========================
-function adicionarHistorico(corrida){
-
-  let historico = getHistorico();
-
-  historico.unshift({
-    ...corrida,
-    status: "realizada",
-    finalizadaEm: new Date().toLocaleString("pt-BR")
-  });
-
-  if(historico.length > 25){
-    historico = historico.slice(0,25);
-  }
-
-  setHistorico(historico);
-}
-
-// ==========================
-// CANCELAR
-// ==========================
+/* ==========================
+   CANCELAR
+========================== */
 function cancelar(id){
-
-  const confirmar = confirm("Deseja realmente cancelar esta solicitação?");
-  if(!confirmar) return;
-
-  let lista = getSolicitacoes();
-  lista = lista.filter(s => s.id !== id);
-
+  let lista = getSolicitacoes().filter(s=>s.id !== id);
   setSolicitacoes(lista);
   render();
 }
 
-// ==========================
-// ACEITAR
-// ==========================
-function aceitar(id){
+/* ==========================
+   AUMENTAR OFERTA
+========================== */
+function aumentarOferta(id){
 
-  const card = document.getElementById("card-"+id);
-  if(card){
-    card.classList.add("fade-out");
-  }
+  const input = document.getElementById("oferta-"+id);
+  const novoValor = Number(input.value);
 
-  setTimeout(()=>{
-
-    let lista = getSolicitacoes();
-    const index = lista.findIndex(s=>s.id === id);
-
-    if(index === -1) return;
-
-    const corrida = lista[index];
-
-    lista.splice(index,1);
-    setSolicitacoes(lista);
-
-    adicionarHistorico(corrida);
-
-    render();
-
-  },300);
-}
-
-// ==========================
-// RENDERIZAR
-// ==========================
-function render(){
-
-  const filtroAbertas = document.getElementById("filtroAbertas").checked;
-  let lista = getSolicitacoes();
-
-  if(filtroAbertas){
-    lista = lista.filter(s => s.status === "aberto");
-  }
-
-  const container = document.getElementById("listaSolicitacoes");
-  const contador = document.getElementById("contadorSolicitacoes");
-
-  contador.innerText = `Solicitações: ${lista.length}`;
-
-  if(lista.length === 0){
-    container.innerHTML = "<div class='card'>Nenhuma solicitação aberta.</div>";
+  if(!novoValor || novoValor <= 0){
+    alert("Digite um valor válido.");
     return;
   }
 
-  container.innerHTML = lista.map(s=>{
+  let lista = getSolicitacoes();
+  const index = lista.findIndex(s=>s.id===id);
 
-    const base = s.detalhes.filter(d=>d.nome === "Viagem base");
-    const adicionais = s.detalhes.filter(d=>d.nome !== "Viagem base");
+  if(index === -1) return;
 
-    return `
-      <div class="card" id="card-${s.id}">
-
-        <div class="card-header">
-          <strong>${s.origem} → ${s.destino}</strong>
-          <span class="status status-aberto">AGUARDANDO</span>
-        </div>
-
-        <small>${s.criadoEm}</small>
-
-        <div class="total-box">
-          <span>💰 Total</span>
-          <span>R$ ${Number(s.total).toFixed(2)}</span>
-        </div>
-
-        <div style="margin-top:8px;font-size:.85rem;">
-          💳 ${s.pagamento}
-        </div>
-
-        ${base.length ? `
-          <div class="base-box">
-            <strong>Base</strong><br>
-            ${base.map(d=>`
-              <div class="detalhe-item">
-                <span>${d.nome}</span>
-                <strong>R$ ${Number(d.valor).toFixed(2)}</strong>
-              </div>
-            `).join("")}
-          </div>
-        ` : ""}
-
-        ${adicionais.length ? `
-          <div class="adicionais-box">
-            <strong>Adicionais</strong><br>
-            ${adicionais.map(d=>`
-              <div class="detalhe-item">
-                <span>${d.nome}</span>
-                <strong>
-                  ${
-                    typeof d.valor === "number"
-                    ? "R$ " + d.valor.toFixed(2)
-                    : d.valor
-                  }
-                </strong>
-              </div>
-            `).join("")}
-          </div>
-        ` : ""}
-
-        <button class="btn btn-aceitar" onclick="aceitar(${s.id})">
-          Aceitar Corrida
-        </button>
-
-        <button class="btn btn-cancelar" onclick="cancelar(${s.id})">
-          Cancelar Solicitação
-        </button>
-
-      </div>
-    `;
-  }).join("");
+  lista[index].total = novoValor;
+  setSolicitacoes(lista);
+  render();
 }
 
-// ==========================
-// INICIALIZAÇÃO
-// ==========================
+/* ==========================
+   RENDER
+========================== */
+function render(){
+
+  const container = document.getElementById("listaSolicitacoes");
+  const lista = getSolicitacoes();
+
+  if(lista.length === 0){
+    container.innerHTML = `<div class="empty">Nenhuma solicitação ativa.</div>`;
+    return;
+  }
+
+  container.innerHTML = lista.map(s=>`
+    <div class="card" id="card-${s.id}">
+      <div class="card-header">
+        <strong>${s.origem} → ${s.destino}</strong>
+        <span class="status">AGUARDANDO</span>
+      </div>
+
+      <div class="route">${s.criadoEm}</div>
+
+      <div class="total">
+        R$ ${Number(s.total).toFixed(2)}
+      </div>
+
+      <div class="pagamento">
+        💳 ${s.pagamento}
+      </div>
+
+      <div class="oferta-box">
+        Oferecer valor maior:
+        <input type="number" id="oferta-${s.id}" placeholder="Ex: 45.00">
+        <button class="btn btn-oferta" onclick="aumentarOferta(${s.id})">
+          Atualizar Oferta
+        </button>
+      </div>
+
+      <button class="btn btn-cancelar" onclick="cancelar(${s.id})">
+        Cancelar Solicitação
+      </button>
+    </div>
+  `).join("");
+}
+
+/* INIT */
 criarSolicitacao();
 render();
-
-document.getElementById("filtroAbertas")
-  .addEventListener("change", render);
 </script>
 
 </body>

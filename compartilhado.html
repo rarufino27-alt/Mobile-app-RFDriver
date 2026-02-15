@@ -20,14 +20,12 @@ body{
   color:#fff;
 }
 
-/* CONTAINER */
 .container{
   max-width:480px;
   margin:0 auto;
   padding:25px 18px 40px;
 }
 
-/* LOGO */
 .logo-wrapper{
   width:70px;
   height:70px;
@@ -44,7 +42,6 @@ body{
   width:70%;
 }
 
-/* HEADER */
 .header{
   text-align:center;
   margin-bottom:15px;
@@ -55,44 +52,14 @@ body{
   font-weight:700;
 }
 
-.tabs{
-  display:flex;
-  gap:8px;
-  margin-bottom:15px;
-}
-
-.tab-btn{
-  flex:1;
-  padding:10px;
-  border-radius:12px;
-  border:none;
-  background:#111;
-  color:#fff;
-  font-weight:600;
-  cursor:pointer;
-}
-
-.tab-btn.active{
-  background:#facc15;
-  color:#000;
-}
-
-/* CARD */
 .card{
   background:#111;
   border:1px solid #1c1c1c;
   border-radius:16px;
   padding:16px;
   margin-bottom:16px;
-  transition:.25s;
 }
 
-.card.fade-out{
-  opacity:0;
-  transform:translateY(-10px);
-}
-
-/* HEADER CARD */
 .card-header{
   display:flex;
   justify-content:space-between;
@@ -109,13 +76,11 @@ body{
   font-weight:700;
 }
 
-/* ROTA */
 .route{
   font-size:.9rem;
   margin-bottom:10px;
 }
 
-/* TOTAL */
 .total{
   font-size:1.4rem;
   font-weight:800;
@@ -123,20 +88,33 @@ body{
   margin-bottom:8px;
 }
 
-/* PAGAMENTO */
 .pagamento{
   font-size:.8rem;
   color:#a1a1aa;
   margin-bottom:10px;
 }
 
-/* OFERTA */
-.oferta-box{
-  margin-top:12px;
-  padding:10px;
+.detalhamento{
   background:#0f172a;
+  padding:12px;
   border-radius:12px;
-  border:1px solid #1d4ed8;
+  font-size:.85rem;
+  margin-bottom:10px;
+}
+
+.detalhe-item{
+  display:flex;
+  justify-content:space-between;
+  padding:4px 0;
+  border-bottom:1px solid #1c1c1c;
+}
+
+.detalhe-item:last-child{
+  border-bottom:none;
+}
+
+.oferta-box{
+  margin-top:10px;
 }
 
 .oferta-box input{
@@ -155,7 +133,7 @@ body{
   border:none;
   border-radius:12px;
   font-weight:700;
-  margin-top:10px;
+  margin-top:8px;
   cursor:pointer;
 }
 
@@ -167,10 +145,6 @@ body{
 .btn-cancelar{
   background:#ef4444;
   color:#fff;
-}
-
-.btn:hover{
-  opacity:.9;
 }
 
 .empty{
@@ -185,6 +159,8 @@ body{
 
 <body>
 
+<audio id="somNotificacao" src="./sounds/notificacao.mp3"></audio>
+
 <div class="container">
 
   <div class="logo-wrapper">
@@ -195,18 +171,23 @@ body{
     <h2>Central de Solicitação</h2>
   </div>
 
-  <div class="tabs">
-    <button class="tab-btn active">Solicitações</button>
-    <button class="tab-btn" onclick="App.go('historico.html')">Histórico</button>
-  </div>
-
   <div id="listaSolicitacoes"></div>
 
 </div>
 
 <script>
 const STORAGE_SOLICITACOES = "rf_driver_solicitacoes";
-const STORAGE_HISTORICO = "rf_driver_historico";
+
+/* ==========================
+   UTIL
+========================== */
+function tocarSom(){
+  const audio = document.getElementById("somNotificacao");
+  if(audio){
+    audio.currentTime = 0;
+    audio.play().catch(()=>{});
+  }
+}
 
 function getSolicitacoes(){
   return JSON.parse(localStorage.getItem(STORAGE_SOLICITACOES) || "[]");
@@ -214,14 +195,6 @@ function getSolicitacoes(){
 
 function setSolicitacoes(arr){
   localStorage.setItem(STORAGE_SOLICITACOES, JSON.stringify(arr));
-}
-
-function getHistorico(){
-  return JSON.parse(localStorage.getItem(STORAGE_HISTORICO) || "[]");
-}
-
-function setHistorico(arr){
-  localStorage.setItem(STORAGE_HISTORICO, JSON.stringify(arr));
 }
 
 /* ==========================
@@ -233,8 +206,31 @@ function criarSolicitacao(){
   const destino = App.get("destino");
   const total = App.get("total");
   const pagamento = App.get("formaPagamento");
+  const valorBase = Number(App.get("valorBase") || 0);
+  const config = App.get("taxasConfig") || {};
 
   if(!origem || !destino || !total) return;
+
+  let detalhes = [];
+
+  detalhes.push({nome:"Base", valor:valorBase});
+
+  if(config.tipoViagem) detalhes.push({nome:"Tipo", valor:config.tipoViagem});
+  if(config.desvioSimples) detalhes.push({nome:"Desvio", valor:5});
+  if(config.voltaPraia) detalhes.push({nome:"Praias", valor:10});
+  if(config.taxaFeira) detalhes.push({nome:"Feira", valor:5});
+  if(config.veiculo6) detalhes.push({nome:"6 Lugares", valor:valorBase*0.5});
+  if(config.taxaNoturna) detalhes.push({nome:"Noturno", valor:"Aplicado"});
+  if(Number(config.animal)>0) detalhes.push({nome:"Animal", valor:Number(config.animal)});
+  if(Number(config.minutosEspera)>=5){
+    const min = Number(config.minutosEspera);
+    const acres = 3 + ((min-5)*0.60);
+    detalhes.push({nome:`Espera ${min}min`, valor:acres});
+  }
+
+  if(config.observacao){
+    detalhes.push({nome:"Obs", valor:config.observacao});
+  }
 
   const nova = {
     id: Date.now(),
@@ -242,19 +238,22 @@ function criarSolicitacao(){
     destino,
     total,
     pagamento,
+    detalhes,
     criadoEm: new Date().toLocaleString("pt-BR")
   };
 
   const lista = getSolicitacoes();
   lista.unshift(nova);
   setSolicitacoes(lista);
+
+  tocarSom();
 }
 
 /* ==========================
    CANCELAR
 ========================== */
 function cancelar(id){
-  let lista = getSolicitacoes().filter(s=>s.id !== id);
+  let lista = getSolicitacoes().filter(s=>s.id!==id);
   setSolicitacoes(lista);
   render();
 }
@@ -275,10 +274,12 @@ function aumentarOferta(id){
   let lista = getSolicitacoes();
   const index = lista.findIndex(s=>s.id===id);
 
-  if(index === -1) return;
+  if(index===-1) return;
 
   lista[index].total = novoValor;
   setSolicitacoes(lista);
+
+  tocarSom();
   render();
 }
 
@@ -290,13 +291,14 @@ function render(){
   const container = document.getElementById("listaSolicitacoes");
   const lista = getSolicitacoes();
 
-  if(lista.length === 0){
+  if(lista.length===0){
     container.innerHTML = `<div class="empty">Nenhuma solicitação ativa.</div>`;
     return;
   }
 
   container.innerHTML = lista.map(s=>`
-    <div class="card" id="card-${s.id}">
+    <div class="card">
+
       <div class="card-header">
         <strong>${s.origem} → ${s.destino}</strong>
         <span class="status">AGUARDANDO</span>
@@ -312,6 +314,19 @@ function render(){
         💳 ${s.pagamento}
       </div>
 
+      <div class="detalhamento">
+        ${s.detalhes.map(d=>`
+          <div class="detalhe-item">
+            <span>${d.nome}</span>
+            <strong>${
+              typeof d.valor==="number"
+              ? "R$ "+d.valor.toFixed(2)
+              : d.valor
+            }</strong>
+          </div>
+        `).join("")}
+      </div>
+
       <div class="oferta-box">
         Oferecer valor maior:
         <input type="number" id="oferta-${s.id}" placeholder="Ex: 45.00">
@@ -323,6 +338,7 @@ function render(){
       <button class="btn btn-cancelar" onclick="cancelar(${s.id})">
         Cancelar Solicitação
       </button>
+
     </div>
   `).join("");
 }

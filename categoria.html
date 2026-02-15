@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Categoria – RF Driver</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="core/global.js"></script>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+body{
+  background:#000;
+  color:#fff;
+}
+
+.container{
+  padding:30px 20px 140px;
+  max-width:420px;
+  margin:0 auto;
+}
+
+/* LOGO */
+.logo-wrapper{
+  width:90px;
+  height:90px;
+  margin:0 auto 20px auto;
+  border-radius:50%;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 30px rgba(250,204,21,.35);
+}
+
+.logo-img{
+  width:70%;
+}
+
+/* HEADER */
+.header{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.header h1{
+  font-size:1.4rem;
+  font-weight:700;
+}
+
+.header span{
+  font-size:.85rem;
+  color:#a1a1aa;
+}
+
+/* CATEGORIA CARD */
+.card{
+  background:#111;
+  border:1px solid #1c1c1c;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:12px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.card.active{
+  border:1px solid #facc15;
+  background:#151515;
+}
+
+.card strong{
+  display:block;
+  font-size:1rem;
+}
+
+.card small{
+  color:#a1a1aa;
+  font-size:.8rem;
+}
+
+/* BOTÃO */
+.cta-area{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  padding:20px;
+  background:#000;
+}
+
+.cta-primary{
+  width:100%;
+  padding:18px;
+  border:none;
+  border-radius:14px;
+  font-size:1.05rem;
+  font-weight:700;
+  background:#facc15;
+  color:#000;
+  cursor:pointer;
+}
+
+.cta-primary:disabled{
+  opacity:.5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo-wrapper">
+    <img src="./icons/logo-1024.png" class="logo-img">
+  </div>
+
+  <div class="header">
+    <h1>Escolha a Categoria</h1>
+    <span>Selecione o tipo de veículo desejado</span>
+  </div>
+
+  <div class="card" onclick="selecionar('Hatch',1.0,this)">
+    <strong>🚗 Hatch</strong>
+    <small>Econômico</small>
+  </div>
+
+  <div class="card" onclick="selecionar('Sedan',1.1,this)">
+    <strong>🚘 Sedan</strong>
+    <small>Mais conforto</small>
+  </div>
+
+  <div class="card" onclick="selecionar('SUV',1.25,this)">
+    <strong>🚙 SUV</strong>
+    <small>Espaço e robustez</small>
+  </div>
+
+  <div class="card" onclick="selecionar('6 Lugares',1.50,this)">
+    <strong>🚐 6 Lugares</strong>
+    <small>Ideal para grupos</small>
+  </div>
+
+  <div class="card" onclick="selecionar('Qualquer disponível',1.0,this)">
+    <strong>⚡ Qualquer um disponível</strong>
+    <small>Chamado geral</small>
+  </div>
+
+</div>
+
+<div class="cta-area">
+  <button id="btnAvancar" class="cta-primary" disabled onclick="avancar()">
+    Continuar para Resumo
+  </button>
+</div>
+
+<script>
+
+let categoriaSelecionada = null;
+let multiplicadorSelecionado = 1;
+
+function selecionar(nome, mult, el){
+
+  document.querySelectorAll(".card").forEach(c=>c.classList.remove("active"));
+
+  el.classList.add("active");
+
+  categoriaSelecionada = nome;
+  multiplicadorSelecionado = mult;
+
+  document.getElementById("btnAvancar").disabled = false;
+}
+
+function avancar(){
+
+  App.set("categoria", categoriaSelecionada);
+  App.set("multiplicadorCategoria", multiplicadorSelecionado);
+
+  App.go("resumo.html");
+}
+
+</script>
+
+</body>
+</html>

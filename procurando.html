@@ -183,25 +183,28 @@ body{
       Estamos enviando sua solicitação para motoristas próximos
     </div>
 
-    <div class="card">
+<div class="card">
 
-      <div class="route">
-        <strong id="origem"></strong>
-        ↓
-        <strong id="destino"></strong>
-      </div>
+  <div class="route">
+    <strong id="origem"></strong>
+    ↓
+    <strong id="destino"></strong>
+  </div>
 
-      <div class="categoria" id="categoria"></div>
+  <div class="categoria" id="categoria"></div>
 
-      <div class="total" id="total"></div>
+  <div style="margin-top:15px; font-size:.85rem;" id="detalhamentoBox"></div>
 
+  <div id="observacaoBox" style="margin-top:12px; display:none;">
+    <div style="font-size:.75rem; color:#a1a1aa; margin-bottom:4px;">
+      Observação
     </div>
+    <div style="font-size:.85rem;" id="observacaoTxt"></div>
+  </div>
 
-    <div class="loader" id="loader"></div>
+  <div class="total" id="total"></div>
 
-    <div class="timer" id="timer">
-      Tempo de espera: 0s
-    </div>
+</div>
 
   </div>
 
@@ -224,13 +227,86 @@ const origem = App.get("origem") || "-";
 const destino = App.get("destino") || "-";
 const total = Number(App.get("total") || 0);
 const categoriaSelecionada = App.get("categoria") || "Categoria padrão";
+const config = App.get("taxasConfig") || {};
+const valorBase = Number(App.get("valorBase") || 0);
 
 document.getElementById("origem").innerText = origem;
 document.getElementById("destino").innerText = destino;
 document.getElementById("total").innerText = "R$ " + total.toFixed(2);
 document.getElementById("categoria").innerText = categoriaSelecionada;
 
+// ==========================
+// DETALHAMENTO
+// ==========================
+
+let detalhes = [];
+
+detalhes.push(["Valor base", valorBase]);
+
+if(config.tipoViagem === "bate_volta")
+  detalhes.push(["Bate e volta", valorBase]);
+
+if(config.tipoViagem === "ida_volta")
+  detalhes.push(["Ida e volta", valorBase]);
+
+if(config.tipoViagem === "ida_volta_espera"){
+  const acres = valorBase + (valorBase * 0.10);
+  detalhes.push(["Ida e volta + espera", acres]);
+}
+
+if(config.desvioSimples)
+  detalhes.push(["Desvio rápido", 5]);
+
+if(config.voltaPraia)
+  detalhes.push(["Volta das praias", 10]);
+
+if(config.taxaFeira)
+  detalhes.push(["Taxa de feira", 5]);
+
+// 🔥 Adicional noturno
+if(config.taxaNoturna){
+  let acres = 0;
+
+  if(valorBase <= 29){
+    acres = 5;
+    detalhes.push(["Adicional noturno", 5]);
+  }else{
+    acres = valorBase * 0.35;
+    detalhes.push(["Adicional noturno (35%)", acres]);
+  }
+}
+
+if(Number(config.animal) > 0)
+  detalhes.push(["Transporte animal", Number(config.animal)]);
+
+if(Number(config.minutosEspera) >= 5){
+  const min = Number(config.minutosEspera);
+  const acres = 3 + ((min - 5) * 0.60);
+  detalhes.push([`Tempo de espera (${min} min)`, acres]);
+}
+
+// Render detalhamento
+document.getElementById("detalhamentoBox").innerHTML =
+  detalhes.map(d => `
+    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+      <span>${d[0]}</span>
+      <strong>R$ ${Number(d[1]).toFixed(2)}</strong>
+    </div>
+  `).join("");
+
+// ==========================
+// OBSERVAÇÃO
+// ==========================
+
+if(config.observacao && config.observacao.trim() !== ""){
+  document.getElementById("observacaoBox").style.display = "block";
+  document.getElementById("observacaoTxt").innerText = config.observacao;
+}
+
+// ==========================
 // TIMER
+// ==========================
+
 let segundos = 0;
 setInterval(()=>{
   segundos++;
@@ -238,9 +314,13 @@ setInterval(()=>{
     "Tempo de espera: " + segundos + "s";
 },1000);
 
+// ==========================
 // AUMENTAR OFERTA
+// ==========================
+
 function aumentarOferta(){
   let novo = prompt("Digite o novo valor da oferta:", total.toFixed(2));
+
   if(novo && !isNaN(novo) && Number(novo) > total){
     App.set("total", Number(novo));
     location.reload();
@@ -249,7 +329,10 @@ function aumentarOferta(){
   }
 }
 
+// ==========================
 // CANCELAR
+// ==========================
+
 function cancelar(){
   if(confirm("Deseja cancelar a corrida?")){
     App.reset();

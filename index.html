@@ -110,6 +110,27 @@ body{
 .links a:hover{
   color:#2563eb;
 }
+
+  .logo-wrapper{
+  width:120px;
+  height:120px;
+  margin:0 auto 30px auto;
+  border-radius:50%;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:
+    0 0 40px rgba(250,204,21,.35),
+    0 0 80px rgba(250,204,21,.15);
+}
+
+.logo-img{
+  width:70%;
+  height:auto;
+  object-fit:contain;
+}
+
 </style>
 </head>
 <body>
@@ -118,16 +139,12 @@ body{
 
   <div>
 
-<div style="text-align:center; margin-bottom:20px;">
-<img 
-  src="/Mobile-app-RFDriver/icons/logo-1024.png" 
-  alt="RF Driver"
-  style="
-    width:140px;
-    height:auto;
-    filter: drop-shadow(0 0 20px rgba(250,204,21,.4));
-  "
->
+<div class="logo-wrapper">
+  <img 
+    src="/Mobile-app-RFDriver/icons/logo-1024.png" 
+    alt="RF Driver"
+    class="logo-img"
+  >
 </div>
 
     <div class="headline">
@@ -163,3 +180,4 @@ body{
 
 </body>
 </html>
+

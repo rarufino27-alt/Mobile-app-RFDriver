@@ -346,6 +346,93 @@ function cancelar(){
     App.go("index.html");
   }
 }
+
+  // ==========================
+// CRIAR CORRIDA NO BANCO
+// ==========================
+
+async function criarCorrida() {
+
+  // 1️⃣ Capturar localização do passageiro
+  if (!navigator.geolocation) {
+    alert("Seu navegador não suporta geolocalização.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+
+    // 2️⃣ Inserir no Supabase
+    const { data, error } = await supabase
+      .from("rides")
+      .insert([
+        {
+          origem: origem,
+          destino: destino,
+          valor: total,
+          categoria: categoriaSelecionada,
+          status: "procurando",
+          passageiro_lat: lat,
+          passageiro_lng: lng
+        }
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      alert("Erro ao criar corrida.");
+      return;
+    }
+
+    console.log("Corrida criada:", data);
+
+    // Salvar id da corrida
+    App.set("ride_id", data.id);
+
+    escutarAceite(data.id);
+
+  }, () => {
+    alert("Permita o acesso à localização para solicitar corrida.");
+  });
+}
+
+criarCorrida();
+
+  // ==========================
+// ESCUTAR QUANDO MOTORISTA ACEITAR
+// ==========================
+
+function escutarAceite(rideId){
+
+  supabase
+    .channel("ride-" + rideId)
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "rides",
+        filter: "id=eq." + rideId
+      },
+      (payload) => {
+
+        if(payload.new.status === "aceita"){
+          document.getElementById("statusText").innerText =
+            "Motorista encontrado!";
+          
+          setTimeout(()=>{
+            App.go("motorista-caminho.html");
+          },1500);
+        }
+
+      }
+    )
+    .subscribe();
+}
+
 </script>
 
 </body>

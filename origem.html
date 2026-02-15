@@ -155,6 +155,27 @@ body{
 .modal-content div:hover{
   background:#1a1a1a;
 }
+
+  .logo-wrapper{
+  width:110px;
+  height:110px;
+  margin:0 auto 25px auto;
+  border-radius:50%;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:
+    0 0 40px rgba(250,204,21,.35),
+    0 0 80px rgba(250,204,21,.15);
+}
+
+.logo-img{
+  width:75%;
+  height:auto;
+  object-fit:contain;
+}
+
 </style>
 </head>
 
@@ -163,6 +184,14 @@ body{
 <div class="container">
 
   <div>
+
+    <div class="logo-wrapper">
+  <img 
+    src="./icons/logo-1024.png" 
+    alt="RF Driver"
+    class="logo-img"
+  >
+</div>
 
     <div class="header">
       <div class="title">Onde você está?</div>
@@ -252,4 +281,5 @@ carregar();
 
 </body>
 </html>
+
 

@@ -191,51 +191,106 @@ select{
 
 <script>
 
+// ==========================
+// DADOS
+// ==========================
 const origem = App.get("origem");
 const destino = App.get("destino");
 const valorBase = Number(App.get("valorBase") || 0);
 const config = App.get("taxasConfig") || {};
+const categoria = App.get("categoria") || "Hatch";
+const multiplicador = Number(App.get("multiplicadorCategoria") || 1);
 
+// ==========================
+// EXIBIR ROTA
+// ==========================
 document.getElementById("origemTxt").innerText = origem || "-";
 document.getElementById("destinoTxt").innerText = destino || "-";
 
-if(config.observacao){
+if(config.observacao && config.observacao.trim() !== ""){
   document.getElementById("blocoObservacao").style.display = "block";
   document.getElementById("observacaoTxt").innerText = config.observacao;
 }
 
+// ==========================
+// CÁLCULO
+// ==========================
 let total = valorBase;
 let detalhes = [];
 
 // 🔹 Categoria
-const multiplicador = Number(config.multiplicador || 1);
-const categoria = config.categoria || "hatch";
-
-const valorCategoria = valorBase * multiplicador;
-
-detalhes.push(["Categoria", categoria.toUpperCase()]);
-detalhes.push(["Valor base", valorBase]);
+detalhes.push(["Categoria", categoria]);
 if(multiplicador !== 1){
-  detalhes.push(["Multiplicador aplicado", `x${multiplicador}`]);
+  detalhes.push(["Multiplicador", "x" + multiplicador]);
 }
 
-total = valorCategoria;
+total = total * multiplicador;
 
-// 🔥 ADICIONAL NOTURNO
+// 🔹 Tipo de viagem
+if(config.tipoViagem === "bate_volta"){
+  total += valorBase * multiplicador;
+  detalhes.push(["Bate e volta", valorBase * multiplicador]);
+}
+
+if(config.tipoViagem === "ida_volta"){
+  total += valorBase * multiplicador;
+  detalhes.push(["Ida e volta", valorBase * multiplicador]);
+}
+
+if(config.tipoViagem === "ida_volta_espera"){
+  const acres = (valorBase * multiplicador) * 1.10;
+  total += acres;
+  detalhes.push(["Ida e volta + espera", acres]);
+}
+
+// 🔹 Taxas fixas
+if(config.desvioSimples){
+  total += 5;
+  detalhes.push(["Desvio rápido",5]);
+}
+
+if(config.voltaPraia){
+  total += 10;
+  detalhes.push(["Volta das praias",10]);
+}
+
+if(config.taxaFeira){
+  total += 5;
+  detalhes.push(["Taxa de feira",5]);
+}
+
+// 🔥 Adicional Noturno
 if(config.taxaNoturna){
   let acres = 0;
 
-  if(valorCategoria <= 29){
+  if(total <= 29){
     acres = 5;
-    detalhes.push(["Adicional noturno", 5]);
+    detalhes.push(["Adicional noturno",5]);
   }else{
-    acres = valorCategoria * 0.35;
-    detalhes.push(["Adicional noturno (35%)", acres]);
+    acres = total * 0.35;
+    detalhes.push(["Adicional noturno (35%)",acres]);
   }
 
   total += acres;
 }
 
+// 🔹 Animal
+if(Number(config.animal) > 0){
+  total += Number(config.animal);
+  detalhes.push(["Transporte animal",Number(config.animal)]);
+}
+
+// 🔹 Espera
+if(Number(config.minutosEspera) >= 5){
+  const min = Number(config.minutosEspera);
+  const acres = 3 + ((min-5)*0.60);
+  total += acres;
+  detalhes.push([`Tempo de espera (${min} min)`,acres]);
+}
+
+// ==========================
+// RENDER DETALHAMENTO
+// ==========================
 document.getElementById("detalhamento").innerHTML =
 detalhes.map(d=>`
   <div>
@@ -250,11 +305,17 @@ detalhes.map(d=>`
   </div>
 `).join("");
 
+// ==========================
+// TOTAL FINAL
+// ==========================
 document.getElementById("total").innerText =
 `R$ ${total.toFixed(2)}`;
 
 App.set("total", total);
 
+// ==========================
+// SOLICITAR
+// ==========================
 function solicitar(){
   const pagamento = document.getElementById("formaPagamento").value;
   App.set("formaPagamento", pagamento);

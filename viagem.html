@@ -282,7 +282,23 @@ btn.onclick=()=>{
   App.go("taxas.html");
 };
 
+  <script>
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const { data: { user } } = await supabaseClient.auth.getUser();
+
+  if(!user){
+    window.location.href = "login.html";
+    return;
+  }
+
+  window.location.href = "viagem.html";
+
+});
+</script>
+
 </script>
 
 </body>
 </html>
+

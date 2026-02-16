@@ -142,6 +142,34 @@ body{
 .modal-content div:hover{
   background:#1a1a1a;
 }
+
+  /* TAXAS GRID */
+.taxas-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.taxa-box{
+  background:#111;
+  border:1px solid #1c1c1c;
+  border-radius:14px;
+  padding:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:.85rem;
+  cursor:pointer;
+}
+
+.taxa-box input{
+  transform:scale(1.2);
+}
+
+.full-width{
+  grid-column:1 / -1;
+}
+
 </style>
 </head>
 
@@ -174,6 +202,51 @@ body{
       </div>
     </div>
   </div>
+
+  <!-- TAXAS -->
+<div class="section">
+  <div class="title">Configurações da viagem</div>
+  <div class="subtitle">Adicionais opcionais</div>
+
+  <div class="taxas-grid">
+
+    <div class="taxa-box">
+      <span>Desvio rápido</span>
+      <input type="checkbox" id="desvioSimples">
+    </div>
+
+    <div class="taxa-box">
+      <span>Volta praias</span>
+      <input type="checkbox" id="voltaPraia">
+    </div>
+
+    <div class="taxa-box">
+      <span>Taxa feira</span>
+      <input type="checkbox" id="taxaFeira">
+    </div>
+
+    <div class="taxa-box">
+      <span>Adicional noturno</span>
+      <input type="checkbox" id="taxaNoturna">
+    </div>
+
+    <div class="taxa-box full-width">
+      <span>Animal</span>
+      <select id="animal">
+        <option value="0">Não</option>
+        <option value="4.99">Pequeno</option>
+        <option value="6.99">Médio</option>
+        <option value="9.99">Grande</option>
+      </select>
+    </div>
+
+    <div class="taxa-box full-width">
+      <span>Espera (min)</span>
+      <input type="number" id="minutosEspera" placeholder="Ex: 10">
+    </div>
+
+  </div>
+</div>
 
 </div>
 
@@ -277,12 +350,25 @@ function validar(){
 }
 
 btn.onclick=()=>{
+
+  const config = {
+    desvioSimples: document.getElementById("desvioSimples").checked,
+    voltaPraia: document.getElementById("voltaPraia").checked,
+    taxaFeira: document.getElementById("taxaFeira").checked,
+    taxaNoturna: document.getElementById("taxaNoturna").checked,
+    animal: document.getElementById("animal").value,
+    minutosEspera: document.getElementById("minutosEspera").value
+  };
+
   App.set("destino",destinoSelecionado);
   App.set("valorBase",Number(valorBase));
-  App.go("taxas.html");
+  App.set("taxasConfig",config);
+
+  App.go("resumo.html");
 };
 
 </script>
 
 </body>
 </html>
+

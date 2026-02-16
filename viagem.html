@@ -264,9 +264,23 @@ select, input[type="number"]{
 
 <script>
 
-let origemSelecionada=null;
-let destinoSelecionado=null;
-let valorBase=0;
+const origemBtn = document.getElementById("origemBtn");
+const destinoBtn = document.getElementById("destinoBtn");
+const origemText = document.getElementById("origemText");
+const destinoText = document.getElementById("destinoText");
+const valorBaseText = document.getElementById("valorBaseText");
+const valorExtras = document.getElementById("valorExtras");
+const valorTotal = document.getElementById("valorTotal");
+const confirmarBtn = document.getElementById("confirmarBtn");
+
+const desvioSimples = document.getElementById("desvioSimples");
+const voltaPraia = document.getElementById("voltaPraia");
+const taxaFeira = document.getElementById("taxaFeira");
+const animal = document.getElementById("animal");
+
+let origemSelecionada = null;
+let destinoSelecionado = null;
+let valorBase = 0;
 
 async function iniciar(){
   await DataManager.carregar();
@@ -274,11 +288,11 @@ async function iniciar(){
 
 iniciar();
 
-origemBtn.onclick=()=>{
+origemBtn.onclick = ()=>{
   App.go("origem.html");
 };
 
-destinoBtn.onclick=()=>{
+destinoBtn.onclick = ()=>{
   if(!App.get("origem")){
     alert("Selecione a origem primeiro.");
     return;
@@ -287,43 +301,43 @@ destinoBtn.onclick=()=>{
 };
 
 document.addEventListener("DOMContentLoaded",()=>{
-  origemSelecionada=App.get("origem");
-  destinoSelecionado=App.get("destino");
-  valorBase=Number(App.get("valorBase")||0);
+  origemSelecionada = App.get("origem");
+  destinoSelecionado = App.get("destino");
+  valorBase = Number(App.get("valorBase") || 0);
 
   if(origemSelecionada)
-    origemText.textContent=origemSelecionada;
+    origemText.textContent = origemSelecionada;
 
   if(destinoSelecionado)
-    destinoText.textContent=destinoSelecionado;
+    destinoText.textContent = destinoSelecionado;
 
   atualizar();
 });
 
 function atualizar(){
 
-  let extras=0;
+  let extras = 0;
 
-  if(desvioSimples.checked) extras+=5;
-  if(voltaPraia.checked) extras+=10;
-  if(taxaFeira.checked) extras+=5;
+  if(desvioSimples.checked) extras += 5;
+  if(voltaPraia.checked) extras += 10;
+  if(taxaFeira.checked) extras += 5;
 
-  extras+=Number(animal.value||0);
+  extras += Number(animal.value || 0);
 
-  const total=valorBase+extras;
+  const total = valorBase + extras;
 
-  valorBaseText.textContent=`R$ ${valorBase.toFixed(2)}`;
-  valorExtras.textContent=`R$ ${extras.toFixed(2)}`;
-  valorTotal.textContent=`R$ ${total.toFixed(2)}`;
+  valorBaseText.textContent = `R$ ${valorBase.toFixed(2)}`;
+  valorExtras.textContent = `R$ ${extras.toFixed(2)}`;
+  valorTotal.textContent = `R$ ${total.toFixed(2)}`;
 
-  confirmarBtn.disabled=!(origemSelecionada && destinoSelecionado);
+  confirmarBtn.disabled = !(origemSelecionada && destinoSelecionado);
 }
 
 document.querySelectorAll("input,select").forEach(el=>{
-  el.addEventListener("change",atualizar);
+  el.addEventListener("change", atualizar);
 });
 
-confirmarBtn.onclick=()=>{
+confirmarBtn.onclick = ()=>{
   alert("Viagem criada! Próximo passo: enviar para Supabase.");
 };
 
@@ -331,3 +345,4 @@ confirmarBtn.onclick=()=>{
 
 </body>
 </html>
+

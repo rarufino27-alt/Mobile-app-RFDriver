@@ -6,7 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="core/global.js"></script>
-
+<script src="core/dinamico.js"></script>
+  
 <style>
 *{
   margin:0;
@@ -288,6 +289,24 @@ if(Number(config.minutosEspera) >= 5){
   detalhes.push([`Tempo de espera (${min} min)`,acres]);
 }
 
+  /* =========================================================
+   🔥 TARIFA DINÂMICA APLICADA NO FINAL
+========================================================= */
+
+if (typeof Dinamico !== "undefined" && Dinamico.ativo) {
+
+  const valorAntes = total;
+  const novoTotal = total * Dinamico.multiplicador;
+  const acrescimo = novoTotal - valorAntes;
+
+  total = novoTotal;
+
+  detalhes.push([
+    `Tarifa dinâmica (${Dinamico.multiplicador}x - ${Dinamico.motivo})`,
+    acrescimo
+  ]);
+}
+  
 // ==========================
 // RENDER DETALHAMENTO
 // ==========================

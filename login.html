@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>RF Driver – Acesse sua conta</title>
+<title>RF Driver – Acesso</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -28,36 +28,30 @@ body{
   max-width:420px;
 }
 
-.logo-wrapper{
+.logo{
   width:120px;
-  height:120px;
   margin:0 auto 25px auto;
-  border-radius:50%;
-  background:#000;
+  display:block;
+}
+
+.tabs{
   display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:
-    0 0 40px rgba(250,204,21,.35),
-    0 0 80px rgba(250,204,21,.15);
+  margin-bottom:20px;
+  border-bottom:1px solid #222;
 }
 
-.logo-wrapper img{
-  width:70%;
-}
-
-.headline{
+.tab{
+  flex:1;
   text-align:center;
-  font-size:1.6rem;
-  font-weight:700;
-  margin-bottom:10px;
+  padding:12px;
+  cursor:pointer;
+  font-weight:600;
+  color:#888;
 }
 
-.sub{
-  text-align:center;
-  font-size:.9rem;
-  color:#a1a1aa;
-  margin-bottom:30px;
+.tab.active{
+  color:#facc15;
+  border-bottom:2px solid #facc15;
 }
 
 .card{
@@ -65,12 +59,6 @@ body{
   padding:20px;
   border-radius:16px;
   border:1px solid #1f1f1f;
-}
-
-.card h3{
-  margin-bottom:15px;
-  font-size:1rem;
-  text-align:center;
 }
 
 input, select{
@@ -90,25 +78,11 @@ button{
   border:none;
   font-weight:700;
   cursor:pointer;
-  margin-top:5px;
 }
 
 .btn-primary{
   background:#facc15;
   color:#000;
-}
-
-.btn-secondary{
-  background:#2563eb;
-  color:#fff;
-  margin-top:10px;
-}
-
-.footer-info{
-  text-align:center;
-  font-size:.8rem;
-  color:#777;
-  margin-top:20px;
 }
 </style>
 </head>
@@ -116,39 +90,42 @@ button{
 
 <div class="container">
 
-  <div class="logo-wrapper">
-    <img src="./icons/logo-1024.png" alt="RF Driver">
-  </div>
+  <img src="./icons/logo-1024.png" class="logo">
 
-  <div class="headline">
-    Bem-vindo ao RF Driver
-  </div>
-
-  <div class="sub">
-    Mobilidade inteligente para passageiros e motoristas.<br>
-    Transparência, segurança e tecnologia.
+  <div class="tabs">
+    <div class="tab active" id="tabCadastro">Criar Conta</div>
+    <div class="tab" id="tabLogin">Login</div>
   </div>
 
   <div class="card">
 
-    <h3>Entrar ou Criar Conta</h3>
+    <!-- CADASTRO -->
+    <div id="formCadastro">
 
-    <input type="text" id="nome" placeholder="Nome completo (para cadastro)">
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="senha" placeholder="Senha (mínimo 6 caracteres)">
+      <input type="text" id="nome" placeholder="Nome completo">
+      <input type="email" id="emailCadastro" placeholder="Email">
+      <input type="text" id="telefone" placeholder="Celular (WhatsApp)">
+      <input type="password" id="senhaCadastro" placeholder="Senha (mín. 6 caracteres)">
 
-    <select id="role">
-      <option value="passageiro">Quero solicitar viagens</option>
-      <option value="motorista">Sou motorista parceiro</option>
-    </select>
+      <select id="role">
+        <option value="passageiro">Sou Passageiro</option>
+        <option value="motorista">Sou Motorista</option>
+      </select>
 
-    <button class="btn-primary" onclick="login()">Entrar</button>
-    <button class="btn-secondary" onclick="registrar()">Criar Conta</button>
+      <button class="btn-primary" onclick="registrar()">Criar Conta</button>
 
-  </div>
+    </div>
 
-  <div class="footer-info">
-    Ao continuar você concorda com nossas regras e políticas.
+    <!-- LOGIN -->
+    <div id="formLogin" style="display:none;">
+
+      <input type="text" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginSenha" placeholder="Senha">
+
+      <button class="btn-primary" onclick="login()">Entrar</button>
+
+    </div>
+
   </div>
 
 </div>
@@ -158,11 +135,31 @@ button{
 
 <script>
 
+const tabCadastro = document.getElementById("tabCadastro");
+const tabLogin = document.getElementById("tabLogin");
+const formCadastro = document.getElementById("formCadastro");
+const formLogin = document.getElementById("formLogin");
+
+tabCadastro.onclick = ()=>{
+  tabCadastro.classList.add("active");
+  tabLogin.classList.remove("active");
+  formCadastro.style.display="block";
+  formLogin.style.display="none";
+};
+
+tabLogin.onclick = ()=>{
+  tabLogin.classList.add("active");
+  tabCadastro.classList.remove("active");
+  formCadastro.style.display="none";
+  formLogin.style.display="block";
+};
+
 async function registrar(){
 
   const nome = document.getElementById("nome").value;
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
+  const email = document.getElementById("emailCadastro").value;
+  const telefone = document.getElementById("telefone").value;
+  const senha = document.getElementById("senhaCadastro").value;
   const role = document.getElementById("role").value;
 
   const { data, error } = await supabaseClient.auth.signUp({
@@ -179,17 +176,20 @@ async function registrar(){
     {
       id: data.user.id,
       nome,
-      role
+      telefone,
+      role,
+      status: role === "motorista" ? "pendente" : "ativo"
     }
   ]);
 
   alert("Conta criada com sucesso! Agora faça login.");
+  tabLogin.click();
 }
 
 async function login(){
 
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
+  const email = document.getElementById("loginEmail").value;
+  const senha = document.getElementById("loginSenha").value;
 
   const { data, error } = await supabaseClient.auth.signInWithPassword({
     email,
@@ -203,11 +203,15 @@ async function login(){
 
   const { data: profile } = await supabaseClient
     .from("profiles")
-    .select("role")
+    .select("role, status")
     .eq("id", data.user.id)
     .single();
 
   if(profile.role === "motorista"){
+    if(profile.status !== "ativo"){
+      alert("Sua conta está em análise pelo administrador.");
+      return;
+    }
     window.location.href = "motorista.html";
   } else {
     window.location.href = "passageiro.html";

@@ -2,16 +2,22 @@ const DataManager = {
   rotas: [],
 
   arquivos: [
-  "./data/locais.json",
-  "./data/praias.json",
+  "./data/condominio-porto-do-cabo.json",
+  "./data/lote-garapu2-lote-dona-amara.json",  
+  "./data/cohab.json",
+  "./data/centro-do-cabo.json",
+  "./data/shopping-costa-dourada.json",
+  "./data/aguia-american-club-br-101.json",
   "./data/empresas.json",
   "./data/engenhos.json",
+  "./data/hospitais-clinicas.json",
   "./data/interurbanas.json",
   "./data/interestaduais.json",
   "./data/lazer-festa.json",
-  "./data/hospitais-clinicas.json",
+  "./data/locais.json",
   "./data/longas-locais.json",
-  "./data/shoppings.json"
+  "./data/praias.json",  
+  "./data/bairro-sao-francisco-baixo.json"
 ],
 
   async carregar() {
@@ -49,7 +55,17 @@ const DataManager = {
       r => r.origem === origem && r.destino === destino
     );
 
+    // rota invertida (ida/volta)
+    if (!rota) {
+      rota = this.rotas.find(
+        r => r.origem === destino && r.destino === origem
+      );
+    }
+
     return rota ? rota.valor : null;
   }
 };
+
+
+
 

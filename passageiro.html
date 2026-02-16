@@ -178,6 +178,14 @@ body{
   </div>
 </div>
 
+  <script>
+  const { data: { user } } = await supabaseClient.auth.getUser();
+
+if(!user){
+  window.location.href = "login.html";
+}
+</script>
+  
 </body>
 </html>
 

@@ -18,7 +18,6 @@ body{
   color:#fff;
 }
 
-/* CONTAINER */
 .container{
   min-height:100vh;
   padding:40px 24px 140px;
@@ -27,7 +26,6 @@ body{
   justify-content:space-between;
 }
 
-/* LOGO */
 .logo{
   text-align:center;
   margin-bottom:30px;
@@ -38,7 +36,6 @@ body{
   max-width:80%;
 }
 
-/* HEADLINE */
 .headline{
   font-size:2rem;
   font-weight:700;
@@ -52,7 +49,6 @@ body{
   margin-bottom:30px;
 }
 
-/* BENEFITS */
 .benefits{
   display:flex;
   flex-direction:column;
@@ -68,7 +64,6 @@ body{
   border:1px solid #1c1c1c;
 }
 
-/* CTA FIXO */
 .cta-area{
   position:fixed;
   bottom:0;
@@ -111,7 +106,7 @@ body{
   color:#2563eb;
 }
 
-  .logo-wrapper{
+.logo-wrapper{
   width:120px;
   height:120px;
   margin:0 auto 30px auto;
@@ -130,7 +125,6 @@ body{
   height:auto;
   object-fit:contain;
 }
-
 </style>
 </head>
 <body>
@@ -139,13 +133,13 @@ body{
 
   <div>
 
-<div class="logo-wrapper">
-  <img 
-    src="/Mobile-app-RFDriver/icons/logo-1024.png" 
-    alt="RF Driver"
-    class="logo-img"
-  >
-</div>
+    <div class="logo-wrapper">
+      <img 
+        src="/Mobile-app-RFDriver/icons/logo-1024.png" 
+        alt="RF Driver"
+        class="logo-img"
+      >
+    </div>
 
     <div class="headline">
       Seu motorista confiável<br>
@@ -178,14 +172,37 @@ body{
   </div>
 </div>
 
-  <script>
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="core/supabase.js"></script>
+
+<script>
+
+async function verificarUsuario(){
+
   const { data: { user } } = await supabaseClient.auth.getUser();
 
-if(!user){
-  window.location.href = "login.html";
+  if(!user){
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Opcional: validar se é passageiro
+  const { data: profile } = await supabaseClient
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if(profile && profile.role !== "passageiro"){
+    window.location.href = "motorista.html";
+  }
+
 }
+
+verificarUsuario();
+
 </script>
   
 </body>
 </html>
-

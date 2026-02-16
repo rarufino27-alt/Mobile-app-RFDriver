@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Login – RF Driver</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  background:#000;
+  color:#fff;
+  font-family:sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.container{
+  width:100%;
+  max-width:400px;
+  padding:20px;
+}
+
+input, select, button{
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  border-radius:8px;
+  border:none;
+}
+
+button{
+  background:#facc15;
+  font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <h2>Entrar / Criar Conta</h2>
+
+  <input type="text" id="nome" placeholder="Nome completo">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="senha" placeholder="Senha">
+
+  <select id="role">
+    <option value="passageiro">Passageiro</option>
+    <option value="motorista">Motorista</option>
+  </select>
+
+  <button onclick="registrar()">Registrar</button>
+  <button onclick="login()">Entrar</button>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="core/supabase.js"></script>
+
+<script>
+
+async function registrar(){
+
+  const nome = document.getElementById("nome").value;
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+  const role = document.getElementById("role").value;
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password: senha
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  await supabaseClient.from("profiles").insert([
+    {
+      id: data.user.id,
+      nome,
+      role
+    }
+  ]);
+
+  alert("Conta criada com sucesso!");
+}
+
+async function login(){
+
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password: senha
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  const { data: profile } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id", data.user.id)
+    .single();
+
+  if(profile.role === "motorista"){
+    window.location.href = "motorista.html";
+  } else {
+    window.location.href = "passageiro.html";
+  }
+
+}
+
+</script>
+
+</body>
+</html>

@@ -170,6 +170,34 @@ body{
   grid-column:1 / -1;
 }
 
+  .categoria-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.categoria-box{
+  background:#111;
+  border:1px solid #1c1c1c;
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.categoria-box.active{
+  border:1px solid #facc15;
+  background:#151515;
+}
+
+.categoria-box span{
+  display:block;
+  font-size:.85rem;
+  margin-top:6px;
+  color:#a1a1aa;
+}
+
 </style>
 </head>
 
@@ -180,6 +208,28 @@ body{
   <div class="logo-wrapper">
     <img src="./icons/logo-1024.png" class="logo-img">
   </div>
+
+  <!-- CATEGORIA VEÍCULO -->
+<div class="section">
+  <div class="title">Categoria do veículo</div>
+  <div class="subtitle">Escolha o tipo de carro</div>
+
+  <div class="categoria-grid">
+
+    <div class="categoria-box" data-categoria="padrao">
+      🚗
+      <strong>Padrão</strong>
+      <span>Até 4 passageiros</span>
+    </div>
+
+    <div class="categoria-box" data-categoria="6lugares">
+      🚙
+      <strong>6 Lugares</strong>
+      <span>Grupo maior</span>
+    </div>
+
+  </div>
+</div>
 
   <!-- ORIGEM -->
   <div class="section">
@@ -349,7 +399,24 @@ function validar(){
   btn.disabled = !(origemSelecionada && destinoSelecionado);
 }
 
+  let categoriaSelecionada = null;
+
+document.querySelectorAll(".categoria-box").forEach(box=>{
+  box.addEventListener("click",()=>{
+    document.querySelectorAll(".categoria-box")
+      .forEach(b=>b.classList.remove("active"));
+
+    box.classList.add("active");
+    categoriaSelecionada = box.dataset.categoria;
+  });
+});
+
 btn.onclick=()=>{
+
+  if(!categoriaSelecionada){
+    alert("Selecione a categoria do veículo.");
+    return;
+  }
 
   const config = {
     desvioSimples: document.getElementById("desvioSimples").checked,
@@ -363,6 +430,7 @@ btn.onclick=()=>{
   App.set("destino",destinoSelecionado);
   App.set("valorBase",Number(valorBase));
   App.set("taxasConfig",config);
+  App.set("categoria",categoriaSelecionada);
 
   App.go("resumo.html");
 };
@@ -371,4 +439,5 @@ btn.onclick=()=>{
 
 </body>
 </html>
+
 

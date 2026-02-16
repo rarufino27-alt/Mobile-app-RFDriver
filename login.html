@@ -220,18 +220,11 @@ tabLogin.onclick = ()=>{
 
 async function registrar(){
 
-  mensagem.innerText="";
-
-  const nome = nomeInput = document.getElementById("nome").value;
+  const nome = document.getElementById("nome").value;
   const email = document.getElementById("emailCadastro").value;
   const telefone = document.getElementById("telefone").value;
   const senha = document.getElementById("senhaCadastro").value;
   const role = document.getElementById("role").value;
-
-  if(!nome || !email || !telefone || !senha){
-    mensagem.innerText="Preencha todos os campos.";
-    return;
-  }
 
   const { data, error } = await supabaseClient.auth.signUp({
     email,
@@ -239,27 +232,31 @@ async function registrar(){
   });
 
   if(error){
-    mensagem.innerText = error.message;
+    alert(error.message);
+    return;
+  }
+
+  if(!data.user){
+    alert("Confirme seu email antes de continuar.");
     return;
   }
 
   const { error: profileError } = await supabaseClient
     .from("profiles")
-    .insert([{
+    .insert({
       id: data.user.id,
       nome,
       telefone,
       role,
       status: role === "motorista" ? "pendente" : "ativo"
-    }]);
+    });
 
   if(profileError){
-    mensagem.innerText = profileError.message;
+    alert(profileError.message);
     return;
   }
 
-  mensagem.style.color="#4ade80";
-  mensagem.innerText="Conta criada com sucesso! Faça login.";
+  alert("Conta criada com sucesso! Agora faça login.");
   tabLogin.click();
 }
 

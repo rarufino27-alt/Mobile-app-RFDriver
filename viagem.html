@@ -103,7 +103,6 @@ body{
   opacity:.4;
 }
 
-/* MODAL */
 .modal{
   position:fixed;
   inset:0;
@@ -143,7 +142,7 @@ body{
   background:#1a1a1a;
 }
 
-  /* TAXAS GRID */
+/* GRID TAXAS */
 .taxas-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -159,18 +158,14 @@ body{
   justify-content:space-between;
   align-items:center;
   font-size:.85rem;
-  cursor:pointer;
-}
-
-.taxa-box input{
-  transform:scale(1.2);
 }
 
 .full-width{
   grid-column:1 / -1;
 }
 
-  .categoria-grid{
+/* GRID CATEGORIA */
+.categoria-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
@@ -197,7 +192,6 @@ body{
   margin-top:6px;
   color:#a1a1aa;
 }
-
 </style>
 </head>
 
@@ -209,88 +203,62 @@ body{
     <img src="./icons/logo-1024.png" class="logo-img">
   </div>
 
-<!-- CATEGORIA VEÍCULO -->
+<!-- CATEGORIA -->
 <div class="section">
   <div class="title">Categoria do veículo</div>
   <div class="subtitle">Escolha o tipo de carro</div>
 
   <div class="categoria-grid">
-
-    <div class="categoria-box" data-categoria="hatch" data-multi="1.0">
-      🚗
-      <strong>Hatch</strong>
+    <div class="categoria-box" data-categoria="Hatch" data-multi="1.0">
+      🚗 <strong>Hatch</strong>
       <span>1.0x</span>
     </div>
 
-    <div class="categoria-box" data-categoria="sedan" data-multi="1.1">
-      🚘
-      <strong>Sedan</strong>
+    <div class="categoria-box" data-categoria="Sedan" data-multi="1.1">
+      🚘 <strong>Sedan</strong>
       <span>1.1x</span>
     </div>
 
-    <div class="categoria-box" data-categoria="suv" data-multi="1.25">
-      🚙
-      <strong>SUV</strong>
+    <div class="categoria-box" data-categoria="SUV" data-multi="1.25">
+      🚙 <strong>SUV</strong>
       <span>1.25x</span>
     </div>
 
-    <div class="categoria-box" data-categoria="6lugares" data-multi="1.5">
-      🚐
-      <strong>6 Lugares</strong>
+    <div class="categoria-box" data-categoria="6 Lugares" data-multi="1.5">
+      🚐 <strong>6 Lugares</strong>
       <span>1.5x</span>
     </div>
-
   </div>
 </div>
 
-  <!-- ORIGEM -->
-  <div class="section">
-    <div class="title">Origem</div>
-    <div class="subtitle">Onde você está?</div>
-    <div class="card">
-      <div class="select-btn" id="origemBtn">
-        Selecionar origem
-      </div>
-    </div>
+<!-- ORIGEM -->
+<div class="section">
+  <div class="title">Origem</div>
+  <div class="subtitle">Onde você está?</div>
+  <div class="card">
+    <div class="select-btn" id="origemBtn">Selecionar origem</div>
   </div>
+</div>
 
-  <!-- DESTINO -->
-  <div class="section">
-    <div class="title">Destino</div>
-    <div class="subtitle">Para onde vamos?</div>
-    <div class="card">
-      <div class="select-btn" id="destinoBtn">
-        Selecionar destino
-      </div>
-    </div>
+<!-- DESTINO -->
+<div class="section">
+  <div class="title">Destino</div>
+  <div class="subtitle">Para onde vamos?</div>
+  <div class="card">
+    <div class="select-btn" id="destinoBtn">Selecionar destino</div>
   </div>
+</div>
 
-  <!-- TAXAS -->
+<!-- TAXAS -->
 <div class="section">
   <div class="title">Configurações da viagem</div>
   <div class="subtitle">Adicionais opcionais</div>
 
   <div class="taxas-grid">
-
-    <div class="taxa-box">
-      <span>Desvio rápido</span>
-      <input type="checkbox" id="desvioSimples">
-    </div>
-
-    <div class="taxa-box">
-      <span>Volta praias</span>
-      <input type="checkbox" id="voltaPraia">
-    </div>
-
-    <div class="taxa-box">
-      <span>Taxa feira</span>
-      <input type="checkbox" id="taxaFeira">
-    </div>
-
-    <div class="taxa-box">
-      <span>Adicional noturno</span>
-      <input type="checkbox" id="taxaNoturna">
-    </div>
+    <div class="taxa-box"><span>Desvio rápido</span><input type="checkbox" id="desvioSimples"></div>
+    <div class="taxa-box"><span>Volta praias</span><input type="checkbox" id="voltaPraia"></div>
+    <div class="taxa-box"><span>Taxa feira</span><input type="checkbox" id="taxaFeira"></div>
+    <div class="taxa-box"><span>Adicional noturno</span><input type="checkbox" id="taxaNoturna"></div>
 
     <div class="taxa-box full-width">
       <span>Animal</span>
@@ -306,19 +274,15 @@ body{
       <span>Espera (min)</span>
       <input type="number" id="minutosEspera" placeholder="Ex: 10">
     </div>
-
   </div>
 </div>
 
 </div>
 
 <div class="cta-area">
-  <button class="cta-primary" id="btnAvancar" disabled>
-    Continuar
-  </button>
+  <button class="cta-primary" id="btnAvancar" disabled>Continuar</button>
 </div>
 
-<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <input id="busca" placeholder="Buscar...">
@@ -334,9 +298,6 @@ body{
 const origemBtn = document.getElementById("origemBtn");
 const destinoBtn = document.getElementById("destinoBtn");
 const btn = document.getElementById("btnAvancar");
-const modal = document.getElementById("modal");
-const lista = document.getElementById("lista");
-const busca = document.getElementById("busca");
 
 let origens = [];
 let destinos = [];
@@ -345,75 +306,10 @@ let destinoSelecionado = null;
 let valorBase = 0;
 let modo = null;
 
-async function carregar(){
-  await DataManager.carregar();
-  origens = DataManager.listarOrigens();
-}
-
-carregar();
-
-origemBtn.onclick = ()=>{
-  modo = "origem";
-  modal.style.display="flex";
-  busca.value="";
-  render(origens);
-};
-
-destinoBtn.onclick = ()=>{
-  if(!origemSelecionada){
-    alert("Selecione a origem primeiro.");
-    return;
-  }
-  modo = "destino";
-  modal.style.display="flex";
-  busca.value="";
-  destinos = DataManager.listarDestinos(origemSelecionada);
-  render(destinos);
-};
-
-modal.onclick = e=>{
-  if(e.target===modal) modal.style.display="none";
-};
-
-function render(arr){
-  lista.innerHTML="";
-  arr.forEach(item=>{
-    const div=document.createElement("div");
-    div.textContent=item;
-
-    div.onclick=()=>{
-      if(modo==="origem"){
-        origemSelecionada=item;
-        origemBtn.textContent=item;
-        App.set("origem",item);
-        destinoSelecionado=null;
-        destinoBtn.textContent="Selecionar destino";
-      }else{
-        destinoSelecionado=item;
-        destinoBtn.textContent=item;
-        valorBase = DataManager.buscarValor(origemSelecionada,item);
-      }
-      modal.style.display="none";
-      validar();
-    };
-
-    lista.appendChild(div);
-  });
-}
-
-busca.oninput=()=>{
-  const t=busca.value.toLowerCase();
-  const listaAtual = modo==="origem" ? origens : destinos;
-  render(listaAtual.filter(i=>i.toLowerCase().includes(t)));
-};
-
-function validar(){
-  btn.disabled = !(origemSelecionada && destinoSelecionado);
-}
-
-  let categoriaSelecionada = null;
+let categoriaSelecionada = null;
 let multiplicadorCategoria = 1;
 
+/* CATEGORIA */
 document.querySelectorAll(".categoria-box").forEach(box=>{
   box.addEventListener("click",()=>{
     document.querySelectorAll(".categoria-box")
@@ -426,18 +322,14 @@ document.querySelectorAll(".categoria-box").forEach(box=>{
   });
 });
 
-  let categoriaSelecionada = null;
+/* DATA */
+async function carregar(){
+  await DataManager.carregar();
+  origens = DataManager.listarOrigens();
+}
+carregar();
 
-document.querySelectorAll(".categoria-box").forEach(box=>{
-  box.addEventListener("click",()=>{
-    document.querySelectorAll(".categoria-box")
-      .forEach(b=>b.classList.remove("active"));
-
-    box.classList.add("active");
-    categoriaSelecionada = box.dataset.categoria;
-  });
-});
-
+/* CONTINUE */
 btn.onclick=()=>{
 
   if(!categoriaSelecionada){
@@ -446,12 +338,12 @@ btn.onclick=()=>{
   }
 
   const config = {
-    desvioSimples: document.getElementById("desvioSimples").checked,
-    voltaPraia: document.getElementById("voltaPraia").checked,
-    taxaFeira: document.getElementById("taxaFeira").checked,
-    taxaNoturna: document.getElementById("taxaNoturna").checked,
-    animal: document.getElementById("animal").value,
-    minutosEspera: document.getElementById("minutosEspera").value
+    desvioSimples: desvioSimples.checked,
+    voltaPraia: voltaPraia.checked,
+    taxaFeira: taxaFeira.checked,
+    taxaNoturna: taxaNoturna.checked,
+    animal: animal.value,
+    minutosEspera: minutosEspera.value
   };
 
   App.set("destino",destinoSelecionado);
@@ -467,6 +359,3 @@ btn.onclick=()=>{
 
 </body>
 </html>
-
-
-

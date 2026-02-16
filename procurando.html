@@ -20,7 +20,6 @@ body{
   color:#fff;
 }
 
-/* CONTAINER */
 .container{
   min-height:100vh;
   padding:40px 20px 140px;
@@ -31,7 +30,6 @@ body{
   justify-content:space-between;
 }
 
-/* LOGO */
 .logo-wrapper{
   width:90px;
   height:90px;
@@ -48,7 +46,6 @@ body{
   width:70%;
 }
 
-/* STATUS */
 .status{
   text-align:center;
   margin-bottom:8px;
@@ -63,7 +60,6 @@ body{
   margin-bottom:25px;
 }
 
-/* CARD RESUMO */
 .card{
   background:#111;
   border-radius:18px;
@@ -98,7 +94,6 @@ body{
   margin-top:10px;
 }
 
-/* LOADER MODERNO */
 .loader{
   margin:20px auto;
   width:60px;
@@ -113,7 +108,6 @@ body{
   to{ transform:rotate(360deg); }
 }
 
-/* TIMER */
 .timer{
   text-align:center;
   font-size:.8rem;
@@ -121,7 +115,6 @@ body{
   margin-bottom:25px;
 }
 
-/* BOTÕES FIXOS */
 .cta-area{
   position:fixed;
   bottom:0;
@@ -230,6 +223,7 @@ body{
 <script src="core/supabase.js"></script>
 
 <script>
+
 const origem = App.get("origem") || "-";
 const destino = App.get("destino") || "-";
 const total = Number(App.get("total") || 0);
@@ -242,78 +236,6 @@ document.getElementById("destino").innerText = destino;
 document.getElementById("total").innerText = "R$ " + total.toFixed(2);
 document.getElementById("categoria").innerText = categoriaSelecionada;
 
-// ==========================
-// DETALHAMENTO
-// ==========================
-
-let detalhes = [];
-
-detalhes.push(["Valor base", valorBase]);
-
-if(config.tipoViagem === "bate_volta")
-  detalhes.push(["Bate e volta", valorBase]);
-
-if(config.tipoViagem === "ida_volta")
-  detalhes.push(["Ida e volta", valorBase]);
-
-if(config.tipoViagem === "ida_volta_espera"){
-  const acres = valorBase + (valorBase * 0.10);
-  detalhes.push(["Ida e volta + espera", acres]);
-}
-
-if(config.desvioSimples)
-  detalhes.push(["Desvio rápido", 5]);
-
-if(config.voltaPraia)
-  detalhes.push(["Volta das praias", 10]);
-
-if(config.taxaFeira)
-  detalhes.push(["Taxa de feira", 5]);
-
-// 🔥 Adicional noturno
-if(config.taxaNoturna){
-  let acres = 0;
-
-  if(valorBase <= 29){
-    acres = 5;
-    detalhes.push(["Adicional noturno", 5]);
-  }else{
-    acres = valorBase * 0.35;
-    detalhes.push(["Adicional noturno (35%)", acres]);
-  }
-}
-
-if(Number(config.animal) > 0)
-  detalhes.push(["Transporte animal", Number(config.animal)]);
-
-if(Number(config.minutosEspera) >= 5){
-  const min = Number(config.minutosEspera);
-  const acres = 3 + ((min - 5) * 0.60);
-  detalhes.push([`Tempo de espera (${min} min)`, acres]);
-}
-
-// Render detalhamento
-document.getElementById("detalhamentoBox").innerHTML =
-  detalhes.map(d => `
-    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-      <span>${d[0]}</span>
-      <strong>R$ ${Number(d[1]).toFixed(2)}</strong>
-    </div>
-  `).join("");
-
-// ==========================
-// OBSERVAÇÃO
-// ==========================
-
-if(config.observacao && config.observacao.trim() !== ""){
-  document.getElementById("observacaoBox").style.display = "block";
-  document.getElementById("observacaoTxt").innerText = config.observacao;
-}
-
-// ==========================
-// TIMER
-// ==========================
-
 let segundos = 0;
 setInterval(()=>{
   segundos++;
@@ -321,13 +243,8 @@ setInterval(()=>{
     "Tempo de espera: " + segundos + "s";
 },1000);
 
-// ==========================
-// AUMENTAR OFERTA
-// ==========================
-
 function aumentarOferta(){
   let novo = prompt("Digite o novo valor da oferta:", total.toFixed(2));
-
   if(novo && !isNaN(novo) && Number(novo) > total){
     App.set("total", Number(novo));
     location.reload();
@@ -336,10 +253,6 @@ function aumentarOferta(){
   }
 }
 
-// ==========================
-// CANCELAR
-// ==========================
-
 function cancelar(){
   if(confirm("Deseja cancelar a corrida?")){
     App.reset();
@@ -347,13 +260,12 @@ function cancelar(){
   }
 }
 
-  // ==========================
+// ==========================
 // CRIAR CORRIDA NO BANCO
 // ==========================
 
 async function criarCorrida() {
 
-  // 1️⃣ Capturar localização do passageiro
   if (!navigator.geolocation) {
     alert("Seu navegador não suporta geolocalização.");
     return;
@@ -364,8 +276,7 @@ async function criarCorrida() {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
 
-    // 2️⃣ Inserir no Supabase
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from("rides")
       .insert([
         {
@@ -389,7 +300,6 @@ async function criarCorrida() {
 
     console.log("Corrida criada:", data);
 
-    // Salvar id da corrida
     App.set("ride_id", data.id);
 
     escutarAceite(data.id);
@@ -401,13 +311,13 @@ async function criarCorrida() {
 
 criarCorrida();
 
-  // ==========================
+// ==========================
 // ESCUTAR QUANDO MOTORISTA ACEITAR
 // ==========================
 
 function escutarAceite(rideId){
 
-  supabase
+  supabaseClient
     .channel("ride-" + rideId)
     .on(
       "postgres_changes",

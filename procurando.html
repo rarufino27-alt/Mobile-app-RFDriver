@@ -94,20 +94,6 @@ body{
   margin-top:10px;
 }
 
-.loader{
-  margin:20px auto;
-  width:60px;
-  height:60px;
-  border-radius:50%;
-  border:4px solid #1f2937;
-  border-top:4px solid #2563eb;
-  animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-  to{ transform:rotate(360deg); }
-}
-
 .timer{
   text-align:center;
   font-size:.8rem;
@@ -136,11 +122,6 @@ body{
   transition:.2s;
 }
 
-.btn-primary{
-  background:#facc15;
-  color:#000;
-}
-
 .btn-secondary{
   background:#111;
   border:1px solid #2563eb;
@@ -161,7 +142,6 @@ body{
 <body>
 
 <div class="container">
-
   <div>
 
     <div class="logo-wrapper">
@@ -176,39 +156,28 @@ body{
       Estamos enviando sua solicitação para motoristas próximos
     </div>
 
-<div class="card">
+    <div class="card">
 
-  <div class="timer" id="timer">
-  Tempo de espera: 0s
-</div>
+      <div class="timer" id="timer">
+        Tempo de espera: 0s
+      </div>
 
-  <div class="route">
-    <strong id="origem"></strong>
-    ↓
-    <strong id="destino"></strong>
-  </div>
+      <div class="route">
+        <strong id="origem"></strong>
+        ↓
+        <strong id="destino"></strong>
+      </div>
 
-  <div class="categoria" id="categoria"></div>
+      <div class="categoria" id="categoria"></div>
 
-  <div style="margin-top:15px; font-size:.85rem;" id="detalhamentoBox"></div>
+      <div class="total" id="total"></div>
 
-  <div id="observacaoBox" style="margin-top:12px; display:none;">
-    <div style="font-size:.75rem; color:#a1a1aa; margin-bottom:4px;">
-      Observação
     </div>
-    <div style="font-size:.85rem;" id="observacaoTxt"></div>
-  </div>
-
-  <div class="total" id="total"></div>
-
-</div>
 
   </div>
-
 </div>
 
 <div class="cta-area">
-
   <button class="btn btn-secondary" onclick="aumentarOferta()">
     Oferecer valor maior
   </button>
@@ -216,7 +185,6 @@ body{
   <button class="btn btn-danger" onclick="cancelar()">
     Cancelar corrida
   </button>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -228,8 +196,6 @@ const origem = App.get("origem") || "-";
 const destino = App.get("destino") || "-";
 const total = Number(App.get("total") || 0);
 const categoriaSelecionada = App.get("categoria") || "Categoria padrão";
-const config = App.get("taxasConfig") || {};
-const valorBase = Number(App.get("valorBase") || 0);
 
 document.getElementById("origem").innerText = origem;
 document.getElementById("destino").innerText = destino;
@@ -261,58 +227,58 @@ function cancelar(){
 }
 
 // ==========================
-// CRIAR CORRIDA NO BANCO
+// CRIAR CORRIDA (NÃO DEPENDE MAIS DA GEO)
 // ==========================
 
 async function criarCorrida() {
 
-  if (!navigator.geolocation) {
-    alert("Seu navegador não suporta geolocalização.");
+  let lat = null;
+  let lng = null;
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        lat = pos.coords.latitude;
+        lng = pos.coords.longitude;
+      },
+      () => {
+        console.warn("Geolocalização negada ou falhou.");
+      }
+    );
+  }
+
+  const { data, error } = await supabaseClient
+    .from("rides")
+    .insert([
+      {
+        origem: origem,
+        destino: destino,
+        valor: total,
+        categoria: categoriaSelecionada,
+        status: "procurando",
+        passageiro_lat: lat,
+        passageiro_lng: lng
+      }
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    alert("Erro ao criar corrida.");
     return;
   }
 
-  navigator.geolocation.getCurrentPosition(async (pos) => {
+  console.log("Corrida criada:", data);
 
-    const lat = pos.coords.latitude;
-    const lng = pos.coords.longitude;
-
-    const { data, error } = await supabaseClient
-      .from("rides")
-      .insert([
-        {
-          origem: origem,
-          destino: destino,
-          valor: total,
-          categoria: categoriaSelecionada,
-          status: "procurando",
-          passageiro_lat: lat,
-          passageiro_lng: lng
-        }
-      ])
-      .select()
-      .single();
-
-    if (error) {
-      console.error(error);
-      alert("Erro ao criar corrida.");
-      return;
-    }
-
-    console.log("Corrida criada:", data);
-
-    App.set("ride_id", data.id);
-
-    escutarAceite(data.id);
-
-  }, () => {
-    alert("Permita o acesso à localização para solicitar corrida.");
-  });
+  App.set("ride_id", data.id);
+  escutarAceite(data.id);
 }
 
 criarCorrida();
 
 // ==========================
-// ESCUTAR QUANDO MOTORISTA ACEITAR
+// ESCUTAR ACEITE
 // ==========================
 
 function escutarAceite(rideId){

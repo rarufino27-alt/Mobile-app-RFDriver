@@ -14,7 +14,7 @@
 }
 
 body{
-  background:#000;
+  background:linear-gradient(180deg,#000,#050505);
   color:#fff;
   display:flex;
   justify-content:center;
@@ -28,37 +28,58 @@ body{
   max-width:420px;
 }
 
+/* LOGO */
 .logo{
-  width:120px;
+  width:130px;
   margin:0 auto 25px auto;
   display:block;
+  animation:float 4s ease-in-out infinite;
 }
 
+@keyframes float{
+  0%,100%{ transform:translateY(0px);}
+  50%{ transform:translateY(-8px);}
+}
+
+/* TABS */
 .tabs{
   display:flex;
   margin-bottom:20px;
   border-bottom:1px solid #222;
+  position:relative;
 }
 
 .tab{
   flex:1;
   text-align:center;
-  padding:12px;
+  padding:14px;
   cursor:pointer;
   font-weight:600;
-  color:#888;
+  color:#777;
+  transition:.3s;
 }
 
 .tab.active{
   color:#facc15;
-  border-bottom:2px solid #facc15;
 }
 
+.tab-indicator{
+  position:absolute;
+  bottom:0;
+  height:2px;
+  width:50%;
+  background:#facc15;
+  transition:.3s ease;
+}
+
+/* CARD */
 .card{
   background:#111;
-  padding:20px;
-  border-radius:16px;
+  padding:24px;
+  border-radius:18px;
   border:1px solid #1f1f1f;
+  box-shadow:0 0 25px rgba(250,204,21,.05);
+  transition:.3s;
 }
 
 input, select{
@@ -69,6 +90,11 @@ input, select{
   border:none;
   background:#1c1c1c;
   color:#fff;
+  font-size:.9rem;
+}
+
+input:focus{
+  outline:1px solid #facc15;
 }
 
 button{
@@ -78,11 +104,32 @@ button{
   border:none;
   font-weight:700;
   cursor:pointer;
+  transition:.2s;
 }
 
 .btn-primary{
   background:#facc15;
   color:#000;
+}
+
+.btn-primary:hover{
+  background:#ffdb3b;
+}
+
+.fade{
+  animation:fade .3s ease;
+}
+
+@keyframes fade{
+  from{opacity:0; transform:translateY(5px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.msg{
+  font-size:.85rem;
+  margin-bottom:10px;
+  color:#ff6b6b;
+  text-align:center;
 }
 </style>
 </head>
@@ -95,17 +142,20 @@ button{
   <div class="tabs">
     <div class="tab active" id="tabCadastro">Criar Conta</div>
     <div class="tab" id="tabLogin">Login</div>
+    <div class="tab-indicator" id="indicator"></div>
   </div>
 
   <div class="card">
 
-    <!-- CADASTRO -->
-    <div id="formCadastro">
+    <div class="msg" id="mensagem"></div>
 
-      <input type="text" id="nome" placeholder="Nome completo">
-      <input type="email" id="emailCadastro" placeholder="Email">
-      <input type="text" id="telefone" placeholder="Celular (WhatsApp)">
-      <input type="password" id="senhaCadastro" placeholder="Senha (mín. 6 caracteres)">
+    <!-- CADASTRO -->
+    <div id="formCadastro" class="fade">
+
+      <input type="text" id="nome" placeholder="Nome completo" required>
+      <input type="email" id="emailCadastro" placeholder="Email" required>
+      <input type="text" id="telefone" placeholder="Celular (WhatsApp)" required>
+      <input type="password" id="senhaCadastro" placeholder="Senha (mín. 6 caracteres)" required>
 
       <select id="role">
         <option value="passageiro">Sou Passageiro</option>
@@ -119,8 +169,8 @@ button{
     <!-- LOGIN -->
     <div id="formLogin" style="display:none;">
 
-      <input type="text" id="loginEmail" placeholder="Email">
-      <input type="password" id="loginSenha" placeholder="Senha">
+      <input type="email" id="loginEmail" placeholder="Email" required>
+      <input type="password" id="loginSenha" placeholder="Senha" required>
 
       <button class="btn-primary" onclick="login()">Entrar</button>
 
@@ -139,12 +189,20 @@ const tabCadastro = document.getElementById("tabCadastro");
 const tabLogin = document.getElementById("tabLogin");
 const formCadastro = document.getElementById("formCadastro");
 const formLogin = document.getElementById("formLogin");
+const indicator = document.getElementById("indicator");
+const mensagem = document.getElementById("mensagem");
+
+/* ======================
+   TABS ANIMADAS
+====================== */
 
 tabCadastro.onclick = ()=>{
   tabCadastro.classList.add("active");
   tabLogin.classList.remove("active");
   formCadastro.style.display="block";
   formLogin.style.display="none";
+  formCadastro.classList.add("fade");
+  indicator.style.left="0%";
 };
 
 tabLogin.onclick = ()=>{
@@ -152,15 +210,28 @@ tabLogin.onclick = ()=>{
   tabCadastro.classList.remove("active");
   formCadastro.style.display="none";
   formLogin.style.display="block";
+  formLogin.classList.add("fade");
+  indicator.style.left="50%";
 };
+
+/* ======================
+   REGISTRO
+====================== */
 
 async function registrar(){
 
-  const nome = document.getElementById("nome").value;
+  mensagem.innerText="";
+
+  const nome = nomeInput = document.getElementById("nome").value;
   const email = document.getElementById("emailCadastro").value;
   const telefone = document.getElementById("telefone").value;
   const senha = document.getElementById("senhaCadastro").value;
   const role = document.getElementById("role").value;
+
+  if(!nome || !email || !telefone || !senha){
+    mensagem.innerText="Preencha todos os campos.";
+    return;
+  }
 
   const { data, error } = await supabaseClient.auth.signUp({
     email,
@@ -168,25 +239,37 @@ async function registrar(){
   });
 
   if(error){
-    alert(error.message);
+    mensagem.innerText = error.message;
     return;
   }
 
-  await supabaseClient.from("profiles").insert([
-    {
+  const { error: profileError } = await supabaseClient
+    .from("profiles")
+    .insert([{
       id: data.user.id,
       nome,
       telefone,
       role,
       status: role === "motorista" ? "pendente" : "ativo"
-    }
-  ]);
+    }]);
 
-  alert("Conta criada com sucesso! Agora faça login.");
+  if(profileError){
+    mensagem.innerText = profileError.message;
+    return;
+  }
+
+  mensagem.style.color="#4ade80";
+  mensagem.innerText="Conta criada com sucesso! Faça login.";
   tabLogin.click();
 }
 
+/* ======================
+   LOGIN
+====================== */
+
 async function login(){
+
+  mensagem.innerText="";
 
   const email = document.getElementById("loginEmail").value;
   const senha = document.getElementById("loginSenha").value;
@@ -197,26 +280,30 @@ async function login(){
   });
 
   if(error){
-    alert(error.message);
+    mensagem.innerText = error.message;
     return;
   }
 
-  const { data: profile } = await supabaseClient
+  const { data: profile, error: profileError } = await supabaseClient
     .from("profiles")
     .select("role, status")
     .eq("id", data.user.id)
     .single();
 
+  if(profileError || !profile){
+    mensagem.innerText="Perfil não encontrado.";
+    return;
+  }
+
   if(profile.role === "motorista"){
     if(profile.status !== "ativo"){
-      alert("Sua conta está em análise pelo administrador.");
+      mensagem.innerText="Conta de motorista em análise.";
       return;
     }
     window.location.href = "motorista.html";
   } else {
     window.location.href = "passageiro.html";
   }
-
 }
 
 </script>

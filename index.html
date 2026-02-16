@@ -16,176 +16,86 @@
 body{
   background:#000;
   color:#fff;
-}
-
-/* CONTAINER */
-.container{
-  min-height:100vh;
-  padding:40px 24px 140px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-/* LOGO */
-.logo{
-  text-align:center;
-  margin-bottom:30px;
-}
-
-.logo img{
-  width:180px;
-  max-width:80%;
-}
-
-/* HEADLINE */
-.headline{
-  font-size:2rem;
-  font-weight:700;
-  line-height:1.2;
-  margin-bottom:14px;
-}
-
-.sub{
-  font-size:1rem;
-  color:#a1a1aa;
-  margin-bottom:30px;
-}
-
-/* BENEFITS */
-.benefits{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  margin-bottom:30px;
-}
-
-.benefits div{
-  background:#111;
-  padding:14px;
-  border-radius:12px;
-  font-size:.95rem;
-  border:1px solid #1c1c1c;
-}
-
-/* CTA FIXO */
-.cta-area{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  padding:20px;
-  background:#000;
-}
-
-.cta-primary{
-  width:100%;
-  padding:18px;
-  border:none;
-  border-radius:14px;
-  font-size:1.1rem;
-  font-weight:700;
-  background:#facc15;
-  color:#000;
-  cursor:pointer;
-}
-
-.cta-primary:active{
-  transform:scale(.97);
-}
-
-.links{
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  margin-top:12px;
-  font-size:.85rem;
-}
-
-.links a{
-  color:#a1a1aa;
-  text-decoration:none;
-}
-
-.links a:hover{
-  color:#2563eb;
-}
-
-  .logo-wrapper{
-  width:120px;
-  height:120px;
-  margin:0 auto 30px auto;
-  border-radius:50%;
-  background:#000;
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:
-    0 0 40px rgba(250,204,21,.35),
-    0 0 80px rgba(250,204,21,.15);
+  min-height:100vh;
 }
 
-.logo-img{
-  width:70%;
-  height:auto;
-  object-fit:contain;
+.container{
+  width:100%;
+  max-width:420px;
+  padding:30px;
+  text-align:center;
 }
 
+.logo{
+  width:110px;
+  margin-bottom:30px;
+}
+
+h1{
+  font-size:1.5rem;
+  margin-bottom:40px;
+}
+
+.btn{
+  width:100%;
+  padding:18px;
+  border-radius:14px;
+  border:none;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  margin-bottom:15px;
+  transition:.2s;
+}
+
+.btn-pass{
+  background:#facc15;
+  color:#000;
+}
+
+.btn-motor{
+  background:#111;
+  border:2px solid #2563eb;
+  color:#2563eb;
+}
+
+.btn:active{
+  transform:scale(.96);
+}
 </style>
 </head>
 <body>
 
 <div class="container">
 
-  <div>
+  <img src="./icons/logo-1024.png" class="logo">
 
-<div class="logo-wrapper">
-  <img 
-    src="/Mobile-app-RFDriver/icons/logo-1024.png" 
-    alt="RF Driver"
-    class="logo-img"
-  >
-</div>
+  <h1>Como você deseja entrar?</h1>
 
-    <div class="headline">
-      Seu motorista confiável<br>
-      em poucos segundos.
-    </div>
-
-    <div class="sub">
-      Tecnologia + Atendimento humano.<br>
-      Mobilidade com excelência.
-    </div>
-
-    <div class="benefits">
-      <div>✔ Motoristas verificados</div>
-      <div>✔ Atendimento humanizado</div>
-      <div>✔ Valor transparente antes da confirmação</div>
-    </div>
-
-  </div>
-
-</div>
-
-<div class="cta-area">
-  <button class="cta-primary" onclick="window.location.href='origem.html'">
-    Solicitar Agora
+  <button class="btn btn-pass" onclick="entrarPassageiro()">
+    Sou Passageiro
   </button>
 
-  <div class="links">
-    <a href="instalar-app.html">Instalar</a>
-    <a href="regras.html">Regras</a>
-  </div>
+  <button class="btn btn-motor" onclick="entrarMotorista()">
+    Sou Motorista
+  </button>
+
 </div>
+
+<script>
+function entrarPassageiro(){
+  localStorage.setItem("perfil", "passageiro");
+  window.location.href = "passageiro.html"; 
+}
+
+function entrarMotorista(){
+  localStorage.setItem("perfil", "motorista");
+  window.location.href = "motorista.html";
+}
+</script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-

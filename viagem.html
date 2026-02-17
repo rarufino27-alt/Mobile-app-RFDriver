@@ -195,25 +195,25 @@ button:active{
 
 <div class="card">
 
- <!-- PARA ONDE VAMOS -->
-<div class="section">
-
-  <div class="select-btn" id="abrirRota" style="font-weight:700;">
-    Para onde vamos?
+  <!-- BOTÃO PRINCIPAL -->
+  <div class="search-main" onclick="abrirBusca()">
+    🔎
+    <span id="textoBusca">Para onde vamos?</span>
   </div>
 
-  <div class="card" style="margin-top:12px;">
-
-    <div style="padding:10px 0;border-bottom:1px solid #1f2937;">
-      <small style="color:#888;">Origem</small><br>
-      <strong id="origemExibida">Não definida</strong>
+  <!-- BLOCO ORIGEM / DESTINO -->
+  <div id="resumoRota" class="rota-box hidden">
+    <div class="rota-item">
+      <span class="label">Origem</span>
+      <span id="origemResumo" class="valor"></span>
     </div>
 
-    <div style="padding:10px 0;">
-      <small style="color:#888;">Destino</small><br>
-      <strong id="destinoExibido">Não definido</strong>
-    </div>
+    <div class="linha"></div>
 
+    <div class="rota-item">
+      <span class="label">Destino</span>
+      <span id="destinoResumo" class="valor"></span>
+    </div>
   </div>
 
 </div>

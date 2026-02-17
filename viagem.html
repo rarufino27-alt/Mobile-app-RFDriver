@@ -20,18 +20,16 @@ body{
 }
 
 /* HEADER */
-
 .top{
   background:#facc15;
   padding:20px;
-  padding-bottom:80px;
+  padding-bottom:70px;
   color:#000;
   font-weight:600;
   font-size:1.1rem;
 }
 
 /* MAPA PLACEHOLDER */
-
 .map{
   position:absolute;
   top:80px;
@@ -39,13 +37,10 @@ body{
   right:0;
   bottom:0;
   background:#111;
-  background-image: radial-gradient(circle at center, #1a1a1a 1px, transparent 1px);
-  background-size: 20px 20px;
   opacity:.6;
 }
 
 /* CARD */
-
 .card{
   position:absolute;
   top:110px;
@@ -57,8 +52,7 @@ body{
   box-shadow:0 20px 40px rgba(0,0,0,.4);
 }
 
-/* BOTÃO PRINCIPAL */
-
+/* BOTÃO BUSCA */
 .search-main{
   display:flex;
   align-items:center;
@@ -69,28 +63,26 @@ body{
   font-weight:600;
   font-size:1rem;
   cursor:pointer;
-  margin-bottom:15px;
+  margin-bottom:18px;
 }
 
-/* RESUMO REFINADO */
-
+/* ROTA */
 .rota-box{
   margin-top:10px;
   background:#111;
   border-radius:18px;
   padding:16px;
-  display:none;
 }
 
 .rota-item{
   display:flex;
   justify-content:space-between;
-  align-items:flex-start;
+  align-items:center;
 }
 
 .label{
-  font-size:.70rem;
-  color:#777;
+  font-size:.75rem;
+  color:#888;
 }
 
 .valor{
@@ -98,18 +90,24 @@ body{
   font-weight:500;
   color:#fff;
   text-align:right;
-  max-width:65%;
-  line-height:1.2;
 }
 
 .linha{
   height:1px;
   background:#222;
-  margin:12px 0;
+  margin:10px 0;
+}
+
+/* TOTAL */
+.total{
+  margin-top:14px;
+  text-align:right;
+  font-size:1rem;
+  font-weight:700;
+  color:#facc15;
 }
 
 /* BOTÃO FIXO */
-
 .bottom{
   position:absolute;
   bottom:20px;
@@ -134,42 +132,25 @@ button:disabled{
   background:#333;
   color:#777;
 }
-
-button:active{
-  transform:scale(.98);
-}
 </style>
 </head>
 <body>
 
 <div class="top">
-  Olá, Rafael!
+  RF Driver
 </div>
 
 <div class="map"></div>
 
 <div class="card">
 
-  <!-- BOTÃO FIXO -->
+  <!-- BOTÃO PRINCIPAL -->
   <div class="search-main" onclick="abrirBusca()">
-    🔎
-    <span>Para onde vamos?</span>
+    🔎 Para onde vamos?
   </div>
 
-  <!-- RESUMO AJUSTADO -->
-  <div id="resumoRota" class="rota-box">
-    <div class="rota-item">
-      <span class="label">Origem</span>
-      <span id="origemResumo" class="valor"></span>
-    </div>
-
-    <div class="linha"></div>
-
-    <div class="rota-item">
-      <span class="label">Destino</span>
-      <span id="destinoResumo" class="valor"></span>
-    </div>
-  </div>
+  <!-- BLOCO ROTA -->
+  <div id="rotaBox" class="rota-box" style="display:none;"></div>
 
 </div>
 
@@ -179,35 +160,70 @@ button:active{
 
 <script>
 
-const btn = document.getElementById("btnSolicitar");
-const resumoBox = document.getElementById("resumoRota");
-const origemResumo = document.getElementById("origemResumo");
-const destinoResumo = document.getElementById("destinoResumo");
+const rotaBox = document.getElementById("rotaBox");
+const btnSolicitar = document.getElementById("btnSolicitar");
 
 function abrirBusca(){
   window.location.href = "buscar.html";
 }
 
-function atualizarResumo(){
+function carregarRota(){
 
   const corrida = localStorage.getItem("rf_corrida_temp");
   if(!corrida) return;
 
   const dados = JSON.parse(corrida);
-  if(!dados.origem || !dados.destino) return;
 
-  origemResumo.innerText = dados.origem;
-  destinoResumo.innerText = dados.destino;
+  const { origem, parada, destino, valor } = dados;
 
-  resumoBox.style.display = "block";
-  btn.disabled = false;
+  if(!origem || !destino) return;
+
+  let html = "";
+
+  // ORIGEM
+  html += `
+    <div class="rota-item">
+      <span class="label">Origem</span>
+      <span class="valor">${origem}</span>
+    </div>
+  `;
+
+  // PARADA (SE EXISTIR)
+  if(parada){
+    html += `<div class="linha"></div>
+      <div class="rota-item">
+        <span class="label">Parada</span>
+        <span class="valor">${parada}</span>
+      </div>
+    `;
+  }
+
+  // DESTINO
+  html += `<div class="linha"></div>
+    <div class="rota-item">
+      <span class="label">Destino</span>
+      <span class="valor">${destino}</span>
+    </div>
+  `;
+
+  // TOTAL
+  html += `
+    <div class="total">
+      Total estimado: R$ ${Number(valor).toFixed(2)}
+    </div>
+  `;
+
+  rotaBox.innerHTML = html;
+  rotaBox.style.display = "block";
+
+  btnSolicitar.disabled = false;
 }
+
+carregarRota();
 
 function solicitar(){
   window.location.href = "resumo.html";
 }
-
-atualizarResumo();
 
 </script>
 

@@ -30,7 +30,7 @@ body{
   font-size:1.1rem;
 }
 
-/* MAPA */
+/* MAPA PLACEHOLDER */
 
 .map{
   position:absolute;
@@ -74,16 +74,12 @@ body{
 
 /* RESUMO */
 
-.hidden{
-  display:none;
-}
-
 .rota-box{
-  margin-top:18px;
+  margin-top:10px;
   background:#111;
   border-radius:18px;
   padding:16px;
-  text-align:left;
+  display:none;
 }
 
 .rota-item{
@@ -139,7 +135,6 @@ button:disabled{
 button:active{
   transform:scale(.98);
 }
-
 </style>
 </head>
 <body>
@@ -152,15 +147,14 @@ button:active{
 
 <div class="card">
 
-  <!-- BOTÃO PRINCIPAL -->
+  <!-- BOTÃO FIXO (NUNCA MUDA TEXTO) -->
   <div class="search-main" onclick="abrirBusca()">
     🔎
-    <span id="textoBusca">Para onde vamos?</span>
+    <span>Para onde vamos?</span>
   </div>
 
-  <!-- RESUMO ORIGEM DESTINO -->
-  <div id="resumoRota" class="rota-box hidden">
-
+  <!-- RESUMO DA ROTA -->
+  <div id="resumoRota" class="rota-box">
     <div class="rota-item">
       <span class="label">Origem</span>
       <span id="origemResumo" class="valor"></span>
@@ -172,7 +166,6 @@ button:active{
       <span class="label">Destino</span>
       <span id="destinoResumo" class="valor"></span>
     </div>
-
   </div>
 
 </div>
@@ -184,11 +177,16 @@ button:active{
 <script>
 
 const btn = document.getElementById("btnSolicitar");
+const resumoBox = document.getElementById("resumoRota");
+const origemResumo = document.getElementById("origemResumo");
+const destinoResumo = document.getElementById("destinoResumo");
 
-/* =========================
-   RECEBER DADOS DO BUSCAR
-========================= */
+/* IR PARA BUSCAR */
+function abrirBusca(){
+  window.location.href = "buscar.html";
+}
 
+/* ATUALIZAR AO VOLTAR */
 function atualizarResumo(){
 
   const corrida = localStorage.getItem("rf_corrida_temp");
@@ -196,40 +194,26 @@ function atualizarResumo(){
 
   const dados = JSON.parse(corrida);
 
-  // Mantém o texto fixo
-  document.getElementById("textoBusca").innerText = "Para onde vamos?";
+  if(!dados.origem || !dados.destino) return;
 
-  document.getElementById("origemResumo").innerText = dados.origem;
-  document.getElementById("destinoResumo").innerText = dados.destino;
+  origemResumo.innerText = dados.origem;
+  destinoResumo.innerText = dados.destino;
 
-  document.getElementById("resumoRota").classList.remove("hidden");
-
+  resumoBox.style.display = "block";
   btn.disabled = false;
 }
 
-/* =========================
-   IR PARA BUSCA
-========================= */
-
-function abrirBusca(){
-  window.location.href = "buscar.html";
-}
-
-/* =========================
-   SOLICITAR CORRIDA
-========================= */
-
+/* SOLICITAR */
 function solicitar(){
 
   const corrida = localStorage.getItem("rf_corrida_temp");
-
-  if(!corrida){
-    alert("Selecione a rota primeiro.");
-    return;
-  }
+  if(!corrida) return;
 
   window.location.href = "resumo.html";
 }
+
+/* EXECUTA AO CARREGAR */
+atualizarResumo();
 
 </script>
 

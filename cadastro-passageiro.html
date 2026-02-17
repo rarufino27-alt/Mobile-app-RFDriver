@@ -131,16 +131,16 @@ button:hover{
 ============================== */
 
 const params = new URLSearchParams(window.location.search);
-const telefone = params.get("tel");
+const telefoneParam = params.get("tel");
 
 const telefoneInput = document.getElementById("telefone");
 const mensagem = document.getElementById("mensagem");
 
-if(!telefone){
-  window.location.href = "login.html";
+if(!telefoneParam){
+  window.location.href = "index.html";
 }
 
-telefoneInput.value = telefone;
+telefoneInput.value = telefoneParam;
 
 /* ==============================
    CADASTRO
@@ -158,8 +158,16 @@ async function cadastrar(){
     return;
   }
 
-  const emailInterno = telefone + "@rfdriver.com";
-  const senhaAutomatica = telefone;
+  // Limpar telefone (remove +, espaços, traços etc)
+  const telefoneLimpo = telefoneParam.replace(/\D/g,'');
+
+  if(telefoneLimpo.length < 11){
+    mensagem.innerText="Telefone inválido.";
+    return;
+  }
+
+  const emailInterno = telefoneLimpo + "@rfdriver.com";
+  const senhaAutomatica = telefoneLimpo;
 
   // Criar usuário no auth
   const { data, error } = await supabaseClient.auth.signUp({
@@ -172,6 +180,11 @@ async function cadastrar(){
     return;
   }
 
+  if(!data.user){
+    mensagem.innerText = "Erro ao criar usuário.";
+    return;
+  }
+
   const userId = data.user.id;
 
   // Criar perfil
@@ -180,7 +193,7 @@ async function cadastrar(){
     .insert({
       id: userId,
       nome: nome,
-      telefone: telefone,
+      telefone: "+" + telefoneLimpo,
       cpf: cpf || null,
       role: "passageiro",
       status: "ativo"
@@ -192,10 +205,15 @@ async function cadastrar(){
   }
 
   // Login automático
-  await supabaseClient.auth.signInWithPassword({
+  const { error: loginError } = await supabaseClient.auth.signInWithPassword({
     email: emailInterno,
     password: senhaAutomatica
   });
+
+  if(loginError){
+    mensagem.innerText = "Erro ao logar automaticamente.";
+    return;
+  }
 
   window.location.href = "passageiro.html";
 }

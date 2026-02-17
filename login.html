@@ -28,10 +28,9 @@ body{
   max-width:420px;
 }
 
-/* LOGO */
 .logo{
   width:130px;
-  margin:0 auto 25px auto;
+  margin:0 auto 35px auto;
   display:block;
   animation:float 4s ease-in-out infinite;
 }
@@ -41,51 +40,30 @@ body{
   50%{ transform:translateY(-8px);}
 }
 
-/* TABS */
-.tabs{
-  display:flex;
-  margin-bottom:20px;
-  border-bottom:1px solid #222;
-  position:relative;
-}
-
-.tab{
-  flex:1;
+.title{
   text-align:center;
-  padding:14px;
-  cursor:pointer;
+  font-size:1.2rem;
+  margin-bottom:20px;
   font-weight:600;
-  color:#777;
-  transition:.3s;
 }
 
-.tab.active{
+.phone-box{
+  display:flex;
+  gap:8px;
+  margin-bottom:15px;
+}
+
+.country{
+  background:#1c1c1c;
+  padding:14px;
+  border-radius:10px;
+  font-weight:600;
   color:#facc15;
 }
 
-.tab-indicator{
-  position:absolute;
-  bottom:0;
-  height:2px;
-  width:50%;
-  background:#facc15;
-  transition:.3s ease;
-}
-
-/* CARD */
-.card{
-  background:#111;
-  padding:24px;
-  border-radius:18px;
-  border:1px solid #1f1f1f;
-  box-shadow:0 0 25px rgba(250,204,21,.05);
-  transition:.3s;
-}
-
-input, select{
-  width:100%;
+input{
+  flex:1;
   padding:14px;
-  margin-bottom:12px;
   border-radius:10px;
   border:none;
   background:#1c1c1c;
@@ -97,6 +75,27 @@ input:focus{
   outline:1px solid #facc15;
 }
 
+.terms{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:18px 0;
+  font-size:.85rem;
+  color:#ccc;
+}
+
+.terms input{
+  width:18px;
+  height:18px;
+  accent-color:#facc15;
+}
+
+.terms a{
+  color:#facc15;
+  text-decoration:none;
+  font-weight:600;
+}
+
 button{
   width:100%;
   padding:14px;
@@ -105,31 +104,20 @@ button{
   font-weight:700;
   cursor:pointer;
   transition:.2s;
+  background:#333;
+  color:#777;
 }
 
-.btn-primary{
+button.active{
   background:#facc15;
   color:#000;
 }
 
-.btn-primary:hover{
-  background:#ffdb3b;
-}
-
-.fade{
-  animation:fade .3s ease;
-}
-
-@keyframes fade{
-  from{opacity:0; transform:translateY(5px);}
-  to{opacity:1; transform:translateY(0);}
-}
-
 .msg{
   font-size:.85rem;
-  margin-bottom:10px;
-  color:#ff6b6b;
+  margin-top:10px;
   text-align:center;
+  color:#ff6b6b;
 }
 </style>
 </head>
@@ -139,44 +127,23 @@ button{
 
   <img src="./icons/logo-1024.png" class="logo">
 
-  <div class="tabs">
-    <div class="tab active" id="tabCadastro">Criar Conta</div>
-    <div class="tab" id="tabLogin">Login</div>
-    <div class="tab-indicator" id="indicator"></div>
+  <div class="title">Insira seu número de telefone</div>
+
+  <div class="phone-box">
+    <div class="country">+55</div>
+    <input type="tel" id="telefone" placeholder="(81) 9 9999-9999">
   </div>
 
-  <div class="card">
-
-    <div class="msg" id="mensagem"></div>
-
-    <!-- CADASTRO -->
-    <div id="formCadastro" class="fade">
-
-      <input type="text" id="nome" placeholder="Nome completo" required>
-      <input type="email" id="emailCadastro" placeholder="Email" required>
-      <input type="text" id="telefone" placeholder="Celular (WhatsApp)" required>
-      <input type="password" id="senhaCadastro" placeholder="Senha (mín. 6 caracteres)" required>
-
-      <select id="role">
-        <option value="passageiro">Sou Passageiro</option>
-        <option value="motorista">Sou Motorista</option>
-      </select>
-
-      <button class="btn-primary" onclick="registrar()">Criar Conta</button>
-
-    </div>
-
-    <!-- LOGIN -->
-    <div id="formLogin" style="display:none;">
-
-      <input type="email" id="loginEmail" placeholder="Email" required>
-      <input type="password" id="loginSenha" placeholder="Senha" required>
-
-      <button class="btn-primary" onclick="login()">Entrar</button>
-
-    </div>
-
+  <div class="terms">
+    <input type="checkbox" id="aceite">
+    <label for="aceite">
+      Li e aceito os <a href="termos.html" target="_blank">Termos de Uso</a>
+    </label>
   </div>
+
+  <button id="btnEntrar" onclick="acessar()" disabled>Continuar</button>
+
+  <div class="msg" id="mensagem"></div>
 
 </div>
 
@@ -185,119 +152,89 @@ button{
 
 <script>
 
-const tabCadastro = document.getElementById("tabCadastro");
-const tabLogin = document.getElementById("tabLogin");
-const formCadastro = document.getElementById("formCadastro");
-const formLogin = document.getElementById("formLogin");
-const indicator = document.getElementById("indicator");
+const telefoneInput = document.getElementById("telefone");
+const aceite = document.getElementById("aceite");
+const btn = document.getElementById("btnEntrar");
 const mensagem = document.getElementById("mensagem");
 
-/* ======================
-   TABS ANIMADAS
-====================== */
+/* ==============================
+   ATIVAR BOTÃO APÓS ACEITE
+============================== */
 
-tabCadastro.onclick = ()=>{
-  tabCadastro.classList.add("active");
-  tabLogin.classList.remove("active");
-  formCadastro.style.display="block";
-  formLogin.style.display="none";
-  formCadastro.classList.add("fade");
-  indicator.style.left="0%";
-};
-
-tabLogin.onclick = ()=>{
-  tabLogin.classList.add("active");
-  tabCadastro.classList.remove("active");
-  formCadastro.style.display="none";
-  formLogin.style.display="block";
-  formLogin.classList.add("fade");
-  indicator.style.left="50%";
-};
-
-/* ======================
-   REGISTRO
-====================== */
-
-async function registrar(){
-
-  const nome = document.getElementById("nome").value;
-  const email = document.getElementById("emailCadastro").value;
-  const telefone = document.getElementById("telefone").value;
-  const senha = document.getElementById("senhaCadastro").value;
-  const role = document.getElementById("role").value;
-
-  const { data, error } = await supabaseClient.auth.signUp({
-    email,
-    password: senha
-  });
-
-  if(error){
-    alert(error.message);
-    return;
+aceite.addEventListener("change", ()=>{
+  if(aceite.checked && telefoneInput.value.length >= 10){
+    btn.disabled = false;
+    btn.classList.add("active");
+  } else {
+    btn.disabled = true;
+    btn.classList.remove("active");
   }
+});
 
-  const userId = data.user.id;
-
-  const { error: profileError } = await supabaseClient
-    .from("profiles")
-    .insert({
-      id: userId,
-      nome,
-      telefone,
-      role,
-      status: role === "motorista" ? "pendente" : "ativo"
-    });
-
-  if(profileError){
-    alert(profileError.message);
-    return;
+telefoneInput.addEventListener("input", ()=>{
+  if(aceite.checked && telefoneInput.value.length >= 10){
+    btn.disabled = false;
+    btn.classList.add("active");
+  } else {
+    btn.disabled = true;
+    btn.classList.remove("active");
   }
+});
 
-  alert("Conta criada com sucesso!");
-  tabLogin.click();
-}
+/* ==============================
+   VERIFICAR SESSÃO
+============================== */
 
-/* ======================
-   LOGIN
-====================== */
+(async ()=>{
+  const { data } = await supabaseClient.auth.getSession();
+  if(data.session){
+    window.location.href = "passageiro.html";
+  }
+})();
 
-async function login(){
+/* ==============================
+   ACESSO POR TELEFONE
+============================== */
+
+async function acessar(){
 
   mensagem.innerText="";
 
-  const email = document.getElementById("loginEmail").value;
-  const senha = document.getElementById("loginSenha").value;
+  const telefone = "+55" + telefoneInput.value.replace(/\D/g,'');
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password: senha
+  if(telefone.length < 13){
+    mensagem.innerText="Número inválido.";
+    return;
+  }
+
+  // Verificar se já existe
+  const { data: perfil } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("telefone", telefone)
+    .eq("role", "passageiro")
+    .single();
+
+  if(!perfil){
+    // Ir para cadastro
+    window.location.href = "cadastro-passageiro.html?tel=" + telefone;
+    return;
+  }
+
+  // Login automático (password fake baseada no telefone)
+  const senhaAutomatica = telefone;
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email: telefone + "@rfdriver.com",
+    password: senhaAutomatica
   });
 
   if(error){
-    mensagem.innerText = error.message;
+    mensagem.innerText="Erro ao entrar.";
     return;
   }
 
-  const { data: profile, error: profileError } = await supabaseClient
-    .from("profiles")
-    .select("role, status")
-    .eq("id", data.user.id)
-    .single();
-
-  if(profileError || !profile){
-    mensagem.innerText="Perfil não encontrado.";
-    return;
-  }
-
-  if(profile.role === "motorista"){
-    if(profile.status !== "ativo"){
-      mensagem.innerText="Conta de motorista em análise.";
-      return;
-    }
-    window.location.href = "motorista.html";
-  } else {
-    window.location.href = "passageiro.html";
-  }
+  window.location.href = "passageiro.html";
 }
 
 </script>

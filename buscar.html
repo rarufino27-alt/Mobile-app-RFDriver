@@ -6,7 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
 
 body{
   background:#000;
@@ -18,13 +23,27 @@ h2{
   margin-bottom:20px;
 }
 
-select{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:none;
+.card{
+  background:#111;
+  border:1px solid #1c1c1c;
+  border-radius:16px;
+  padding:16px;
   margin-bottom:15px;
-  font-size:1rem;
+  cursor:pointer;
+}
+
+.card:hover{
+  border-color:#facc15;
+}
+
+.label{
+  font-size:.8rem;
+  color:#888;
+}
+
+.value{
+  font-weight:600;
+  margin-top:4px;
 }
 
 button{
@@ -43,125 +62,216 @@ button:disabled{
   background:#333;
   color:#777;
 }
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal-content{
+  background:#111;
+  width:100%;
+  max-width:400px;
+  border-radius:18px;
+  padding:18px;
+  border:1px solid #1c1c1c;
+}
+
+.modal-content input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #1f2937;
+  background:#0d0d0d;
+  color:#fff;
+  margin-bottom:12px;
+}
+
+.modal-list div{
+  padding:12px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.modal-list div:hover{
+  background:#1a1a1a;
+}
 </style>
 </head>
 <body>
 
 <h2>Escolha sua rota</h2>
 
-<!-- ORIGEM -->
-<div class="section">
-  <div class="title">Para Onde Vamos Hoje?</div>
-  <div class="subtitle">Informe Onde você está? (ORIGEM)</div>
-  <div class="card">
-    <div class="select-btn" id="origemBtn">Selecionar origem</div>
-  </div>
+<div class="card" id="origemCard">
+  <div class="label">Origem</div>
+  <div class="value" id="origemExibida">Selecionar origem</div>
 </div>
 
-<!-- DESTINO -->
-<div class="section">
-  <div class="title">Destino</div>
-  <div class="subtitle">Para onde vamos?</div>
-  <div class="card">
-    <div class="select-btn" id="destinoBtn">Selecionar destino</div>
-  </div>
+<div class="card" id="destinoCard">
+  <div class="label">Destino</div>
+  <div class="value" id="destinoExibida">Selecionar destino</div>
 </div>
 
 <button id="confirmar" disabled onclick="confirmar()">Confirmar rota</button>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <input id="busca" placeholder="Buscar...">
+    <div class="modal-list" id="lista" style="max-height:300px;overflow:auto"></div>
+  </div>
+</div>
 
 <script src="core/dataManager.js"></script>
 
 <script>
 
-let dadosJson = [];
+let rotas = [];
+let origens = [];
+let destinos = [];
+
+let origemSelecionada = null;
+let destinoSelecionado = null;
+let valorBase = 0;
+let modo = null;
+
+const origemCard = document.getElementById("origemCard");
+const destinoCard = document.getElementById("destinoCard");
+const origemExibida = document.getElementById("origemExibida");
+const destinoExibida = document.getElementById("destinoExibida");
+const confirmarBtn = document.getElementById("confirmar");
+const modal = document.getElementById("modal");
+const lista = document.getElementById("lista");
+const busca = document.getElementById("busca");
+
+/* =========================
+   CARREGAR DADOS
+========================= */
 
 async function carregar(){
-
   try{
-
-    // Aguarda o DataManager carregar todos os arquivos
     await DataManager.carregar();
-
-    dadosJson = DataManager.getRotas();
-
-    const origensUnicas = [...new Set(dadosJson.map(item => item.origem))];
-
-    const origemSelect = document.getElementById("origemSelect");
-
-    origensUnicas.forEach(o=>{
-      const option = document.createElement("option");
-      option.value = o;
-      option.textContent = o;
-      origemSelect.appendChild(option);
-    });
-
+    rotas = DataManager.getRotas();
+    origens = [...new Set(rotas.map(r => r.origem))];
   }catch(e){
     alert("Erro ao carregar rotas.");
     console.error(e);
   }
-
 }
 
 carregar();
 
-document.getElementById("origemSelect").addEventListener("change", function(){
+/* =========================
+   ABRIR ORIGEM
+========================= */
 
-  const origem = this.value;
-  const destinoSelect = document.getElementById("destinoSelect");
+origemCard.onclick = ()=>{
+  modo = "origem";
+  modal.style.display="flex";
+  busca.value="";
+  render(origens);
+};
 
-  destinoSelect.innerHTML = "<option value=''>Selecione o destino</option>";
-  destinoSelect.disabled = true;
-  document.getElementById("confirmar").disabled = true;
+/* =========================
+   ABRIR DESTINO
+========================= */
 
-  if(!origem) return;
-
-  const destinos = dadosJson
-    .filter(item => item.origem === origem)
-    .map(item => item.destino);
-
-  destinos.forEach(d=>{
-    const option = document.createElement("option");
-    option.value = d;
-    option.textContent = d;
-    destinoSelect.appendChild(option);
-  });
-
-  destinoSelect.disabled = false;
-
-});
-
-document.getElementById("destinoSelect").addEventListener("change", function(){
-
-  if(this.value){
-    document.getElementById("confirmar").disabled = false;
-  }else{
-    document.getElementById("confirmar").disabled = true;
+destinoCard.onclick = ()=>{
+  if(!origemSelecionada){
+    alert("Selecione a origem primeiro.");
+    return;
   }
 
-});
+  modo = "destino";
+  destinos = rotas
+    .filter(r => r.origem === origemSelecionada)
+    .map(r => r.destino);
+
+  modal.style.display="flex";
+  busca.value="";
+  render(destinos);
+};
+
+/* =========================
+   RENDER LISTA
+========================= */
+
+function render(arr){
+  lista.innerHTML="";
+
+  arr.forEach(item=>{
+    const div = document.createElement("div");
+    div.textContent = item;
+
+    div.onclick = ()=>{
+      if(modo === "origem"){
+        origemSelecionada = item;
+        origemExibida.textContent = item;
+        destinoSelecionado = null;
+        destinoExibida.textContent = "Selecionar destino";
+        confirmarBtn.disabled = true;
+        modal.style.display="none";
+      }else{
+        destinoSelecionado = item;
+        destinoExibida.textContent = item;
+        valorBase = rotas.find(r =>
+          r.origem === origemSelecionada &&
+          r.destino === destinoSelecionado
+        ).valor;
+
+        confirmarBtn.disabled = false;
+        modal.style.display="none";
+      }
+    };
+
+    lista.appendChild(div);
+  });
+}
+
+/* =========================
+   BUSCA
+========================= */
+
+busca.oninput = ()=>{
+  const texto = busca.value.toLowerCase();
+  const listaAtual = modo === "origem" ? origens : destinos;
+
+  render(
+    listaAtual.filter(i => i.toLowerCase().includes(texto))
+  );
+};
+
+/* =========================
+   FECHAR MODAL
+========================= */
+
+modal.onclick = (e)=>{
+  if(e.target === modal){
+    modal.style.display="none";
+  }
+};
+
+/* =========================
+   CONFIRMAR
+========================= */
 
 function confirmar(){
 
-  const origem = document.getElementById("origemSelect").value;
-  const destino = document.getElementById("destinoSelect").value;
-
-  const rota = dadosJson.find(item =>
-    item.origem === origem && item.destino === destino
-  );
-
-  if(!rota){
-    alert("Rota não encontrada.");
+  if(!origemSelecionada || !destinoSelecionado){
     return;
   }
 
   localStorage.setItem("rf_corrida_temp", JSON.stringify({
-    origem,
-    destino,
-    valor: rota.valor
+    origem: origemSelecionada,
+    destino: destinoSelecionado,
+    valor: valorBase
   }));
 
   window.location.href = "viagem.html";
-
 }
 
 </script>

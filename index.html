@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>RF Driver</title>
+<title>RF Driver – Acesso</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -14,56 +14,110 @@
 }
 
 body{
-  background:#000;
+  background:linear-gradient(180deg,#000,#050505);
   color:#fff;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   min-height:100vh;
+  padding:20px;
 }
 
 .container{
   width:100%;
   max-width:420px;
-  padding:30px;
-  text-align:center;
 }
 
 .logo{
-  width:110px;
-  margin-bottom:30px;
+  width:130px;
+  margin:0 auto 35px auto;
+  display:block;
+  animation:float 4s ease-in-out infinite;
 }
 
-h1{
-  font-size:1.5rem;
-  margin-bottom:40px;
+@keyframes float{
+  0%,100%{ transform:translateY(0px);}
+  50%{ transform:translateY(-8px);}
 }
 
-.btn{
-  width:100%;
-  padding:18px;
-  border-radius:14px;
+.title{
+  text-align:center;
+  font-size:1.2rem;
+  margin-bottom:20px;
+  font-weight:600;
+}
+
+.phone-box{
+  display:flex;
+  gap:8px;
+  margin-bottom:15px;
+}
+
+.country{
+  background:#1c1c1c;
+  padding:14px;
+  border-radius:10px;
+  font-weight:600;
+  color:#facc15;
+}
+
+input{
+  flex:1;
+  padding:14px;
+  border-radius:10px;
   border:none;
-  font-size:1rem;
+  background:#1c1c1c;
+  color:#fff;
+  font-size:.9rem;
+}
+
+input:focus{
+  outline:1px solid #facc15;
+}
+
+.terms{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:18px 0;
+  font-size:.85rem;
+  color:#ccc;
+}
+
+.terms input{
+  width:18px;
+  height:18px;
+  accent-color:#facc15;
+}
+
+.terms a{
+  color:#facc15;
+  text-decoration:none;
+  font-weight:600;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
   font-weight:700;
   cursor:pointer;
-  margin-bottom:15px;
   transition:.2s;
+  background:#333;
+  color:#777;
 }
 
-.btn-pass{
+button.active{
   background:#facc15;
   color:#000;
 }
 
-.btn-motor{
-  background:#111;
-  border:2px solid #2563eb;
-  color:#2563eb;
-}
-
-.btn:active{
-  transform:scale(.96);
+.msg{
+  font-size:.85rem;
+  margin-top:10px;
+  text-align:center;
+  color:#ff6b6b;
 }
 </style>
 </head>
@@ -73,28 +127,116 @@ h1{
 
   <img src="./icons/logo-1024.png" class="logo">
 
-  <h1>Como você deseja entrar?</h1>
+  <div class="title">Insira seu número de telefone</div>
 
-  <button class="btn btn-pass" onclick="entrarPassageiro()">
-    Sou Passageiro
-  </button>
+  <div class="phone-box">
+    <div class="country">+55</div>
+    <input type="tel" id="telefone" placeholder="(81) 9 9999-9999">
+  </div>
 
-  <button class="btn btn-motor" onclick="entrarMotorista()">
-    Sou Motorista
-  </button>
+  <div class="terms">
+    <input type="checkbox" id="aceite">
+    <label for="aceite">
+      Li e aceito os <a href="termos.html" target="_blank">Termos de Uso</a>
+    </label>
+  </div>
+
+  <button id="btnEntrar" onclick="acessar()" disabled>Continuar</button>
+
+  <div class="msg" id="mensagem"></div>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="core/supabase.js"></script>
+
 <script>
-function entrarPassageiro(){
-  localStorage.setItem("perfil", "passageiro");
-  window.location.href = "viagem.html"; 
+
+const telefoneInput = document.getElementById("telefone");
+const aceite = document.getElementById("aceite");
+const btn = document.getElementById("btnEntrar");
+const mensagem = document.getElementById("mensagem");
+
+/* ==============================
+   ATIVAR BOTÃO APÓS ACEITE
+============================== */
+
+aceite.addEventListener("change", ()=>{
+  if(aceite.checked && telefoneInput.value.length >= 10){
+    btn.disabled = false;
+    btn.classList.add("active");
+  } else {
+    btn.disabled = true;
+    btn.classList.remove("active");
+  }
+});
+
+telefoneInput.addEventListener("input", ()=>{
+  if(aceite.checked && telefoneInput.value.length >= 10){
+    btn.disabled = false;
+    btn.classList.add("active");
+  } else {
+    btn.disabled = true;
+    btn.classList.remove("active");
+  }
+});
+
+/* ==============================
+   VERIFICAR SESSÃO
+============================== */
+
+(async ()=>{
+  const { data } = await supabaseClient.auth.getSession();
+  if(data.session){
+    window.location.href = "passageiro.html";
+  }
+})();
+
+/* ==============================
+   ACESSO POR TELEFONE
+============================== */
+
+async function acessar(){
+
+  mensagem.innerText="";
+
+  const telefone = "+55" + telefoneInput.value.replace(/\D/g,'');
+
+  if(telefone.length < 13){
+    mensagem.innerText="Número inválido.";
+    return;
+  }
+
+  // Verificar se já existe
+  const { data: perfil } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("telefone", telefone)
+    .eq("role", "passageiro")
+    .single();
+
+  if(!perfil){
+    // Ir para cadastro
+    window.location.href = "cadastro-passageiro.html?tel=" + telefone;
+    return;
+  }
+
+  // Login automático (password fake baseada no telefone)
+  const senhaAutomatica = telefone;
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email: telefone + "@rfdriver.com",
+    password: senhaAutomatica
+  });
+
+  if(error){
+    mensagem.innerText="Erro ao entrar.";
+    return;
+  }
+
+  window.location.href = "passageiro.html";
 }
 
-function entrarMotorista(){
-  localStorage.setItem("perfil", "motorista");
-  window.location.href = "motorista.html";
-}
 </script>
 
 </body>

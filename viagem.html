@@ -164,34 +164,6 @@ body{
   grid-column:1 / -1;
 }
 
-/* GRID CATEGORIA */
-.categoria-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.categoria-box{
-  background:#111;
-  border:1px solid #1c1c1c;
-  border-radius:16px;
-  padding:16px;
-  text-align:center;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.categoria-box.active{
-  border:1px solid #facc15;
-  background:#151515;
-}
-
-.categoria-box span{
-  display:block;
-  font-size:.85rem;
-  margin-top:6px;
-  color:#a1a1aa;
-}
 </style>
 </head>
 
@@ -277,20 +249,6 @@ let origemSelecionada = null;
 let destinoSelecionado = null;
 let valorBase = 0;
 let modo = null;
-
-/* =========================
-   CATEGORIA
-========================= */
-
-document.querySelectorAll(".categoria-box").forEach(box=>{
-  box.addEventListener("click",()=>{
-    document.querySelectorAll(".categoria-box")
-      .forEach(b=>b.classList.remove("active"));
-
-    box.classList.add("active");
-
-  });
-});
 
 /* =========================
    DATA MANAGER
@@ -395,18 +353,12 @@ function validar(){
 /* =========================
    CONTINUAR
 ========================= */
-
 btn.onclick=()=>{
-
-  if(!categoriaSelecionada){
-    alert("Selecione a categoria do veículo.");
-    return;
-  }
 
   const config = {
     desvioSimples: desvioSimples.checked,
     taxaFeira: taxaFeira.checked,
-    animal: animal.value,
+    animal: animal.value
   };
 
   App.set("origem", origemSelecionada);
@@ -417,10 +369,12 @@ btn.onclick=()=>{
   App.go("resumo.html");
 };
 
+
 </script>
 
 </body>
 </html>
+
 
 
 

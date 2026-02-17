@@ -184,6 +184,15 @@ body{background:#000;color:#fff;}
 
 <script src="core/global.js"></script>
 <script src="core/datamanager.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="core/supabase.js"></script>
+
+<script>
+async function logout(){
+  await supabaseClient.auth.signOut();
+  window.location.href = "index.html";
+}
+</script>
 
 <script>
 
@@ -353,13 +362,9 @@ btn.onclick=()=>{
   App.go("resumo.html");
 };
 
-  async function logout(){
-  await supabaseClient.auth.signOut();
-  window.location.href = "index.html";
-}
-
 </script>
 
 </body>
 </html>
+
 

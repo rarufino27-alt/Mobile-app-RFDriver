@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>RF Driver – Perfil</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+body{
+  background:#000;
+  color:#fff;
+  min-height:100vh;
+}
+
+/* HEADER */
+.top{
+  background:#facc15;
+  padding:20px;
+  color:#000;
+  font-weight:600;
+  font-size:1.1rem;
+}
+
+/* CONTAINER */
+.container{
+  padding:25px 20px 100px;
+}
+
+/* FOTO */
+.avatar-wrapper{
+  display:flex;
+  justify-content:center;
+  margin-bottom:25px;
+}
+
+.avatar{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  background:#111;
+  background-size:cover;
+  background-position:center;
+  cursor:pointer;
+  border:3px solid #facc15;
+}
+
+input[type="file"]{
+  display:none;
+}
+
+/* CAMPOS */
+.field{
+  margin-bottom:20px;
+}
+
+label{
+  font-size:.85rem;
+  color:#aaa;
+  display:block;
+  margin-bottom:6px;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #222;
+  background:#111;
+  color:#fff;
+  font-size:.95rem;
+}
+
+/* BOTÃO */
+button{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:16px;
+  background:#facc15;
+  color:#000;
+  font-weight:700;
+  font-size:1rem;
+  margin-top:15px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:active{
+  transform:scale(.98);
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  Meu Perfil
+</div>
+
+<div class="container">
+
+  <!-- FOTO -->
+  <div class="avatar-wrapper">
+    <div class="avatar" id="avatar"></div>
+  </div>
+
+  <input type="file" id="fotoInput" accept="image/*">
+
+  <!-- NOME -->
+  <div class="field">
+    <label>Nome</label>
+    <input type="text" id="nomeInput" placeholder="Seu nome">
+  </div>
+
+  <!-- TELEFONE -->
+  <div class="field">
+    <label>Telefone</label>
+    <input type="text" id="telefoneInput" disabled>
+  </div>
+
+  <button onclick="salvar()">Salvar Alterações</button>
+
+</div>
+
+<script>
+
+/* =========================
+   CARREGAR DADOS
+========================= */
+
+function carregarPerfil(){
+
+  const nome = localStorage.getItem("rf_usuario_nome") || "";
+  const telefone = localStorage.getItem("rf_usuario_telefone") || "";
+  const foto = localStorage.getItem("rf_usuario_foto");
+
+  document.getElementById("nomeInput").value = nome;
+  document.getElementById("telefoneInput").value = telefone;
+
+  if(foto){
+    document.getElementById("avatar").style.backgroundImage =
+      `url('${foto}')`;
+  }
+}
+
+carregarPerfil();
+
+/* =========================
+   FOTO
+========================= */
+
+const avatar = document.getElementById("avatar");
+const fotoInput = document.getElementById("fotoInput");
+
+avatar.onclick = () => fotoInput.click();
+
+fotoInput.onchange = e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(event){
+    const base64 = event.target.result;
+    localStorage.setItem("rf_usuario_foto", base64);
+    avatar.style.backgroundImage = `url('${base64}')`;
+  };
+
+  reader.readAsDataURL(file);
+};
+
+/* =========================
+   SALVAR
+========================= */
+
+function salvar(){
+
+  const nome = document.getElementById("nomeInput").value.trim();
+
+  if(!nome){
+    alert("Informe seu nome.");
+    return;
+  }
+
+  localStorage.setItem("rf_usuario_nome", nome);
+
+  alert("Perfil atualizado com sucesso!");
+  window.location.href = "viagem.html";
+}
+
+</script>
+
+</body>
+</html>

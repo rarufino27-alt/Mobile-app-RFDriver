@@ -49,13 +49,23 @@ button:disabled{
 
 <h2>Escolha sua rota</h2>
 
-<select id="origemSelect">
-  <option value="">Selecione a origem</option>
-</select>
+<!-- ORIGEM -->
+<div class="section">
+  <div class="title">Para Onde Vamos Hoje?</div>
+  <div class="subtitle">Informe Onde você está? (ORIGEM)</div>
+  <div class="card">
+    <div class="select-btn" id="origemBtn">Selecionar origem</div>
+  </div>
+</div>
 
-<select id="destinoSelect" disabled>
-  <option value="">Selecione o destino</option>
-</select>
+<!-- DESTINO -->
+<div class="section">
+  <div class="title">Destino</div>
+  <div class="subtitle">Para onde vamos?</div>
+  <div class="card">
+    <div class="select-btn" id="destinoBtn">Selecionar destino</div>
+  </div>
+</div>
 
 <button id="confirmar" disabled onclick="confirmar()">Confirmar rota</button>
 

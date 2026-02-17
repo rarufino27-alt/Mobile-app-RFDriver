@@ -152,6 +152,37 @@ button:active{
   transform:scale(.98);
 }
 
+  .rota-box{
+  margin-top:18px;
+  background:#111;
+  border-radius:18px;
+  padding:16px;
+  text-align:left;
+}
+
+.rota-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.label{
+  font-size:.75rem;
+  color:#888;
+}
+
+.valor{
+  font-size:.9rem;
+  font-weight:600;
+  color:#fff;
+}
+
+.linha{
+  height:1px;
+  background:#222;
+  margin:10px 0;
+}
+
 </style>
 </head>
 <body>
@@ -164,21 +195,25 @@ button:active{
 
 <div class="card">
 
+  <!-- BOTÃO PRINCIPAL -->
   <div class="search-main" onclick="abrirBusca()">
     🔎
     <span id="textoBusca">Para onde vamos?</span>
   </div>
 
-</div>
+  <!-- BLOCO ORIGEM / DESTINO -->
+  <div id="resumoRota" class="rota-box hidden">
+    <div class="rota-item">
+      <span class="label">Origem</span>
+      <span id="origemResumo" class="valor"></span>
+    </div>
 
-  <div class="field">
-    <div class="dot origem"></div>
-    <input type="text" id="origem" placeholder="Local de partida">
-  </div>
+    <div class="linha"></div>
 
-  <div class="field">
-    <div class="dot destino"></div>
-    <input type="text" id="destino2" placeholder="Destino">
+    <div class="rota-item">
+      <span class="label">Destino</span>
+      <span id="destinoResumo" class="valor"></span>
+    </div>
   </div>
 
 </div>
@@ -204,18 +239,28 @@ function validar(){
 origem.addEventListener("input", validar);
 destino.addEventListener("input", validar);
 
-  function abrirBusca(){
+function abrirBusca(){
   window.location.href = "buscar.html";
 }
 
-/* Se já tiver corrida selecionada */
-const corrida = localStorage.getItem("rf_corrida_temp");
+function atualizarResumo(){
 
-if(corrida){
+  const corrida = localStorage.getItem("rf_corrida_temp");
+
+  if(!corrida) return;
+
   const dados = JSON.parse(corrida);
+
   document.getElementById("textoBusca").innerText =
     dados.origem + " → " + dados.destino;
+
+  document.getElementById("origemResumo").innerText = dados.origem;
+  document.getElementById("destinoResumo").innerText = dados.destino;
+
+  document.getElementById("resumoRota").classList.remove("hidden");
 }
+
+atualizarResumo();
 
 function solicitar(){
 
@@ -233,4 +278,5 @@ function solicitar(){
 
 </body>
 </html>
+
 

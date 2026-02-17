@@ -5,8 +5,6 @@
 <title>RF Driver – Acesso</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 *{
   margin:0;
@@ -137,14 +135,18 @@ button.secondary{
 
   <div class="msg" id="mensagem"></div>
 
+  <div class="footer">
+    <a href="termos.html" target="_blank">Termos de Uso</a> |
+    <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>
+  </div>
+
 </div>
 
 <script>
 
 const SUPABASE_URL = "https://msnqiiwcityikslikbow.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zbnFpaXdjaXR5aWtzbGlrYm93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MDM5OTgsImV4cCI6MjA4MzI3OTk5OH0.0KyaSuL5At4_Cfa4TOM7kvvkVYv-gmR2sb7vX6VHkaU";
-
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_ANON_KEY = "SUA_ANON_KEY_AQUI";
+const API_URL = SUPABASE_URL + "/functions/v1/super-api";
 
 const mensagem = document.getElementById("mensagem");
 const stepPhone = document.getElementById("stepPhone");
@@ -154,19 +156,6 @@ function limparMensagem(){
   mensagem.innerText="";
   mensagem.classList.remove("success","error");
 }
-
-async function verificarSessao(){
-  const { data } = await supabaseClient.auth.getSession();
-  if(data.session){
-    window.location.href = "viagem.html";
-  }
-}
-
-verificarSessao();
-
-/* =========================
-   ENVIAR OTP
-========================= */
 
 async function enviarCodigo(){
 
@@ -185,28 +174,39 @@ async function enviarCodigo(){
 
   mensagem.innerText="Enviando código...";
 
-  const { error } = await supabaseClient.auth.signInWithOtp({
-    phone: phone
-  });
+  try{
 
-  if(error){
-    mensagem.innerText="Erro ao enviar código.";
+    const response = await fetch(API_URL,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      },
+      body:JSON.stringify({ phone })
+    });
+
+    const data = await response.json();
+
+    if(!response.ok){
+      mensagem.innerText="Erro ao enviar código.";
+      mensagem.classList.add("error");
+      return;
+    }
+
+    localStorage.setItem("rf_temp_phone", phone);
+
+    stepPhone.classList.add("hidden");
+    stepCode.classList.remove("hidden");
+
+    mensagem.innerText="Código enviado.";
+    mensagem.classList.add("success");
+
+  }catch(e){
+    mensagem.innerText="Erro de conexão.";
     mensagem.classList.add("error");
-    return;
   }
-
-  localStorage.setItem("rf_temp_phone", phone);
-
-  stepPhone.classList.add("hidden");
-  stepCode.classList.remove("hidden");
-
-  mensagem.innerText="Código enviado por SMS.";
-  mensagem.classList.add("success");
 }
-
-/* =========================
-   VALIDAR OTP
-========================= */
 
 async function validarCodigo(){
 
@@ -223,34 +223,35 @@ async function validarCodigo(){
 
   mensagem.innerText="Validando...";
 
-  const { data, error } = await supabaseClient.auth.verifyOtp({
-    phone: phone,
-    token: code,
-    type: "sms"
-  });
+  try{
 
-  if(error){
-    mensagem.innerText="Código inválido.";
-    mensagem.classList.add("error");
-    return;
-  }
-
-  const user = data.user;
-
-  const { data: perfilExistente } = await supabaseClient
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if(!perfilExistente){
-    await supabaseClient.from("profiles").insert({
-      id: user.id,
-      telefone: phone
+    const response = await fetch(API_URL,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      },
+      body:JSON.stringify({ phone, code })
     });
-  }
 
-  window.location.href="viagem.html";
+    const data = await response.json();
+
+    if(!data.success){
+      mensagem.innerText="Código inválido.";
+      mensagem.classList.add("error");
+      return;
+    }
+
+    localStorage.setItem("rf_logged","true");
+    localStorage.setItem("rf_user_phone", phone);
+
+    window.location.href="viagem.html";
+
+  }catch(e){
+    mensagem.innerText="Erro na validação.";
+    mensagem.classList.add("error");
+  }
 }
 
 function voltarTelefone(){

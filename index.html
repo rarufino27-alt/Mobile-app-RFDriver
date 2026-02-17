@@ -63,6 +63,7 @@ input{
   background:#1c1c1c;
   color:#fff;
   font-size:.9rem;
+  text-align:center;
 }
 
 input:focus{
@@ -118,19 +119,19 @@ button.secondary{
 
   <div class="title">Entrar no RF Driver</div>
 
-  <!-- ETAPA 1 – TELEFONE -->
+  <!-- ETAPA 1 -->
   <div id="stepPhone">
 
     <div class="phone-box">
       <div class="country">+55</div>
-      <input type="tel" id="telefone" placeholder="(81) 9 9999-9999">
+      <input type="tel" id="telefone" placeholder="81999999999">
     </div>
 
     <button onclick="enviarCodigo()">Receber código</button>
 
   </div>
 
-  <!-- ETAPA 2 – CÓDIGO -->
+  <!-- ETAPA 2 -->
   <div id="stepCode" class="hidden">
 
     <input type="text" id="codigo" placeholder="Digite o código SMS">
@@ -151,122 +152,125 @@ button.secondary{
 
 <script>
 
-const API_URL = "https://msnqiiwcityikslikbow.supabase.co/functions/v1/super-api"
+const SUPABASE_URL = "https://msnqiiwcityikslikbow.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zbnFpaXdjaXR5aWtzbGlrYm93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MDM5OTgsImV4cCI6MjA4MzI3OTk5OH0.0KyaSuL5At4_Cfa4TOM7kvvkVYv-gmR2sb7vX6VHkaU";
 
-const mensagem = document.getElementById("mensagem")
-const stepPhone = document.getElementById("stepPhone")
-const stepCode = document.getElementById("stepCode")
+const API_URL = SUPABASE_URL + "/functions/v1/super-api";
 
-// 🔐 BLOQUEIO SE JÁ LOGADO
+const mensagem = document.getElementById("mensagem");
+const stepPhone = document.getElementById("stepPhone");
+const stepCode = document.getElementById("stepCode");
+
 if(localStorage.getItem("rf_logged") === "true"){
-  window.location.href = "viagem.html"
+  window.location.href = "viagem.html";
 }
 
 function limparMensagem(){
-  mensagem.innerText=""
-  mensagem.classList.remove("success","error")
+  mensagem.innerText="";
+  mensagem.classList.remove("success","error");
 }
 
-// 📲 ENVIAR SMS
 async function enviarCodigo(){
 
-  limparMensagem()
+  limparMensagem();
 
-  const telefoneInput = document.getElementById("telefone").value
-  const telefoneLimpo = telefoneInput.replace(/\D/g,'')
+  const telefoneInput = document.getElementById("telefone").value;
+  const telefoneLimpo = telefoneInput.replace(/\D/g,'');
 
   if(telefoneLimpo.length < 11){
-    mensagem.innerText="Telefone inválido."
-    mensagem.classList.add("error")
-    return
+    mensagem.innerText="Telefone inválido.";
+    mensagem.classList.add("error");
+    return;
   }
 
-  const phone = "+55" + telefoneLimpo
+  const phone = "+55" + telefoneLimpo;
 
-  mensagem.innerText="Enviando código..."
-  
+  mensagem.innerText="Enviando código...";
+
   try{
-const API_URL = "https://msnqiiwcityikslikbow.supabase.co/functions/v1/super-api"
 
-const response = await fetch(API_URL,{
-  method:"POST",
-  headers:{
-    "Content-Type":"application/json",
-    "Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zbnFpaXdjaXR5aWtzbGlrYm93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MDM5OTgsImV4cCI6MjA4MzI3OTk5OH0.0KyaSuL5At4_Cfa4TOM7kvvkVYv-gmR2sb7vX6VHkaU"
-  },
-  body:JSON.stringify({ phone })
-})
+    const response = await fetch(API_URL,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      },
+      body:JSON.stringify({ phone })
+    });
 
-const data = await response.json()
-console.log(data)
+    const data = await response.json();
 
-    if(response.status !== 200){
-      mensagem.innerText="Erro ao enviar código."
-      mensagem.classList.add("error")
-      return
+    if(!response.ok){
+      mensagem.innerText="Erro ao enviar código.";
+      mensagem.classList.add("error");
+      return;
     }
 
-    localStorage.setItem("rf_temp_phone", phone)
+    localStorage.setItem("rf_temp_phone", phone);
 
-    stepPhone.classList.add("hidden")
-    stepCode.classList.remove("hidden")
+    stepPhone.classList.add("hidden");
+    stepCode.classList.remove("hidden");
 
-    mensagem.innerText="Código enviado por SMS."
-    mensagem.classList.add("success")
+    mensagem.innerText="Código enviado por SMS.";
+    mensagem.classList.add("success");
 
   }catch(e){
-    mensagem.innerText="Erro de conexão."
-    mensagem.classList.add("error")
+    mensagem.innerText="Erro de conexão.";
+    mensagem.classList.add("error");
   }
 }
 
-// ✅ VALIDAR CÓDIGO
 async function validarCodigo(){
 
-  limparMensagem()
+  limparMensagem();
 
-  const code = document.getElementById("codigo").value.trim()
-  const phone = localStorage.getItem("rf_temp_phone")
+  const code = document.getElementById("codigo").value.trim();
+  const phone = localStorage.getItem("rf_temp_phone");
 
   if(!code){
-    mensagem.innerText="Digite o código."
-    mensagem.classList.add("error")
-    return
+    mensagem.innerText="Digite o código.";
+    mensagem.classList.add("error");
+    return;
   }
 
-  mensagem.innerText="Validando..."
+  mensagem.innerText="Validando...";
 
   try{
+
     const response = await fetch(API_URL,{
       method:"POST",
-      headers:{ "Content-Type":"application/json" },
+      headers:{
+        "Content-Type":"application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      },
       body:JSON.stringify({ phone, code })
-    })
+    });
 
-    const data = await response.json()
+    const data = await response.json();
 
     if(!data.success){
-      mensagem.innerText="Código inválido."
-      mensagem.classList.add("error")
-      return
+      mensagem.innerText="Código inválido.";
+      mensagem.classList.add("error");
+      return;
     }
 
-    // 🔐 SESSÃO TEMPORÁRIA (FASE DE TESTE)
-    localStorage.setItem("rf_logged","true")
-    localStorage.setItem("rf_user_phone", phone)
+    localStorage.setItem("rf_logged","true");
+    localStorage.setItem("rf_user_phone", phone);
 
-    window.location.href="viagem.html"
+    window.location.href="viagem.html";
 
   }catch(e){
-    mensagem.innerText="Erro na validação."
-    mensagem.classList.add("error")
+    mensagem.innerText="Erro na validação.";
+    mensagem.classList.add("error");
   }
 }
 
 function voltarTelefone(){
-  stepCode.classList.add("hidden")
-  stepPhone.classList.remove("hidden")
-  limparMensagem()
+  stepCode.classList.add("hidden");
+  stepPhone.classList.remove("hidden");
+  limparMensagem();
 }
 
 </script>

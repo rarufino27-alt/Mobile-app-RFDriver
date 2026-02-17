@@ -39,9 +39,7 @@
   to{transform:scale(1.2);}
 }
 
-/* =============================
-   MICRO ANIMAÇÃO SELEÇÃO
-============================= */
+/* MICRO ANIMAÇÃO */
 
 @keyframes selectPop{
   0%{transform:scale(1);}
@@ -49,9 +47,7 @@
   100%{transform:scale(1.02);}
 }
 
-/* =============================
-   LOADER
-============================= */
+/* LOADER */
 
 .loading-overlay{
   position:fixed;
@@ -85,9 +81,7 @@
   to{ transform:rotate(360deg); }
 }
 
-/* =============================
-   GERAL
-============================= */
+/* GERAL */
 
 *{
   margin:0;
@@ -116,9 +110,7 @@ body{
   font-weight:700;
 }
 
-/* =============================
-   CATEGORIAS ESTILO UBER
-============================= */
+/* CATEGORIAS */
 
 .categoria-card{
   display:flex;
@@ -131,10 +123,6 @@ body{
   margin-bottom:12px;
   cursor:pointer;
   transition:all .25s ease;
-}
-
-.categoria-card:hover{
-  background:#151515;
 }
 
 .categoria-card.active{
@@ -168,9 +156,7 @@ body{
   text-align:right;
 }
 
-/* =============================
-   ROTA
-============================= */
+/* ROTA */
 
 .card{
   background:#111;
@@ -238,11 +224,6 @@ body{
   background:#facc15;
   color:#000;
   cursor:pointer;
-  transition:.2s;
-}
-
-.cta-primary:active{
-  transform:scale(.97);
 }
 
 </style>
@@ -258,20 +239,17 @@ body{
 
   <div id="listaCategorias"></div>
 
-  <!-- ROTA -->
   <div class="card route">
     <div class="section-title">Itinerário</div>
     <span>📍 Origem: <strong id="origemTxt"></strong></span>
     <span>🏁 Destino: <strong id="destinoTxt"></strong></span>
   </div>
 
-  <!-- DETALHAMENTO -->
   <div class="card">
     <div class="section-title">Detalhamento</div>
     <div class="details" id="detalhamento"></div>
   </div>
 
-  <!-- TOTAL -->
   <div class="total-box">
     <div class="total" id="total">R$ 0,00</div>
   </div>
@@ -286,9 +264,7 @@ body{
 
 <script>
 
-/* ==========================
-   DADOS BASE
-========================== */
+/* BASE */
 
 const origem = App.get("origem");
 const destino = App.get("destino");
@@ -298,75 +274,42 @@ const config = App.get("taxasConfig") || {};
 document.getElementById("origemTxt").innerText = origem || "-";
 document.getElementById("destinoTxt").innerText = destino || "-";
 
-/* ==========================
-   CALCULO BASE
-========================== */
-
 let totalBase = valorBase;
-let detalhesBase = [];
 
-if(config.desvioSimples){
-  totalBase += 5;
-  detalhesBase.push(["Desvio rápido",5]);
-}
+if(config.desvioSimples) totalBase += 5;
+if(config.taxaFeira) totalBase += 5;
+if(Number(config.animal) > 0) totalBase += Number(config.animal);
 
-if(config.taxaFeira){
-  totalBase += 5;
-  detalhesBase.push(["Taxa feira",5]);
-}
-
-if(Number(config.animal) > 0){
-  totalBase += Number(config.animal);
-  detalhesBase.push(["Animal",Number(config.animal)]);
-}
-
-function estaNoHorarioNoturno(){
-  const agora = new Date();
-  const minutos = agora.getHours()*60 + agora.getMinutes();
-  return (minutos >= 22*60+30 || minutos <= 5*60);
-}
-
-if(estaNoHorarioNoturno()){
-  const acres = totalBase <= 29 ? 5 : totalBase * 0.35;
-  totalBase += acres;
-  detalhesBase.push(["Adicional noturno",acres]);
-}
-
-/* ==========================
-   CATEGORIAS
-========================== */
+/* =============================
+   CATEGORIAS RF
+============================= */
 
 const categorias = [
-  { nome:"Hatch", passageiros:4, tempo:"Até 10 min", vantagem:"Mais econômico", multi:1.0, img:"./icons/hatch.png" },
-  { nome:"Sedan", passageiros:4, tempo:"Até 10 min", vantagem:"Mais conforto", multi:1.1, img:"./icons/sedan.png" },
-  { nome:"SUV / Confort", passageiros:4, tempo:"Até 10 min", vantagem:"Mais espaço", multi:1.2, img:"./icons/suv.png" },
-  { nome:"6 Lugares", passageiros:6, tempo:"Até 12 min", vantagem:"Ideal para grupos", multi:1.5, img:"./icons/van.png" },
-  { nome:"Entregas", passageiros:0, tempo:"Até 10 min", vantagem:"Envio rápido", multi:1.0, img:"./icons/envio.png" }
+  { nome:"Disponível Agora", multi:1.10, desc:"Prioridade na corrida", img:"./icons/hatch.png" },
+  { nome:"RF Basic", multi:1.00, desc:"Mais econômico", img:"./icons/hatch.png" },
+  { nome:"RF Confort", multi:1.15, desc:"Mais conforto", img:"./icons/sedan.png" },
+  { nome:"RF Premium", multi:1.25, desc:"Mais espaço e status", img:"./icons/suv.png" },
+  { nome:"RF 6 Lugares", multi:1.50, desc:"Ideal para grupos", img:"./icons/van.png" },
+  { nome:"RF Envios", multi:1.00, desc:"Entrega rápida", img:"./icons/envio.png" }
 ];
 
-let categoriaSelecionada = null;
-let totalFinal = 0;
+let categoriaSelecionada = categorias[0].nome;
 
 const lista = document.getElementById("listaCategorias");
 
 lista.innerHTML = categorias.map((cat,i)=>{
 
   const valorNormal = totalBase * cat.multi;
+  let valorFinal = valorNormal;
 
   let precoHTML = `R$ ${valorNormal.toFixed(2)}`;
 
   if(typeof Dinamico !== "undefined" && Dinamico.ativo){
-
-    const valorDinamico = valorNormal * Dinamico.multiplicador;
+    valorFinal = valorNormal * Dinamico.multiplicador;
 
     precoHTML = `
-      <span class="preco-normal">
-        R$ ${valorNormal.toFixed(2)}
-      </span>
-      <span class="preco-dinamico">
-        <span class="raio">⚡</span>
-        R$ ${valorDinamico.toFixed(2)}
-      </span>
+      <span class="preco-normal">R$ ${valorNormal.toFixed(2)}</span>
+      <span class="preco-dinamico"><span class="raio">⚡</span>R$ ${valorFinal.toFixed(2)}</span>
     `;
   }
 
@@ -374,29 +317,17 @@ lista.innerHTML = categorias.map((cat,i)=>{
     <div class="categoria-card ${i===0 ? 'active':''}"
          data-nome="${cat.nome}"
          data-multi="${cat.multi}">
-         
       <div class="categoria-left">
         <img src="${cat.img}">
         <div class="categoria-info">
-          <h3>${cat.nome} ${cat.passageiros ? "👤"+cat.passageiros : ""}</h3>
-          <span>${cat.tempo} • ${cat.vantagem}</span>
+          <h3>${cat.nome}</h3>
+          <span>${cat.desc}</span>
         </div>
       </div>
-
-      <div class="categoria-preco">
-        ${precoHTML}
-      </div>
-
+      <div class="categoria-preco">${precoHTML}</div>
     </div>
   `;
 }).join("");
-
-/* Hatch automático */
-
-categoriaSelecionada = categorias[0].nome;
-atualizarDetalhamento();
-
-/* Seleção */
 
 document.querySelectorAll(".categoria-card").forEach(card=>{
   card.addEventListener("click",()=>{
@@ -404,56 +335,34 @@ document.querySelectorAll(".categoria-card").forEach(card=>{
       .forEach(c=>c.classList.remove("active"));
 
     card.classList.add("active");
-
     categoriaSelecionada = card.dataset.nome;
-
-    atualizarDetalhamento();
+    atualizar();
   });
 });
 
-/* ==========================
-   DETALHAMENTO
-========================== */
+function atualizar(){
 
-function atualizarDetalhamento(){
-
-  const categoriaObj = categorias.find(c=>c.nome===categoriaSelecionada);
-
-  let valorNormal = totalBase * categoriaObj.multi;
-  let valorFinal = valorNormal;
+  const cat = categorias.find(c=>c.nome===categoriaSelecionada);
+  let valor = totalBase * cat.multi;
 
   if(typeof Dinamico !== "undefined" && Dinamico.ativo){
-    valorFinal = valorNormal * Dinamico.multiplicador;
+    valor *= Dinamico.multiplicador;
   }
 
-  totalFinal = valorFinal;
+  document.getElementById("detalhamento").innerHTML = `
+    <div>
+      <span>Categoria</span>
+      <strong>${categoriaSelecionada}</strong>
+    </div>
+  `;
 
-  let detalhes = [];
-  detalhes.push(["Categoria", categoriaSelecionada]);
-  detalhesBase.forEach(d=>detalhes.push(d));
-
-  document.getElementById("detalhamento").innerHTML =
-    detalhes.map(d=>`
-      <div>
-        <span>${d[0]}</span>
-        <strong>${
-          typeof d[1]==="number"
-          ? "R$ "+d[1].toFixed(2)
-          : d[1]
-        }</strong>
-      </div>
-    `).join("");
-
-  document.getElementById("total").innerText =
-    `R$ ${valorFinal.toFixed(2)}`;
+  document.getElementById("total").innerText = `R$ ${valor.toFixed(2)}`;
 
   App.set("categoria", categoriaSelecionada);
-  App.set("total", totalFinal);
+  App.set("total", valor);
 }
 
-/* ==========================
-   SOLICITAR
-========================== */
+atualizar();
 
 function solicitar(){
   document.getElementById("loadingOverlay").classList.add("active");

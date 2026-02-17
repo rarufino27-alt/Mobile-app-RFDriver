@@ -6,92 +6,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
 body{
   background:linear-gradient(180deg,#000,#050505);
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  padding:20px;
+  color:#fff;display:flex;justify-content:center;align-items:center;
+  min-height:100vh;padding:20px;
 }
-
-.container{
-  width:100%;
-  max-width:420px;
-}
-
-.logo{
-  width:110px;
-  margin:0 auto 25px auto;
-  display:block;
-}
-
-.title{
-  text-align:center;
-  font-size:1.2rem;
-  margin-bottom:25px;
-  font-weight:600;
-}
-
-.card{
-  background:#111;
-  padding:24px;
-  border-radius:18px;
-  border:1px solid #1f1f1f;
-}
-
-label{
-  font-size:.85rem;
-  color:#aaa;
-  display:block;
-  margin-bottom:6px;
-}
-
+.container{width:100%;max-width:420px;}
+.logo{width:110px;margin:0 auto 25px auto;display:block;}
+.title{text-align:center;font-size:1.2rem;margin-bottom:25px;font-weight:600;}
+.card{background:#111;padding:24px;border-radius:18px;border:1px solid #1f1f1f;}
+label{font-size:.85rem;color:#aaa;display:block;margin-bottom:6px;}
 input{
-  width:100%;
-  padding:14px;
-  margin-bottom:18px;
-  border-radius:10px;
-  border:none;
-  background:#1c1c1c;
-  color:#fff;
-  font-size:.9rem;
+  width:100%;padding:14px;margin-bottom:18px;border-radius:10px;
+  border:none;background:#1c1c1c;color:#fff;font-size:.9rem;
 }
-
-input:focus{
-  outline:1px solid #facc15;
-}
-
+input:focus{outline:1px solid #facc15;}
 button{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:none;
-  font-weight:700;
-  cursor:pointer;
-  background:#facc15;
-  color:#000;
-  transition:.2s;
+  width:100%;padding:14px;border-radius:12px;border:none;
+  font-weight:700;cursor:pointer;background:#facc15;color:#000;
 }
-
-button:hover{
-  background:#ffdb3b;
-}
-
-.msg{
-  font-size:.85rem;
-  margin-top:12px;
-  text-align:center;
-  color:#ff6b6b;
-}
+.msg{font-size:.85rem;margin-top:12px;text-align:center;color:#ff6b6b;}
 </style>
 </head>
 <body>
@@ -100,7 +35,7 @@ button:hover{
 
   <img src="./icons/logo-1024.png" class="logo">
 
-  <div class="title">Complete seu cadastro</div>
+  <div class="title">Criar conta</div>
 
   <div class="card">
 
@@ -108,10 +43,13 @@ button:hover{
     <input type="text" id="telefone" readonly>
 
     <label>Nome completo</label>
-    <input type="text" id="nome" placeholder="Digite seu nome completo">
+    <input type="text" id="nome">
 
-    <label>CPF (opcional)</label>
-    <input type="text" id="cpf" placeholder="000.000.000-00">
+    <label>Email</label>
+    <input type="email" id="email">
+
+    <label>Senha</label>
+    <input type="password" id="senha">
 
     <button onclick="cadastrar()">Finalizar Cadastro</button>
 
@@ -126,96 +64,43 @@ button:hover{
 
 <script>
 
-/* ==============================
-   PEGAR TELEFONE DA URL
-============================== */
-
 const params = new URLSearchParams(window.location.search);
-const telefoneParam = params.get("tel");
-
-const telefoneInput = document.getElementById("telefone");
-const mensagem = document.getElementById("mensagem");
-
-if(!telefoneParam){
-  window.location.href = "index.html";
-}
-
-telefoneInput.value = telefoneParam;
-
-/* ==============================
-   CADASTRO
-============================== */
+const telefone = params.get("tel");
+document.getElementById("telefone").value = telefone || "";
 
 async function cadastrar(){
 
-  mensagem.innerText="";
-
   const nome = document.getElementById("nome").value.trim();
-  const cpf = document.getElementById("cpf").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const senha = document.getElementById("senha").value.trim();
+  const mensagem = document.getElementById("mensagem");
 
-  if(!nome){
-    mensagem.innerText="Informe seu nome completo.";
+  if(!nome || !email || !senha){
+    mensagem.innerText="Preencha todos os campos.";
     return;
   }
 
-  // Limpar telefone (remove +, espaços, traços etc)
-  const telefoneLimpo = telefoneParam.replace(/\D/g,'');
-
-  if(telefoneLimpo.length < 11){
-    mensagem.innerText="Telefone inválido.";
-    return;
-  }
-
-  const emailInterno = telefoneLimpo + "@rfdriver.com";
-  const senhaAutomatica = telefoneLimpo;
-
-  // Criar usuário no auth
   const { data, error } = await supabaseClient.auth.signUp({
-    email: emailInterno,
-    password: senhaAutomatica
+    email,
+    password: senha
   });
 
   if(error){
-    mensagem.innerText = error.message;
+    mensagem.innerText=error.message;
     return;
   }
 
-  if(!data.user){
-    mensagem.innerText = "Erro ao criar usuário.";
-    return;
-  }
-
-  const userId = data.user.id;
-
-  // Criar perfil
-  const { error: profileError } = await supabaseClient
-    .from("profiles")
-    .insert({
-      id: userId,
-      nome: nome,
-      telefone: "+" + telefoneLimpo,
-      cpf: cpf || null,
-      role: "passageiro",
-      status: "ativo"
-    });
-
-  if(profileError){
-    mensagem.innerText = profileError.message;
-    return;
-  }
-
-  // Login automático
-  const { error: loginError } = await supabaseClient.auth.signInWithPassword({
-    email: emailInterno,
-    password: senhaAutomatica
+  await supabaseClient.from("profiles").insert({
+    id: data.user.id,
+    nome,
+    telefone,
+    email,
+    role: "passageiro",
+    status: "ativo"
   });
 
-  if(loginError){
-    mensagem.innerText = "Erro ao logar automaticamente.";
-    return;
-  }
-
-  window.location.href = "passageiro.html";
+  alert("Conta criada com sucesso!");
+  window.location.href="index.html";
 }
 
 </script>

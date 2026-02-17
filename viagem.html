@@ -189,6 +189,12 @@ body{background:#000;color:#fff;}
 
 <script>
 async function logout(){
+
+  if(typeof supabaseClient === "undefined"){
+    console.error("Supabase não carregado.");
+    return;
+  }
+
   await supabaseClient.auth.signOut();
   window.location.href = "index.html";
 }
@@ -366,5 +372,6 @@ btn.onclick=()=>{
 
 </body>
 </html>
+
 
 

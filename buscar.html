@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>RF Driver – Buscar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+
+body{
+  background:#000;
+  color:#fff;
+  padding:20px;
+}
+
+h2{
+  margin-bottom:20px;
+}
+
+select{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  margin-bottom:15px;
+  font-size:1rem;
+}
+
+button{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:16px;
+  background:#facc15;
+  color:#000;
+  font-weight:700;
+  font-size:1rem;
+  margin-top:10px;
+}
+
+button:disabled{
+  background:#333;
+  color:#777;
+}
+</style>
+</head>
+<body>
+
+<h2>Escolha sua rota</h2>
+
+<select id="origemSelect">
+  <option value="">Selecione a origem</option>
+</select>
+
+<select id="destinoSelect" disabled>
+  <option value="">Selecione o destino</option>
+</select>
+
+<button id="confirmar" disabled onclick="confirmar()">Confirmar rota</button>
+
+<script>
+
+let dadosJson = [];
+
+async function carregar(){
+
+  const response = await fetch("data.json");
+  dadosJson = await response.json();
+
+  const origensUnicas = [...new Set(dadosJson.map(item => item.origem))];
+
+  const origemSelect = document.getElementById("origemSelect");
+
+  origensUnicas.forEach(o=>{
+    const option = document.createElement("option");
+    option.value = o;
+    option.textContent = o;
+    origemSelect.appendChild(option);
+  });
+}
+
+carregar();
+
+document.getElementById("origemSelect").addEventListener("change", function(){
+
+  const origem = this.value;
+  const destinoSelect = document.getElementById("destinoSelect");
+
+  destinoSelect.innerHTML = "<option value=''>Selecione o destino</option>";
+  destinoSelect.disabled = false;
+
+  const destinos = dadosJson
+    .filter(item => item.origem === origem)
+    .map(item => item.destino);
+
+  destinos.forEach(d=>{
+    const option = document.createElement("option");
+    option.value = d;
+    option.textContent = d;
+    destinoSelect.appendChild(option);
+  });
+
+});
+
+document.getElementById("destinoSelect").addEventListener("change", function(){
+  if(this.value){
+    document.getElementById("confirmar").disabled = false;
+  }
+});
+
+function confirmar(){
+
+  const origem = document.getElementById("origemSelect").value;
+  const destino = document.getElementById("destinoSelect").value;
+
+  const rota = dadosJson.find(item =>
+    item.origem === origem && item.destino === destino
+  );
+
+  localStorage.setItem("rf_corrida_temp", JSON.stringify({
+    origem,
+    destino,
+    valor: rota.valor
+  }));
+
+  window.location.href = "viagem.html";
+}
+
+</script>
+
+</body>
+</html>

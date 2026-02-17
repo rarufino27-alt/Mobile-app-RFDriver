@@ -260,18 +260,8 @@ body{
   </div>
 
   <div class="taxa-box">
-    <span>Volta praias</span>
-    <input type="checkbox" id="voltaPraia">
-  </div>
-
-  <div class="taxa-box">
     <span>Taxa feira</span>
     <input type="checkbox" id="taxaFeira">
-  </div>
-
-  <div class="taxa-box">
-    <span>Espera (min)</span>
-    <input type="number" id="minutosEspera" placeholder="Ex: 10">
   </div>
 
   <div class="taxa-box">
@@ -452,10 +442,8 @@ btn.onclick=()=>{
 
   const config = {
     desvioSimples: desvioSimples.checked,
-    voltaPraia: voltaPraia.checked,
     taxaFeira: taxaFeira.checked,
     animal: animal.value,
-    minutosEspera: minutosEspera.value
   };
 
   App.set("origem", origemSelecionada);
@@ -472,6 +460,7 @@ btn.onclick=()=>{
 
 </body>
 </html>
+
 
 
 

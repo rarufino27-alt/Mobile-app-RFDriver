@@ -9,8 +9,12 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
 body{
   background:linear-gradient(180deg,#000,#050505);
-  color:#fff;display:flex;justify-content:center;align-items:center;
-  min-height:100vh;padding:20px;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:20px;
 }
 .container{width:100%;max-width:420px;}
 .logo{width:110px;margin:0 auto 25px auto;display:block;}
@@ -18,15 +22,41 @@ body{
 .card{background:#111;padding:24px;border-radius:18px;border:1px solid #1f1f1f;}
 label{font-size:.85rem;color:#aaa;display:block;margin-bottom:6px;}
 input{
-  width:100%;padding:14px;margin-bottom:18px;border-radius:10px;
-  border:none;background:#1c1c1c;color:#fff;font-size:.9rem;
+  width:100%;
+  padding:14px;
+  margin-bottom:18px;
+  border-radius:10px;
+  border:none;
+  background:#1c1c1c;
+  color:#fff;
+  font-size:.9rem;
 }
 input:focus{outline:1px solid #facc15;}
 button{
-  width:100%;padding:14px;border-radius:12px;border:none;
-  font-weight:700;cursor:pointer;background:#facc15;color:#000;
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+  background:#facc15;
+  color:#000;
+  transition:.2s;
 }
-.msg{font-size:.85rem;margin-top:12px;text-align:center;color:#ff6b6b;}
+button:disabled{
+  background:#444;
+  color:#888;
+  cursor:not-allowed;
+}
+.msg{
+  font-size:.85rem;
+  margin-top:12px;
+  text-align:center;
+  color:#ff6b6b;
+}
+.success{
+  color:#4ade80;
+}
 </style>
 </head>
 <body>
@@ -43,15 +73,15 @@ button{
     <input type="text" id="telefone" readonly>
 
     <label>Nome completo</label>
-    <input type="text" id="nome">
+    <input type="text" id="nome" placeholder="Digite seu nome completo">
 
     <label>Email</label>
-    <input type="email" id="email">
+    <input type="email" id="email" placeholder="seuemail@gmail.com">
 
-    <label>Senha</label>
-    <input type="password" id="senha">
+    <label>Senha (mínimo 6 caracteres)</label>
+    <input type="password" id="senha" placeholder="Digite sua senha">
 
-    <button onclick="cadastrar()">Finalizar Cadastro</button>
+    <button id="btnCadastrar" onclick="cadastrar()">Finalizar Cadastro</button>
 
     <div class="msg" id="mensagem"></div>
 
@@ -65,42 +95,106 @@ button{
 <script>
 
 const params = new URLSearchParams(window.location.search);
-const telefone = params.get("tel");
-document.getElementById("telefone").value = telefone || "";
+const telefone = params.get("tel") || "";
+const telefoneLimpo = telefone.replace(/\D/g,'');
+
+document.getElementById("telefone").value = telefone;
+const mensagem = document.getElementById("mensagem");
+const btn = document.getElementById("btnCadastrar");
 
 async function cadastrar(){
 
+  mensagem.innerText="";
+  mensagem.classList.remove("success");
+
   const nome = document.getElementById("nome").value.trim();
-  const email = document.getElementById("email").value.trim();
+  const email = document.getElementById("email").value.trim().toLowerCase();
   const senha = document.getElementById("senha").value.trim();
-  const mensagem = document.getElementById("mensagem");
 
-  if(!nome || !email || !senha){
-    mensagem.innerText="Preencha todos os campos.";
+  if(!telefoneLimpo || telefoneLimpo.length < 11){
+    mensagem.innerText="Telefone inválido.";
     return;
   }
 
-  const { data, error } = await supabaseClient.auth.signUp({
-    email,
-    password: senha
-  });
-
-  if(error){
-    mensagem.innerText=error.message;
+  if(!nome){
+    mensagem.innerText="Informe seu nome completo.";
     return;
   }
 
-  await supabaseClient.from("profiles").insert({
-    id: data.user.id,
-    nome,
-    telefone,
-    email,
-    role: "passageiro",
-    status: "ativo"
-  });
+  if(!email || !email.includes("@")){
+    mensagem.innerText="Informe um email válido.";
+    return;
+  }
 
-  alert("Conta criada com sucesso!");
-  window.location.href="index.html";
+  if(!senha || senha.length < 6){
+    mensagem.innerText="Senha deve ter no mínimo 6 caracteres.";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = "Criando conta...";
+
+  try{
+
+    // 🔎 Verificar duplicidade de email ou telefone
+    const { data: existente } = await supabaseClient
+      .from("profiles")
+      .select("id")
+      .or(`email.eq.${email},telefone.eq.+55${telefoneLimpo}`)
+      .maybeSingle();
+
+    if(existente){
+      mensagem.innerText="Email ou telefone já cadastrado.";
+      btn.disabled = false;
+      btn.innerText = "Finalizar Cadastro";
+      return;
+    }
+
+    // 🔐 Criar usuário no Auth
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password: senha
+    });
+
+    if(error){
+      mensagem.innerText = error.message;
+      btn.disabled = false;
+      btn.innerText = "Finalizar Cadastro";
+      return;
+    }
+
+    // 📁 Criar perfil
+    const { error: profileError } = await supabaseClient
+      .from("profiles")
+      .insert({
+        id: data.user.id,
+        nome,
+        telefone: "+55" + telefoneLimpo,
+        email,
+        role: "passageiro",
+        status: "ativo"
+      });
+
+    if(profileError){
+      mensagem.innerText = profileError.message;
+      btn.disabled = false;
+      btn.innerText = "Finalizar Cadastro";
+      return;
+    }
+
+    mensagem.innerText="Conta criada com sucesso!";
+    mensagem.classList.add("success");
+
+    setTimeout(()=>{
+      window.location.href="index.html";
+    },1500);
+
+  } catch(err){
+    mensagem.innerText="Erro inesperado. Tente novamente.";
+    btn.disabled = false;
+    btn.innerText = "Finalizar Cadastro";
+  }
+
 }
 
 </script>

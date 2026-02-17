@@ -19,7 +19,7 @@ body{
   overflow:hidden;
 }
 
-/* HEADER AMARELO */
+/* HEADER */
 
 .top{
   background:#facc15;
@@ -30,7 +30,7 @@ body{
   font-size:1.1rem;
 }
 
-/* MAPA (placeholder elegante) */
+/* MAPA */
 
 .map{
   position:absolute;
@@ -44,7 +44,7 @@ body{
   opacity:.6;
 }
 
-/* CARD FLUTUANTE */
+/* CARD */
 
 .card{
   position:absolute;
@@ -57,7 +57,7 @@ body{
   box-shadow:0 20px 40px rgba(0,0,0,.4);
 }
 
-/* CAMPO PRINCIPAL */
+/* BOTÃO PRINCIPAL */
 
 .search-main{
   display:flex;
@@ -72,53 +72,41 @@ body{
   margin-bottom:15px;
 }
 
-.search-main input{
-  border:none;
-  background:none;
-  width:100%;
-  font-size:1rem;
+/* RESUMO */
+
+.hidden{
+  display:none;
 }
 
-.search-main input:focus{
-  outline:none;
+.rota-box{
+  margin-top:18px;
+  background:#111;
+  border-radius:18px;
+  padding:16px;
+  text-align:left;
 }
 
-/* CAMPOS ORIGEM DESTINO */
-
-.field{
+.rota-item{
   display:flex;
+  justify-content:space-between;
   align-items:center;
-  gap:10px;
-  padding:12px;
-  border-bottom:1px solid #eee;
 }
 
-.field:last-child{
-  border-bottom:none;
+.label{
+  font-size:.75rem;
+  color:#888;
 }
 
-.dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
+.valor{
+  font-size:.9rem;
+  font-weight:600;
+  color:#fff;
 }
 
-.dot.origem{
-  background:#4ade80;
-}
-
-.dot.destino{
-  background:#facc15;
-}
-
-.field input{
-  border:none;
-  flex:1;
-  font-size:.95rem;
-}
-
-.field input:focus{
-  outline:none;
+.linha{
+  height:1px;
+  background:#222;
+  margin:10px 0;
 }
 
 /* BOTÃO FIXO */
@@ -152,37 +140,6 @@ button:active{
   transform:scale(.98);
 }
 
-  .rota-box{
-  margin-top:18px;
-  background:#111;
-  border-radius:18px;
-  padding:16px;
-  text-align:left;
-}
-
-.rota-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.label{
-  font-size:.75rem;
-  color:#888;
-}
-
-.valor{
-  font-size:.9rem;
-  font-weight:600;
-  color:#fff;
-}
-
-.linha{
-  height:1px;
-  background:#222;
-  margin:10px 0;
-}
-
 </style>
 </head>
 <body>
@@ -201,8 +158,9 @@ button:active{
     <span id="textoBusca">Para onde vamos?</span>
   </div>
 
-  <!-- BLOCO ORIGEM / DESTINO -->
+  <!-- RESUMO ORIGEM DESTINO -->
   <div id="resumoRota" class="rota-box hidden">
+
     <div class="rota-item">
       <span class="label">Origem</span>
       <span id="origemResumo" class="valor"></span>
@@ -214,6 +172,7 @@ button:active{
       <span class="label">Destino</span>
       <span id="destinoResumo" class="valor"></span>
     </div>
+
   </div>
 
 </div>
@@ -224,24 +183,11 @@ button:active{
 
 <script>
 
-const origem = document.getElementById("origem");
-const destino = document.getElementById("destino2");
 const btn = document.getElementById("btnSolicitar");
 
-function validar(){
-  if(origem.value.trim() !== "" && destino.value.trim() !== ""){
-    btn.disabled = false;
-  }else{
-    btn.disabled = true;
-  }
-}
-
-origem.addEventListener("input", validar);
-destino.addEventListener("input", validar);
-
-function abrirBusca(){
-  window.location.href = "buscar.html";
-}
+/* =========================
+   RECEBER DADOS DO BUSCAR
+========================= */
 
 function atualizarResumo(){
 
@@ -258,18 +204,32 @@ function atualizarResumo(){
   document.getElementById("destinoResumo").innerText = dados.destino;
 
   document.getElementById("resumoRota").classList.remove("hidden");
+
+  btn.disabled = false;
 }
 
-atualizarResumo();
+document.addEventListener("DOMContentLoaded", atualizarResumo);
+
+/* =========================
+   IR PARA BUSCA
+========================= */
+
+function abrirBusca(){
+  window.location.href = "buscar.html";
+}
+
+/* =========================
+   SOLICITAR CORRIDA
+========================= */
 
 function solicitar(){
 
-  const dados = {
-    origem: origem.value.trim(),
-    destino: destino.value.trim()
-  };
+  const corrida = localStorage.getItem("rf_corrida_temp");
 
-  localStorage.setItem("rf_corrida_temp", JSON.stringify(dados));
+  if(!corrida){
+    alert("Selecione a rota primeiro.");
+    return;
+  }
 
   window.location.href = "resumo.html";
 }
@@ -278,6 +238,3 @@ function solicitar(){
 
 </body>
 </html>
-
-
-

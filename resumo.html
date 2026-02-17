@@ -260,16 +260,34 @@ if(config.taxaFeira){
   detalhes.push(["Taxa de feira",5]);
 }
 
-// 🔥 Adicional Noturno
-if(config.taxaNoturna){
+/* ==========================
+   🔥 ADICIONAL NOTURNO AUTOMÁTICO
+========================== */
+
+function estaNoHorarioNoturno(){
+
+  const agora = new Date();
+  const horas = agora.getHours();
+  const minutos = agora.getMinutes();
+  const totalMinutos = horas * 60 + minutos;
+
+  const inicio = 22 * 60 + 30; // 22:30
+  const fim = 5 * 60;          // 05:00
+
+  // Se for após 22:30 OU antes de 05:00
+  return (totalMinutos >= inicio || totalMinutos <= fim);
+}
+
+if(estaNoHorarioNoturno()){
+
   let acres = 0;
 
   if(total <= 29){
     acres = 5;
-    detalhes.push(["Adicional noturno",5]);
+    detalhes.push(["Adicional noturno automático", 5]);
   }else{
     acres = total * 0.35;
-    detalhes.push(["Adicional noturno (35%)",acres]);
+    detalhes.push(["Adicional noturno automático (35%)", acres]);
   }
 
   total += acres;

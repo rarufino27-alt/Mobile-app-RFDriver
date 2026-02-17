@@ -25,8 +25,26 @@ body{
   padding:20px;
   padding-bottom:70px;
   color:#000;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.top-left{
   font-weight:600;
-  font-size:1.1rem;
+  font-size:1.05rem;
+}
+
+.menu-btn{
+  font-size:22px;
+  cursor:pointer;
+  padding:6px 10px;
+  border-radius:8px;
+  transition:.2s;
+}
+
+.menu-btn:hover{
+  background:rgba(0,0,0,.1);
 }
 
 /* MAPA PLACEHOLDER */
@@ -137,7 +155,13 @@ button:disabled{
 <body>
 
 <div class="top">
-  RF Driver
+  <div class="top-left" id="saudacao">
+    Olá!
+  </div>
+
+  <div class="menu-btn" onclick="abrirMenu()">
+    ☰
+  </div>
 </div>
 
 <div class="map"></div>
@@ -225,6 +249,28 @@ function solicitar(){
   window.location.href = "resumo.html";
 }
 
+  /* =========================
+   SAUDAÇÃO DINÂMICA
+========================= */
+
+function carregarUsuario(){
+
+  // Você pode mudar isso depois para Supabase
+  const nome = localStorage.getItem("rf_usuario_nome") || "Usuário";
+
+  document.getElementById("saudacao").innerText =
+    "Olá, " + nome + "!";
+}
+
+carregarUsuario();
+
+/* =========================
+   MENU
+========================= */
+
+function abrirMenu(){
+  alert("Menu em construção 🚀");
+}
 </script>
 
 </body>

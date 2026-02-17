@@ -129,8 +129,35 @@ select{
   cursor:pointer;
 }
 
-.cta-primary:active{
-  transform:scale(.97);
+.categoria-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid #1c1c1c;
+  background:#0d0d0d;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.categoria-item:hover{
+  border-color:#facc15;
+}
+
+.categoria-item.active{
+  border-color:#facc15;
+  background:#151515;
+}
+
+.categoria-item strong{
+  font-size:1rem;
+}
+
+.categoria-item span{
+  font-size:1rem;
+  font-weight:700;
 }
 </style>
 </head>
@@ -148,6 +175,12 @@ select{
     <span>Confirme as informações</span>
   </div>
 
+  <!-- CATEGORIAS -->
+  <div class="card">
+    <div class="section-title">Escolha sua categoria</div>
+    <div id="listaCategorias"></div>
+  </div>
+  
   <!-- ROTA -->
   <div class="card route">
     <div class="section-title">Itinerário</div>
@@ -159,12 +192,6 @@ select{
   <div class="card">
     <div class="section-title">Detalhamento</div>
     <div class="details" id="detalhamento"></div>
-  </div>
-
-  <!-- OBSERVAÇÃO -->
-  <div class="card" id="blocoObservacao" style="display:none;">
-    <div class="section-title">Observação</div>
-    <div id="observacaoTxt"></div>
   </div>
 
   <!-- PAGAMENTO -->
@@ -193,167 +220,141 @@ select{
 <script>
 
 // ==========================
-// DADOS
+// DADOS BASE
 // ==========================
 const origem = App.get("origem");
 const destino = App.get("destino");
 const valorBase = Number(App.get("valorBase") || 0);
 const config = App.get("taxasConfig") || {};
-const categoria = App.get("categoria") || "Hatch";
-const multiplicador = Number(App.get("multiplicadorCategoria") || 1);
 
-// ==========================
-// EXIBIR ROTA
-// ==========================
 document.getElementById("origemTxt").innerText = origem || "-";
 document.getElementById("destinoTxt").innerText = destino || "-";
 
-if(config.observacao && config.observacao.trim() !== ""){
-  document.getElementById("blocoObservacao").style.display = "block";
-  document.getElementById("observacaoTxt").innerText = config.observacao;
-}
-
 // ==========================
-// CÁLCULO
+// CÁLCULO BASE (SEM CATEGORIA)
 // ==========================
-let total = valorBase;
-let detalhes = [];
+let totalBase = valorBase;
+let detalhesBase = [];
 
-// 🔹 Categoria
-detalhes.push(["Categoria", categoria]);
-if(multiplicador !== 1){
-  detalhes.push(["Multiplicador", "x" + multiplicador]);
-}
-
-total = total * multiplicador;
-
-// 🔹 Tipo de viagem
-if(config.tipoViagem === "bate_volta"){
-  total += valorBase * multiplicador;
-  detalhes.push(["Bate e volta", valorBase * multiplicador]);
-}
-
-if(config.tipoViagem === "ida_volta"){
-  total += valorBase * multiplicador;
-  detalhes.push(["Ida e volta", valorBase * multiplicador]);
-}
-
-if(config.tipoViagem === "ida_volta_espera"){
-  const acres = (valorBase * multiplicador) * 1.10;
-  total += acres;
-  detalhes.push(["Ida e volta + espera", acres]);
-}
-
-// 🔹 Taxas fixas
 if(config.desvioSimples){
-  total += 5;
-  detalhes.push(["Desvio rápido",5]);
-}
-
-if(config.voltaPraia){
-  total += 10;
-  detalhes.push(["Volta das praias",10]);
+  totalBase += 5;
+  detalhesBase.push(["Desvio rápido",5]);
 }
 
 if(config.taxaFeira){
-  total += 5;
-  detalhes.push(["Taxa de feira",5]);
+  totalBase += 5;
+  detalhesBase.push(["Taxa de feira",5]);
 }
 
-/* ==========================
-   🔥 ADICIONAL NOTURNO AUTOMÁTICO
-========================== */
+if(Number(config.animal) > 0){
+  totalBase += Number(config.animal);
+  detalhesBase.push(["Transporte animal",Number(config.animal)]);
+}
 
 function estaNoHorarioNoturno(){
-
   const agora = new Date();
-  const horas = agora.getHours();
-  const minutos = agora.getMinutes();
-  const totalMinutos = horas * 60 + minutos;
-
-  const inicio = 22 * 60 + 30; // 22:30
-  const fim = 5 * 60;          // 05:00
-
-  // Se for após 22:30 OU antes de 05:00
+  const totalMinutos = agora.getHours()*60 + agora.getMinutes();
+  const inicio = 22*60+30;
+  const fim = 5*60;
   return (totalMinutos >= inicio || totalMinutos <= fim);
 }
 
 if(estaNoHorarioNoturno()){
-
-  let acres = 0;
-
-  if(total <= 29){
-    acres = 5;
-    detalhes.push(["Adicional noturno automático", 5]);
-  }else{
-    acres = total * 0.35;
-    detalhes.push(["Adicional noturno automático (35%)", acres]);
-  }
-
-  total += acres;
+  let acres = totalBase <= 29 ? 5 : totalBase * 0.35;
+  totalBase += acres;
+  detalhesBase.push(["Adicional noturno automático", acres]);
 }
-
-// 🔹 Animal
-if(Number(config.animal) > 0){
-  total += Number(config.animal);
-  detalhes.push(["Transporte animal",Number(config.animal)]);
-}
-
-// 🔹 Espera
-if(Number(config.minutosEspera) >= 5){
-  const min = Number(config.minutosEspera);
-  const acres = 3 + ((min-5)*0.60);
-  total += acres;
-  detalhes.push([`Tempo de espera (${min} min)`,acres]);
-}
-
-  /* =========================================================
-   🔥 TARIFA DINÂMICA APLICADA NO FINAL
-========================================================= */
 
 if (typeof Dinamico !== "undefined" && Dinamico.ativo) {
-
-  const valorAntes = total;
-  const novoTotal = total * Dinamico.multiplicador;
-  const acrescimo = novoTotal - valorAntes;
-
-  total = novoTotal;
-
-  detalhes.push([
-    `Tarifa dinâmica (${Dinamico.multiplicador}x - ${Dinamico.motivo})`,
-    acrescimo
-  ]);
+  const novoTotal = totalBase * Dinamico.multiplicador;
+  const acrescimo = novoTotal - totalBase;
+  totalBase = novoTotal;
+  detalhesBase.push([`Tarifa dinâmica`, acrescimo]);
 }
-  
-// ==========================
-// RENDER DETALHAMENTO
-// ==========================
-document.getElementById("detalhamento").innerHTML =
-detalhes.map(d=>`
-  <div>
-    <span>${d[0]}</span>
-    <strong>
-      ${
-        typeof d[1] === "number"
-        ? "R$ " + Number(d[1]).toFixed(2)
-        : d[1]
-      }
-    </strong>
-  </div>
-`).join("");
 
 // ==========================
-// TOTAL FINAL
+// CATEGORIAS
 // ==========================
-document.getElementById("total").innerText =
-`R$ ${total.toFixed(2)}`;
+const categorias = [
+  { nome:"Hatch", multi:1.0 },
+  { nome:"Sedan", multi:1.1 },
+  { nome:"SUV / Confort", multi:1.2 },
+  { nome:"6 Lugares", multi:1.5 },
+  { nome:"Entregas / Envios", multi:1.0 }
+];
 
-App.set("total", total);
+let categoriaSelecionada = null;
+let totalFinal = totalBase;
+
+const listaCategorias = document.getElementById("listaCategorias");
+
+listaCategorias.innerHTML = categorias.map(cat=>{
+  const valor = totalBase * cat.multi;
+  return `
+    <div class="categoria-item"
+         data-nome="${cat.nome}"
+         data-multi="${cat.multi}"
+         data-valor="${valor}">
+      <strong>${cat.nome}</strong>
+      <span>R$ ${valor.toFixed(2)}</span>
+    </div>
+  `;
+}).join("");
+
+document.querySelectorAll(".categoria-item").forEach(item=>{
+  item.addEventListener("click",()=>{
+
+    document.querySelectorAll(".categoria-item")
+      .forEach(i=>i.classList.remove("active"));
+
+    item.classList.add("active");
+
+    categoriaSelecionada = item.dataset.nome;
+    totalFinal = Number(item.dataset.valor);
+
+    atualizarDetalhamento();
+  });
+});
+
+// ==========================
+// DETALHAMENTO
+// ==========================
+function atualizarDetalhamento(){
+
+  if(!categoriaSelecionada) return;
+
+  let detalhes = [];
+  detalhes.push(["Categoria", categoriaSelecionada]);
+
+  detalhesBase.forEach(d=>detalhes.push(d));
+
+  document.getElementById("detalhamento").innerHTML =
+    detalhes.map(d=>`
+      <div>
+        <span>${d[0]}</span>
+        <strong>${
+          typeof d[1]==="number"
+          ? "R$ "+Number(d[1]).toFixed(2)
+          : d[1]
+        }</strong>
+      </div>
+    `).join("");
+
+  document.getElementById("total").innerText =
+    `R$ ${totalFinal.toFixed(2)}`;
+
+  App.set("categoria", categoriaSelecionada);
+  App.set("total", totalFinal);
+}
 
 // ==========================
 // SOLICITAR
 // ==========================
 function solicitar(){
+  if(!categoriaSelecionada){
+    alert("Selecione uma categoria.");
+    return;
+  }
   const pagamento = document.getElementById("formaPagamento").value;
   App.set("formaPagamento", pagamento);
   App.go("procurando.html");

@@ -7,7 +7,7 @@
 
 <script src="core/global.js"></script>
 <script src="core/dinamico.js"></script>
-  
+
 <style>
 *{
   margin:0;
@@ -22,30 +22,14 @@ body{
 }
 
 .container{
-  padding:30px 20px 140px;
-  max-width:420px;
+  padding:20px 16px 140px;
+  max-width:480px;
   margin:0 auto;
 }
 
-.logo-wrapper{
-  width:90px;
-  height:90px;
-  margin:0 auto 20px auto;
-  border-radius:50%;
-  background:#000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 0 30px rgba(250,204,21,.35);
-}
-
-.logo-img{
-  width:70%;
-}
-
+/* HEADER */
 .header{
-  text-align:center;
-  margin-bottom:25px;
+  margin-bottom:20px;
 }
 
 .header h1{
@@ -53,17 +37,68 @@ body{
   font-weight:700;
 }
 
-.header span{
-  font-size:.85rem;
+/* =============================
+   CATEGORIAS ESTILO UBER
+============================= */
+
+.categoria-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px;
+  border-radius:16px;
+  background:#0d0d0d;
+  border:2px solid transparent;
+  margin-bottom:12px;
+  cursor:pointer;
+  transition:all .25s ease;
+}
+
+.categoria-card:hover{
+  background:#151515;
+}
+
+.categoria-card.active{
+  border-color:#facc15;
+  box-shadow:0 0 20px rgba(250,204,21,.25);
+  transform:scale(1.02);
+}
+
+.categoria-left{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.categoria-left img{
+  width:55px;
+}
+
+.categoria-info h3{
+  font-size:1rem;
+  font-weight:700;
+}
+
+.categoria-info span{
+  font-size:.8rem;
   color:#a1a1aa;
 }
+
+.categoria-preco{
+  font-size:1.1rem;
+  font-weight:800;
+}
+
+/* =============================
+   ROTA
+============================= */
 
 .card{
   background:#111;
   border-radius:16px;
   padding:16px;
   border:1px solid #1c1c1c;
-  margin-bottom:18px;
+  margin-top:18px;
 }
 
 .section-title{
@@ -77,6 +112,8 @@ body{
   margin-bottom:6px;
 }
 
+/* DETALHES */
+
 .details div{
   display:flex;
   justify-content:space-between;
@@ -84,29 +121,24 @@ body{
   font-size:.9rem;
 }
 
+/* TOTAL */
+
 .total-box{
   background:#151515;
   border:1px solid #facc15;
   border-radius:18px;
   padding:20px;
   text-align:center;
-  margin-bottom:20px;
+  margin-top:20px;
 }
 
 .total{
-  font-size:2.2rem;
+  font-size:2rem;
   font-weight:800;
   color:#facc15;
 }
 
-select{
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  background:#111;
-  color:#fff;
-  border:1px solid #1c1c1c;
-}
+/* CTA */
 
 .cta-area{
   position:fixed;
@@ -127,37 +159,11 @@ select{
   background:#facc15;
   color:#000;
   cursor:pointer;
-}
-
-.categoria-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px;
-  border-radius:14px;
-  border:1px solid #1c1c1c;
-  background:#0d0d0d;
-  margin-bottom:10px;
-  cursor:pointer;
   transition:.2s;
 }
 
-.categoria-item:hover{
-  border-color:#facc15;
-}
-
-.categoria-item.active{
-  border-color:#facc15;
-  background:#151515;
-}
-
-.categoria-item strong{
-  font-size:1rem;
-}
-
-.categoria-item span{
-  font-size:1rem;
-  font-weight:700;
+.cta-primary:active{
+  transform:scale(.97);
 }
 </style>
 </head>
@@ -166,25 +172,16 @@ select{
 
 <div class="container">
 
-  <div class="logo-wrapper">
-    <img src="./icons/logo-1024.png" class="logo-img">
-  </div>
-
   <div class="header">
-    <h1>Resumo da Viagem</h1>
-    <span>Confirme as informações</span>
+    <h1>Escolha sua categoria</h1>
   </div>
 
-  <!-- CATEGORIAS -->
-  <div class="card">
-    <div class="section-title">Escolha sua categoria</div>
-    <div id="listaCategorias"></div>
-  </div>
-  
+  <div id="listaCategorias"></div>
+
   <!-- ROTA -->
   <div class="card route">
     <div class="section-title">Itinerário</div>
-    <span>📌 Origem: <strong id="origemTxt"></strong></span>
+    <span>📍 Origem: <strong id="origemTxt"></strong></span>
     <span>🏁 Destino: <strong id="destinoTxt"></strong></span>
   </div>
 
@@ -192,16 +189,6 @@ select{
   <div class="card">
     <div class="section-title">Detalhamento</div>
     <div class="details" id="detalhamento"></div>
-  </div>
-
-  <!-- PAGAMENTO -->
-  <div class="card">
-    <div class="section-title">Forma de Pagamento</div>
-    <select id="formaPagamento">
-      <option value="Dinheiro">Dinheiro</option>
-      <option value="Pix">Pix</option>
-      <option value="Cartão">Cartão</option>
-    </select>
   </div>
 
   <!-- TOTAL -->
@@ -231,7 +218,7 @@ document.getElementById("origemTxt").innerText = origem || "-";
 document.getElementById("destinoTxt").innerText = destino || "-";
 
 // ==========================
-// CÁLCULO BASE (SEM CATEGORIA)
+// CALCULO BASE SEM CATEGORIA
 // ==========================
 let totalBase = valorBase;
 let detalhesBase = [];
@@ -243,85 +230,127 @@ if(config.desvioSimples){
 
 if(config.taxaFeira){
   totalBase += 5;
-  detalhesBase.push(["Taxa de feira",5]);
+  detalhesBase.push(["Taxa feira",5]);
 }
 
 if(Number(config.animal) > 0){
   totalBase += Number(config.animal);
-  detalhesBase.push(["Transporte animal",Number(config.animal)]);
+  detalhesBase.push(["Animal",Number(config.animal)]);
 }
 
+// NOTURNO AUTOMÁTICO
 function estaNoHorarioNoturno(){
   const agora = new Date();
-  const totalMinutos = agora.getHours()*60 + agora.getMinutes();
-  const inicio = 22*60+30;
-  const fim = 5*60;
-  return (totalMinutos >= inicio || totalMinutos <= fim);
+  const minutos = agora.getHours()*60 + agora.getMinutes();
+  return (minutos >= 22*60+30 || minutos <= 5*60);
 }
 
 if(estaNoHorarioNoturno()){
-  let acres = totalBase <= 29 ? 5 : totalBase * 0.35;
+  const acres = totalBase <= 29 ? 5 : totalBase * 0.35;
   totalBase += acres;
-  detalhesBase.push(["Adicional noturno automático", acres]);
-}
-
-if (typeof Dinamico !== "undefined" && Dinamico.ativo) {
-  const novoTotal = totalBase * Dinamico.multiplicador;
-  const acrescimo = novoTotal - totalBase;
-  totalBase = novoTotal;
-  detalhesBase.push([`Tarifa dinâmica`, acrescimo]);
+  detalhesBase.push(["Adicional noturno",acres]);
 }
 
 // ==========================
 // CATEGORIAS
 // ==========================
 const categorias = [
-  { nome:"Hatch", multi:1.0 },
-  { nome:"Sedan", multi:1.1 },
-  { nome:"SUV / Confort", multi:1.2 },
-  { nome:"6 Lugares", multi:1.5 },
-  { nome:"Entregas / Envios", multi:1.0 }
+  {
+    nome:"Hatch",
+    passageiros:4,
+    tempo:"Até 10 min",
+    vantagem:"Mais econômico",
+    multi:1.0,
+    img:"./icons/hatch.png"
+  },
+  {
+    nome:"Sedan",
+    passageiros:4,
+    tempo:"Até 10 min",
+    vantagem:"Mais conforto",
+    multi:1.1,
+    img:"./icons/sedan.png"
+  },
+  {
+    nome:"SUV / Confort",
+    passageiros:4,
+    tempo:"Até 10 min",
+    vantagem:"Mais espaço",
+    multi:1.2,
+    img:"./icons/suv.png"
+  },
+  {
+    nome:"6 Lugares",
+    passageiros:6,
+    tempo:"Até 12 min",
+    vantagem:"Ideal para grupos",
+    multi:1.5,
+    img:"./icons/van.png"
+  },
+  {
+    nome:"Entregas",
+    passageiros:0,
+    tempo:"Até 10 min",
+    vantagem:"Envio rápido",
+    multi:1.0,
+    img:"./icons/envio.png"
+  }
 ];
 
 let categoriaSelecionada = null;
-let totalFinal = totalBase;
+let totalFinal = 0;
 
-const listaCategorias = document.getElementById("listaCategorias");
+const lista = document.getElementById("listaCategorias");
 
-listaCategorias.innerHTML = categorias.map(cat=>{
+lista.innerHTML = categorias.map((cat,i)=>{
   const valor = totalBase * cat.multi;
+
   return `
-    <div class="categoria-item"
+    <div class="categoria-card ${i===0 ? 'active':''}"
          data-nome="${cat.nome}"
          data-multi="${cat.multi}"
          data-valor="${valor}">
-      <strong>${cat.nome}</strong>
-      <span>R$ ${valor.toFixed(2)}</span>
+         
+      <div class="categoria-left">
+        <img src="${cat.img}">
+        <div class="categoria-info">
+          <h3>${cat.nome} ${cat.passageiros ? "👤"+cat.passageiros : ""}</h3>
+          <span>${cat.tempo} • ${cat.vantagem}</span>
+        </div>
+      </div>
+
+      <div class="categoria-preco">
+        R$ ${valor.toFixed(2)}
+      </div>
+
     </div>
   `;
 }).join("");
 
-document.querySelectorAll(".categoria-item").forEach(item=>{
-  item.addEventListener("click",()=>{
+// Seleciona automaticamente Hatch
+categoriaSelecionada = categorias[0].nome;
+totalFinal = totalBase * categorias[0].multi;
+atualizarDetalhamento();
 
-    document.querySelectorAll(".categoria-item")
-      .forEach(i=>i.classList.remove("active"));
+document.querySelectorAll(".categoria-card").forEach(card=>{
+  card.addEventListener("click",()=>{
 
-    item.classList.add("active");
+    document.querySelectorAll(".categoria-card")
+      .forEach(c=>c.classList.remove("active"));
 
-    categoriaSelecionada = item.dataset.nome;
-    totalFinal = Number(item.dataset.valor);
+    card.classList.add("active");
+
+    categoriaSelecionada = card.dataset.nome;
+    totalFinal = Number(card.dataset.valor);
 
     atualizarDetalhamento();
   });
 });
 
 // ==========================
-// DETALHAMENTO
+// ATUALIZAR DETALHAMENTO
 // ==========================
 function atualizarDetalhamento(){
-
-  if(!categoriaSelecionada) return;
 
   let detalhes = [];
   detalhes.push(["Categoria", categoriaSelecionada]);
@@ -334,7 +363,7 @@ function atualizarDetalhamento(){
         <span>${d[0]}</span>
         <strong>${
           typeof d[1]==="number"
-          ? "R$ "+Number(d[1]).toFixed(2)
+          ? "R$ "+d[1].toFixed(2)
           : d[1]
         }</strong>
       </div>
@@ -351,12 +380,6 @@ function atualizarDetalhamento(){
 // SOLICITAR
 // ==========================
 function solicitar(){
-  if(!categoriaSelecionada){
-    alert("Selecione uma categoria.");
-    return;
-  }
-  const pagamento = document.getElementById("formaPagamento").value;
-  App.set("formaPagamento", pagamento);
   App.go("procurando.html");
 }
 

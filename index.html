@@ -186,13 +186,19 @@ async function enviarCodigo(){
   mensagem.innerText="Enviando código..."
   
   try{
-    const response = await fetch(API_URL,{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({ phone })
-    })
+const API_URL = "https://msnqiiwcityikslikbow.supabase.co/functions/v1/super-api"
 
-    const data = await response.json()
+const response = await fetch(API_URL,{
+  method:"POST",
+  headers:{
+    "Content-Type":"application/json",
+    "Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zbnFpaXdjaXR5aWtzbGlrYm93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MDM5OTgsImV4cCI6MjA4MzI3OTk5OH0.0KyaSuL5At4_Cfa4TOM7kvvkVYv-gmR2sb7vX6VHkaU"
+  },
+  body:JSON.stringify({ phone })
+})
+
+const data = await response.json()
+console.log(data)
 
     if(response.status !== 200){
       mensagem.innerText="Erro ao enviar código."

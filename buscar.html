@@ -11,37 +11,32 @@
 body{
   background:#000;
   color:#fff;
-  padding:24px;
+  padding:20px;
 }
 
 h2{
-  margin-bottom:25px;
+  margin-bottom:20px;
 }
 
-.card{
+.select-box{
   background:#111;
-  border:1px solid #1c1c1c;
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:15px;
-}
-
-.select-btn{
   padding:16px;
-  border-radius:12px;
-  background:#0d0d0d;
-  border:1px solid #1f2937;
+  border-radius:16px;
+  margin-bottom:15px;
   cursor:pointer;
-  transition:.25s;
+  border:1px solid #222;
 }
 
-.select-btn:hover{
+.select-box.ativo{
   border-color:#facc15;
 }
 
-.select-btn.ativo{
-  border-color:#facc15;
-  box-shadow:0 0 10px rgba(250,204,21,.3);
+.plus{
+  text-align:center;
+  font-size:24px;
+  margin:10px 0;
+  cursor:pointer;
+  color:#facc15;
 }
 
 button{
@@ -77,15 +72,14 @@ button:disabled{
   max-width:400px;
   border-radius:18px;
   padding:18px;
-  border:1px solid #1c1c1c;
 }
 
 .modal-content input{
   width:100%;
   padding:14px;
   border-radius:12px;
-  border:1px solid #1f2937;
-  background:#0d0d0d;
+  border:none;
+  background:#1a1a1a;
   color:#fff;
   margin-bottom:12px;
 }
@@ -97,7 +91,7 @@ button:disabled{
 }
 
 .modal-content div:hover{
-  background:#1a1a1a;
+  background:#222;
 }
 </style>
 </head>
@@ -105,20 +99,20 @@ button:disabled{
 
 <h2>Escolha sua rota</h2>
 
-<div class="card">
-  <div class="select-btn" id="origemBtn">Selecionar origem</div>
-</div>
+<div class="select-box" id="origemBtn">Selecionar origem</div>
 
-<div class="card">
-  <div class="select-btn" id="destinoBtn">Selecionar destino</div>
-</div>
+<div class="plus" id="addParada">＋</div>
+
+<div class="select-box" id="paradaBtn" style="display:none;">Selecionar parada</div>
+
+<div class="select-box" id="destinoBtn">Selecionar destino</div>
 
 <button id="confirmar" disabled>Confirmar rota</button>
 
 <div class="modal" id="modal">
   <div class="modal-content">
     <input id="busca" placeholder="Buscar...">
-    <div id="lista" style="max-height:260px;overflow:auto"></div>
+    <div id="lista"></div>
   </div>
 </div>
 
@@ -126,103 +120,143 @@ button:disabled{
 
 <script>
 
-const origemBtn = document.getElementById("origemBtn");
-const destinoBtn = document.getElementById("destinoBtn");
-const confirmarBtn = document.getElementById("confirmar");
+let origem = null;
+let parada = null;
+let destino = null;
+let valorTotal = 0;
+let modo = null;
+
 const modal = document.getElementById("modal");
 const lista = document.getElementById("lista");
 const busca = document.getElementById("busca");
+const confirmarBtn = document.getElementById("confirmar");
 
-let origens = [];
-let destinos = [];
-let origemSelecionada = null;
-let destinoSelecionado = null;
-let valorBase = 0;
-let modo = null;
-
-async function iniciar(){
-  try{
-    await DataManager.carregar();
-    origens = DataManager.listarOrigens();
-  }catch(e){
-    alert("Erro ao carregar rotas.");
-    console.error(e);
-  }
+async function init(){
+  await DataManager.carregar();
 }
+init();
 
-iniciar();
+/* =========================
+   ABRIR MODAL
+========================= */
 
-origemBtn.onclick = ()=>{
-  modo = "origem";
+function abrirSelecao(tipo){
+  modo = tipo;
   modal.style.display="flex";
   busca.value="";
-  render(origens);
-};
 
-destinoBtn.onclick = ()=>{
-  if(!origemSelecionada){
+  let dados;
+
+  if(tipo === "origem"){
+    dados = DataManager.listarOrigens();
+  }
+
+  if(tipo === "parada"){
+    dados = DataManager.listarDestinos(origem)
+      .filter(p => DataManager.listarDestinos(p).length > 0);
+  }
+
+  if(tipo === "destino"){
+    if(parada){
+      dados = DataManager.listarDestinos(parada);
+    }else{
+      dados = DataManager.listarDestinos(origem);
+    }
+  }
+
+  render(dados);
+}
+
+function render(arr){
+  lista.innerHTML="";
+  arr.forEach(item=>{
+    const div = document.createElement("div");
+    div.innerText=item;
+    div.onclick=()=>{
+      selecionar(item);
+      modal.style.display="none";
+    };
+    lista.appendChild(div);
+  });
+}
+
+function selecionar(valor){
+
+  if(modo==="origem"){
+    origem = valor;
+    parada = null;
+    destino = null;
+    document.getElementById("origemBtn").innerText = valor;
+    document.getElementById("paradaBtn").style.display="none";
+    document.getElementById("destinoBtn").innerText = "Selecionar destino";
+  }
+
+  if(modo==="parada"){
+    parada = valor;
+    destino = null;
+    document.getElementById("paradaBtn").innerText = valor;
+    document.getElementById("destinoBtn").innerText = "Selecionar destino";
+  }
+
+  if(modo==="destino"){
+    destino = valor;
+    document.getElementById("destinoBtn").innerText = valor;
+  }
+
+  validar();
+}
+
+function validar(){
+  confirmarBtn.disabled = !(origem && destino);
+}
+
+/* =========================
+   EVENTOS
+========================= */
+
+document.getElementById("origemBtn").onclick=()=>abrirSelecao("origem");
+document.getElementById("paradaBtn").onclick=()=>abrirSelecao("parada");
+document.getElementById("destinoBtn").onclick=()=>abrirSelecao("destino");
+
+document.getElementById("addParada").onclick=()=>{
+  if(!origem){
     alert("Selecione a origem primeiro.");
     return;
   }
-
-  modo = "destino";
-  modal.style.display="flex";
-  busca.value="";
-  destinos = DataManager.listarDestinos(origemSelecionada);
-  render(destinos);
+  document.getElementById("paradaBtn").style.display="block";
 };
 
 modal.onclick = e=>{
   if(e.target===modal) modal.style.display="none";
 };
 
-function render(arr){
-  lista.innerHTML="";
-  arr.forEach(item=>{
-    const div=document.createElement("div");
-    div.textContent=item;
-
-    div.onclick=()=>{
-      if(modo==="origem"){
-        origemSelecionada=item;
-        origemBtn.textContent=item;
-        origemBtn.classList.add("ativo");
-
-        destinoSelecionado=null;
-        destinoBtn.textContent="Selecionar destino";
-        destinoBtn.classList.remove("ativo");
-
-      }else{
-        destinoSelecionado=item;
-        destinoBtn.textContent=item;
-        destinoBtn.classList.add("ativo");
-
-        valorBase = DataManager.buscarValor(origemSelecionada,item);
-      }
-
-      modal.style.display="none";
-      validar();
-    };
-
-    lista.appendChild(div);
-  });
-}
-
 busca.oninput=()=>{
-  const t=busca.value.toLowerCase();
-  const listaAtual = modo==="origem" ? origens : destinos;
-  render(listaAtual.filter(i=>i.toLowerCase().includes(t)));
+  const termo = busca.value.toLowerCase();
+  const itens = [...lista.children];
+  itens.forEach(div=>{
+    div.style.display = div.innerText.toLowerCase().includes(termo) ? "block" : "none";
+  });
 };
 
-function validar(){
-  confirmarBtn.disabled = !(origemSelecionada && destinoSelecionado);
-}
+/* =========================
+   CONFIRMAR
+========================= */
 
 confirmarBtn.onclick=()=>{
+
+  if(!parada){
+    valorTotal = DataManager.buscarValor(origem,destino);
+  }else{
+    const parte1 = DataManager.buscarValor(origem,parada) || 0;
+    const parte2 = DataManager.buscarValor(parada,destino) || 0;
+    valorTotal = parte1 + parte2;
+  }
+
   localStorage.setItem("rf_corrida_temp", JSON.stringify({
-    origem: origemSelecionada,
-    destino: destinoSelecionado,
-    valor: valorBase
+    origem,
+    parada,
+    destino,
+    valor: valorTotal
   }));
 
   window.location.href="viagem.html";

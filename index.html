@@ -6,13 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
 body{
   background:linear-gradient(180deg,#000,#050505);
   color:#fff;
@@ -22,53 +16,20 @@ body{
   min-height:100vh;
   padding:20px;
 }
-
-.container{
-  width:100%;
-  max-width:420px;
-}
-
-.logo{
-  width:130px;
-  margin:0 auto 35px auto;
-  display:block;
-}
-
-.title{
-  text-align:center;
-  font-size:1.2rem;
-  margin-bottom:20px;
-  font-weight:600;
-}
-
-.phone-box{
-  display:flex;
-  gap:8px;
-  margin-bottom:15px;
-}
-
-.country{
-  background:#1c1c1c;
-  padding:14px;
-  border-radius:10px;
-  font-weight:600;
-  color:#facc15;
-}
-
+.container{width:100%;max-width:420px;}
+.logo{width:130px;margin:0 auto 35px auto;display:block;}
+.title{text-align:center;font-size:1.2rem;margin-bottom:20px;font-weight:600;}
 input{
-  flex:1;
+  width:100%;
   padding:14px;
   border-radius:10px;
   border:none;
   background:#1c1c1c;
   color:#fff;
   font-size:.9rem;
+  margin-bottom:15px;
 }
-
-input:focus{
-  outline:1px solid #facc15;
-}
-
+input:focus{outline:1px solid #facc15;}
 button{
   width:100%;
   padding:14px;
@@ -79,37 +40,24 @@ button{
   background:#facc15;
   color:#000;
 }
-
 .msg{
   font-size:.85rem;
   margin-top:10px;
   text-align:center;
   color:#ff6b6b;
 }
-
-.link{
-  margin-top:15px;
-  text-align:center;
-  font-size:.9rem;
-}
-
-.link a{
-  color:#facc15;
-  text-decoration:none;
-}
-
 .footer-links{
   margin-top:30px;
   text-align:center;
   font-size:.8rem;
   color:#888;
 }
-
 .footer-links a{
   color:#888;
   text-decoration:none;
   margin:0 5px;
 }
+.hidden{display:none;}
 </style>
 </head>
 <body>
@@ -118,21 +66,19 @@ button{
 
   <img src="./icons/logo-1024.png" class="logo">
 
-  <div class="title">Entrar com telefone</div>
+  <div class="title">Entrar no RF Driver</div>
 
-  <div class="phone-box">
-    <div class="country">+55</div>
-    <input type="tel" id="telefone" placeholder="(81) 9 9999-9999">
+  <div id="stepEmail">
+    <input type="email" id="email" placeholder="Digite seu e-mail">
+    <button onclick="enviarCodigo()">Receber código</button>
   </div>
 
-  <button onclick="acessar()">Continuar</button>
+  <div id="stepOtp" class="hidden">
+    <input type="text" id="otp" placeholder="Digite o código recebido">
+    <button onclick="verificarCodigo()">Entrar</button>
+  </div>
 
   <div class="msg" id="mensagem"></div>
-
-  <div class="link">
-    Não tem conta? 
-    <a href="cadastro-passageiro.html" id="linkCadastro">Criar conta</a>
-  </div>
 
   <div class="footer-links">
     <a href="termos.html" target="_blank">Termos de Uso</a> |
@@ -147,8 +93,9 @@ button{
 <script>
 
 const mensagem = document.getElementById("mensagem");
+const stepEmail = document.getElementById("stepEmail");
+const stepOtp = document.getElementById("stepOtp");
 
-/* Verificar sessão */
 (async ()=>{
   const { data } = await supabaseClient.auth.getSession();
   if(data.session){
@@ -156,44 +103,67 @@ const mensagem = document.getElementById("mensagem");
   }
 })();
 
-/* Login */
-async function acessar(){
+async function enviarCodigo(){
 
   mensagem.innerText="";
 
-  const telefoneInput = document.getElementById("telefone").value;
-  const telefone = "+55" + telefoneInput.replace(/\D/g,'');
+  const email = document.getElementById("email").value.trim().toLowerCase();
 
-  if(telefone.length < 13){
-    mensagem.innerText="Número inválido.";
+  if(!email.includes("@")){
+    mensagem.innerText="Informe um e-mail válido.";
     return;
   }
 
-  const { data: perfil, error } = await supabaseClient
-    .from("profiles")
-    .select("email")
-    .eq("telefone", telefone)
-    .single();
-
-  if(error || !perfil){
-    mensagem.innerText="Telefone não cadastrado.";
-    return;
-  }
-
-  const senha = prompt("Digite sua senha:");
-
-  if(!senha){
-    return;
-  }
-
-  const { error: loginError } = await supabaseClient.auth.signInWithPassword({
-    email: perfil.email,
-    password: senha
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    email: email
   });
 
-  if(loginError){
-    mensagem.innerText="Senha incorreta.";
+  if(error){
+    mensagem.innerText=error.message;
     return;
+  }
+
+  stepEmail.classList.add("hidden");
+  stepOtp.classList.remove("hidden");
+
+  mensagem.style.color="#4ade80";
+  mensagem.innerText="Código enviado para seu e-mail.";
+}
+
+async function verificarCodigo(){
+
+  mensagem.innerText="";
+  mensagem.style.color="#ff6b6b";
+
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const token = document.getElementById("otp").value.trim();
+
+  const { data, error } = await supabaseClient.auth.verifyOtp({
+    email: email,
+    token: token,
+    type: "email"
+  });
+
+  if(error){
+    mensagem.innerText="Código inválido.";
+    return;
+  }
+
+  const user = data.user;
+
+  const { data: profile } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if(!profile){
+    await supabaseClient.from("profiles").insert({
+      id: user.id,
+      email: email,
+      role: "passageiro",
+      status: "ativo"
+    });
   }
 
   window.location.href = "viagem.html";

@@ -40,14 +40,13 @@ body{
   cursor:pointer;
   padding:6px 10px;
   border-radius:8px;
-  transition:.2s;
 }
 
 .menu-btn:hover{
   background:rgba(0,0,0,.1);
 }
 
-/* MAPA PLACEHOLDER */
+/* MAPA */
 .map{
   position:absolute;
   top:80px;
@@ -143,7 +142,6 @@ button{
   font-weight:700;
   font-size:1rem;
   cursor:pointer;
-  transition:.2s;
 }
 
 button:disabled{
@@ -151,7 +149,7 @@ button:disabled{
   color:#777;
 }
 
-  /* OVERLAY */
+/* OVERLAY */
 .menu-overlay{
   position:fixed;
   inset:0;
@@ -216,7 +214,6 @@ button:disabled{
   border-radius:12px;
   margin-bottom:5px;
   cursor:pointer;
-  transition:.2s;
 }
 
 .menu-item:hover{
@@ -227,18 +224,16 @@ button:disabled{
   color:#d11a2a;
   font-weight:600;
 }
-
 </style>
 </head>
 <body>
 
-  <!-- OVERLAY -->
+<!-- OVERLAY -->
 <div id="menuOverlay" class="menu-overlay" onclick="fecharMenu()"></div>
 
-<!-- MENU LATERAL -->
+<!-- MENU -->
 <div id="menuLateral" class="menu-lateral">
 
-  <!-- HEADER USUÁRIO -->
   <div class="menu-header" onclick="irPerfil()">
     <div class="avatar" id="avatarMenu"></div>
     <div>
@@ -274,29 +269,21 @@ button:disabled{
     </div>
 
   </div>
-
 </div>
 
 <div class="top">
-  <div class="top-left" id="saudacao">
-    Olá!
-  </div>
-
-  <div class="menu-btn" onclick="abrirMenu()">
-    ☰
-  </div>
+  <div class="top-left" id="saudacao">Olá!</div>
+  <div class="menu-btn" onclick="abrirMenu()">☰</div>
 </div>
 
 <div class="map"></div>
 
 <div class="card">
 
-  <!-- BOTÃO PRINCIPAL -->
   <div class="search-main" onclick="abrirBusca()">
     🔎 Para onde vamos?
   </div>
 
-  <!-- BLOCO ROTA -->
   <div id="rotaBox" class="rota-box" style="display:none;"></div>
 
 </div>
@@ -307,29 +294,7 @@ button:disabled{
 
 <script>
 
-const rotaBox = document.getElementById("rotaBox");
-const btnSolicitar = document.getElementById("btnSolicitar");
-
-function abrirBusca(){
-  window.location.href = "buscar.html";
-}
-
-function carregarRota(){
-
-  const corrida = localStorage.getItem("rf_corrida_temp");
-  if(!corrida) return;
-
-  const dados = JSON.parse(corrida);
-
-  const { origem, parada, destino, valor } = dados;
-
-  if(!origem || !destino) return;
-
-  let html = "";
-
-  /* =========================
-   MENU CONTROLE
-========================= */
+/* ================= MENU ================= */
 
 function abrirMenu(){
   document.getElementById("menuLateral").classList.add("ativo");
@@ -341,10 +306,6 @@ function fecharMenu(){
   document.getElementById("menuOverlay").style.display="none";
 }
 
-/* =========================
-   USUÁRIO MENU
-========================= */
-
 function carregarMenuUsuario(){
   const nome = localStorage.getItem("rf_usuario_nome") || "Usuário";
   const foto = localStorage.getItem("rf_usuario_foto");
@@ -352,16 +313,9 @@ function carregarMenuUsuario(){
   document.getElementById("menuNome").innerText = nome;
 
   if(foto){
-    document.getElementById("avatarMenu").style.backgroundImage =
-      `url('${foto}')`;
+    document.getElementById("avatarMenu").style.backgroundImage = `url('${foto}')`;
   }
 }
-
-carregarMenuUsuario();
-
-/* =========================
-   AÇÕES
-========================= */
 
 function irPerfil(){
   window.location.href = "perfil.html";
@@ -372,11 +326,7 @@ function irAjuda(){
   const mensagem = encodeURIComponent(
     "Olá, meu nome é " + nome + " e preciso de ajuda no RF Driver."
   );
-
-  window.open(
-    "https://wa.me/5581992716132?text=" + mensagem,
-    "_blank"
-  );
+  window.open("https://wa.me/5581992716132?text=" + mensagem, "_blank");
 }
 
 function logout(){
@@ -384,7 +334,31 @@ function logout(){
   window.location.href = "login.html";
 }
 
-  // ORIGEM
+/* ================= USUÁRIO ================= */
+
+function carregarUsuario(){
+  const nome = localStorage.getItem("rf_usuario_nome") || "Usuário";
+  document.getElementById("saudacao").innerText = "Olá, " + nome + "!";
+}
+
+/* ================= ROTA ================= */
+
+function abrirBusca(){
+  window.location.href = "buscar.html";
+}
+
+function carregarRota(){
+
+  const corrida = localStorage.getItem("rf_corrida_temp");
+  if(!corrida) return;
+
+  const dados = JSON.parse(corrida);
+  const { origem, parada, destino, valor } = dados;
+
+  if(!origem || !destino) return;
+
+  let html = "";
+
   html += `
     <div class="rota-item">
       <span class="label">Origem</span>
@@ -392,9 +366,9 @@ function logout(){
     </div>
   `;
 
-  // PARADA (SE EXISTIR)
   if(parada){
-    html += `<div class="linha"></div>
+    html += `
+      <div class="linha"></div>
       <div class="rota-item">
         <span class="label">Parada</span>
         <span class="valor">${parada}</span>
@@ -402,55 +376,37 @@ function logout(){
     `;
   }
 
-  // DESTINO
-  html += `<div class="linha"></div>
+  html += `
+    <div class="linha"></div>
     <div class="rota-item">
       <span class="label">Destino</span>
       <span class="valor">${destino}</span>
     </div>
   `;
 
-  // TOTAL
   html += `
     <div class="total">
       Total estimado: R$ ${Number(valor).toFixed(2)}
     </div>
   `;
 
-  rotaBox.innerHTML = html;
-  rotaBox.style.display = "block";
-
-  btnSolicitar.disabled = false;
+  document.getElementById("rotaBox").innerHTML = html;
+  document.getElementById("rotaBox").style.display = "block";
+  document.getElementById("btnSolicitar").disabled = false;
 }
 
-carregarRota();
+/* ================= AÇÃO ================= */
 
 function solicitar(){
   window.location.href = "resumo.html";
 }
 
-  /* =========================
-   SAUDAÇÃO DINÂMICA
-========================= */
-
-function carregarUsuario(){
-
-  // Você pode mudar isso depois para Supabase
-  const nome = localStorage.getItem("rf_usuario_nome") || "Usuário";
-
-  document.getElementById("saudacao").innerText =
-    "Olá, " + nome + "!";
-}
+/* ================= INIT ================= */
 
 carregarUsuario();
+carregarMenuUsuario();
+carregarRota();
 
-/* =========================
-   MENU
-========================= */
-
-function abrirMenu(){
-  alert("Menu em construção 🚀");
-}
 </script>
 
 </body>

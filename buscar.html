@@ -155,6 +155,16 @@ function abrirSelecao(tipo){
     return;
   }
 
+  if(tipo === "destino" && !origem){
+    alert("Selecione a origem primeiro.");
+    return;
+  }
+
+  if(tipo === "parada" && !origem){
+    alert("Selecione a origem primeiro.");
+    return;
+  }
+
   modo = tipo;
   modal.style.display="flex";
   busca.value="";

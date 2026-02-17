@@ -9,7 +9,8 @@
 <script src="core/dinamico.js"></script>
 
 <style>
-  /* =============================
+
+/* =============================
    TARIFA DINÂMICA
 ============================= */
 
@@ -30,11 +31,26 @@
 }
 
 .raio{
-  font-size:1rem;
+  animation:pulse 1s infinite alternate;
+}
+
+@keyframes pulse{
+  from{transform:scale(1);}
+  to{transform:scale(1.2);}
 }
 
 /* =============================
-   MICRO ANIMAÇÃO
+   MICRO ANIMAÇÃO SELEÇÃO
+============================= */
+
+@keyframes selectPop{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.05);}
+  100%{transform:scale(1.02);}
+}
+
+/* =============================
+   LOADER
 ============================= */
 
 .loading-overlay{
@@ -69,6 +85,10 @@
   to{ transform:rotate(360deg); }
 }
 
+/* =============================
+   GERAL
+============================= */
+
 *{
   margin:0;
   padding:0;
@@ -87,7 +107,6 @@ body{
   margin:0 auto;
 }
 
-/* HEADER */
 .header{
   margin-bottom:20px;
 }
@@ -121,6 +140,7 @@ body{
 .categoria-card.active{
   border-color:#facc15;
   box-shadow:0 0 20px rgba(250,204,21,.25);
+  animation:selectPop .25s ease;
   transform:scale(1.02);
 }
 
@@ -145,8 +165,7 @@ body{
 }
 
 .categoria-preco{
-  font-size:1.1rem;
-  font-weight:800;
+  text-align:right;
 }
 
 /* =============================
@@ -225,6 +244,7 @@ body{
 .cta-primary:active{
   transform:scale(.97);
 }
+
 </style>
 </head>
 
@@ -266,9 +286,10 @@ body{
 
 <script>
 
-// ==========================
-// DADOS BASE
-// ==========================
+/* ==========================
+   DADOS BASE
+========================== */
+
 const origem = App.get("origem");
 const destino = App.get("destino");
 const valorBase = Number(App.get("valorBase") || 0);
@@ -277,9 +298,10 @@ const config = App.get("taxasConfig") || {};
 document.getElementById("origemTxt").innerText = origem || "-";
 document.getElementById("destinoTxt").innerText = destino || "-";
 
-// ==========================
-// CALCULO BASE SEM CATEGORIA
-// ==========================
+/* ==========================
+   CALCULO BASE
+========================== */
+
 let totalBase = valorBase;
 let detalhesBase = [];
 
@@ -298,7 +320,6 @@ if(Number(config.animal) > 0){
   detalhesBase.push(["Animal",Number(config.animal)]);
 }
 
-// NOTURNO AUTOMÁTICO
 function estaNoHorarioNoturno(){
   const agora = new Date();
   const minutos = agora.getHours()*60 + agora.getMinutes();
@@ -311,50 +332,16 @@ if(estaNoHorarioNoturno()){
   detalhesBase.push(["Adicional noturno",acres]);
 }
 
-// ==========================
-// CATEGORIAS
-// ==========================
+/* ==========================
+   CATEGORIAS
+========================== */
+
 const categorias = [
-  {
-    nome:"Hatch",
-    passageiros:4,
-    tempo:"Até 10 min",
-    vantagem:"Mais econômico",
-    multi:1.0,
-    img:"./icons/hatch.png"
-  },
-  {
-    nome:"Sedan",
-    passageiros:4,
-    tempo:"Até 10 min",
-    vantagem:"Mais conforto",
-    multi:1.1,
-    img:"./icons/sedan.png"
-  },
-  {
-    nome:"SUV / Confort",
-    passageiros:4,
-    tempo:"Até 10 min",
-    vantagem:"Mais espaço",
-    multi:1.2,
-    img:"./icons/suv.png"
-  },
-  {
-    nome:"6 Lugares",
-    passageiros:6,
-    tempo:"Até 12 min",
-    vantagem:"Ideal para grupos",
-    multi:1.5,
-    img:"./icons/van.png"
-  },
-  {
-    nome:"Entregas",
-    passageiros:0,
-    tempo:"Até 10 min",
-    vantagem:"Envio rápido",
-    multi:1.0,
-    img:"./icons/envio.png"
-  }
+  { nome:"Hatch", passageiros:4, tempo:"Até 10 min", vantagem:"Mais econômico", multi:1.0, img:"./icons/hatch.png" },
+  { nome:"Sedan", passageiros:4, tempo:"Até 10 min", vantagem:"Mais conforto", multi:1.1, img:"./icons/sedan.png" },
+  { nome:"SUV / Confort", passageiros:4, tempo:"Até 10 min", vantagem:"Mais espaço", multi:1.2, img:"./icons/suv.png" },
+  { nome:"6 Lugares", passageiros:6, tempo:"Até 12 min", vantagem:"Ideal para grupos", multi:1.5, img:"./icons/van.png" },
+  { nome:"Entregas", passageiros:0, tempo:"Até 10 min", vantagem:"Envio rápido", multi:1.0, img:"./icons/envio.png" }
 ];
 
 let categoriaSelecionada = null;
@@ -363,13 +350,30 @@ let totalFinal = 0;
 const lista = document.getElementById("listaCategorias");
 
 lista.innerHTML = categorias.map((cat,i)=>{
-  const valor = totalBase * cat.multi;
+
+  const valorNormal = totalBase * cat.multi;
+
+  let precoHTML = `R$ ${valorNormal.toFixed(2)}`;
+
+  if(typeof Dinamico !== "undefined" && Dinamico.ativo){
+
+    const valorDinamico = valorNormal * Dinamico.multiplicador;
+
+    precoHTML = `
+      <span class="preco-normal">
+        R$ ${valorNormal.toFixed(2)}
+      </span>
+      <span class="preco-dinamico">
+        <span class="raio">⚡</span>
+        R$ ${valorDinamico.toFixed(2)}
+      </span>
+    `;
+  }
 
   return `
     <div class="categoria-card ${i===0 ? 'active':''}"
          data-nome="${cat.nome}"
-         data-multi="${cat.multi}"
-         data-valor="${valor}">
+         data-multi="${cat.multi}">
          
       <div class="categoria-left">
         <img src="${cat.img}">
@@ -380,41 +384,52 @@ lista.innerHTML = categorias.map((cat,i)=>{
       </div>
 
       <div class="categoria-preco">
-        R$ ${valor.toFixed(2)}
+        ${precoHTML}
       </div>
 
     </div>
   `;
 }).join("");
 
-// Seleciona automaticamente Hatch
+/* Hatch automático */
+
 categoriaSelecionada = categorias[0].nome;
-totalFinal = totalBase * categorias[0].multi;
 atualizarDetalhamento();
+
+/* Seleção */
 
 document.querySelectorAll(".categoria-card").forEach(card=>{
   card.addEventListener("click",()=>{
-
     document.querySelectorAll(".categoria-card")
       .forEach(c=>c.classList.remove("active"));
 
     card.classList.add("active");
 
     categoriaSelecionada = card.dataset.nome;
-    totalFinal = Number(card.dataset.valor);
 
     atualizarDetalhamento();
   });
 });
 
-// ==========================
-// ATUALIZAR DETALHAMENTO
-// ==========================
+/* ==========================
+   DETALHAMENTO
+========================== */
+
 function atualizarDetalhamento(){
+
+  const categoriaObj = categorias.find(c=>c.nome===categoriaSelecionada);
+
+  let valorNormal = totalBase * categoriaObj.multi;
+  let valorFinal = valorNormal;
+
+  if(typeof Dinamico !== "undefined" && Dinamico.ativo){
+    valorFinal = valorNormal * Dinamico.multiplicador;
+  }
+
+  totalFinal = valorFinal;
 
   let detalhes = [];
   detalhes.push(["Categoria", categoriaSelecionada]);
-
   detalhesBase.forEach(d=>detalhes.push(d));
 
   document.getElementById("detalhamento").innerHTML =
@@ -429,54 +444,25 @@ function atualizarDetalhamento(){
       </div>
     `).join("");
 
-  /* =============================
-     TARIFA DINÂMICA VISUAL
-  ============================= */
-
-  const totalEl = document.getElementById("total");
-
-  if(typeof Dinamico !== "undefined" && Dinamico.ativo){
-
-    const valorNormal = totalBase * categorias.find(c=>c.nome===categoriaSelecionada).multi;
-    const valorDinamico = valorNormal * Dinamico.multiplicador;
-
-    totalFinal = valorDinamico;
-
-    totalEl.innerHTML = `
-      <span class="preco-normal">
-        R$ ${valorNormal.toFixed(2)}
-      </span>
-      <span class="preco-dinamico">
-        <span class="raio">⚡</span>
-        R$ ${valorDinamico.toFixed(2)}
-      </span>
-    `;
-
-  }else{
-
-    totalEl.innerHTML = `R$ ${totalFinal.toFixed(2)}`;
-  }
+  document.getElementById("total").innerText =
+    `R$ ${valorFinal.toFixed(2)}`;
 
   App.set("categoria", categoriaSelecionada);
   App.set("total", totalFinal);
 }
 
-// ==========================
-// SOLICITAR
-// ==========================
+/* ==========================
+   SOLICITAR
+========================== */
+
 function solicitar(){
-
-  const overlay = document.getElementById("loadingOverlay");
-  overlay.classList.add("active");
-
-  setTimeout(()=>{
-    App.go("procurando.html");
-  }, 900);
+  document.getElementById("loadingOverlay").classList.add("active");
+  setTimeout(()=>{ App.go("procurando.html"); },900);
 }
 
 </script>
 
-  <div class="loading-overlay" id="loadingOverlay">
+<div class="loading-overlay" id="loadingOverlay">
   <div class="loader"></div>
 </div>
 

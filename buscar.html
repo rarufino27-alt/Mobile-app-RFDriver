@@ -6,7 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
 
 body{
   background:#000;
@@ -15,7 +20,8 @@ body{
 }
 
 h2{
-  margin-bottom:20px;
+  margin-bottom:25px;
+  font-weight:600;
 }
 
 .select-box{
@@ -25,15 +31,16 @@ h2{
   margin-bottom:15px;
   cursor:pointer;
   border:1px solid #222;
+  transition:.2s;
 }
 
-.select-box.ativo{
+.select-box:hover{
   border-color:#facc15;
 }
 
 .plus{
   text-align:center;
-  font-size:24px;
+  font-size:28px;
   margin:10px 0;
   cursor:pointer;
   color:#facc15;
@@ -48,7 +55,7 @@ button{
   color:#000;
   font-weight:700;
   font-size:1rem;
-  margin-top:10px;
+  margin-top:20px;
 }
 
 button:disabled{
@@ -59,7 +66,7 @@ button:disabled{
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.85);
+  background:rgba(0,0,0,.9);
   display:none;
   align-items:center;
   justify-content:center;
@@ -69,9 +76,11 @@ button:disabled{
 .modal-content{
   background:#111;
   width:100%;
-  max-width:400px;
+  max-width:420px;
   border-radius:18px;
   padding:18px;
+  max-height:80vh;
+  overflow:hidden;
 }
 
 .modal-content input{
@@ -84,13 +93,18 @@ button:disabled{
   margin-bottom:12px;
 }
 
-.modal-content div{
+.lista{
+  max-height:300px;
+  overflow-y:auto;
+}
+
+.lista div{
   padding:12px;
   border-radius:10px;
   cursor:pointer;
 }
 
-.modal-content div:hover{
+.lista div:hover{
   background:#222;
 }
 </style>
@@ -109,10 +123,11 @@ button:disabled{
 
 <button id="confirmar" disabled>Confirmar rota</button>
 
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
-    <input id="busca" placeholder="Buscar...">
-    <div id="lista"></div>
+    <input type="text" id="busca" placeholder="Buscar local...">
+    <div class="lista" id="lista"></div>
   </div>
 </div>
 
@@ -123,20 +138,25 @@ button:disabled{
 let origem = null;
 let parada = null;
 let destino = null;
-let valorTotal = 0;
 let modo = null;
-let dadosCarregados = false;
 
 const modal = document.getElementById("modal");
 const lista = document.getElementById("lista");
 const busca = document.getElementById("busca");
 const confirmarBtn = document.getElementById("confirmar");
 
+const origemBtn = document.getElementById("origemBtn");
+const paradaBtn = document.getElementById("paradaBtn");
+const destinoBtn = document.getElementById("destinoBtn");
+
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+
 async function init(){
   try{
     await DataManager.carregar();
-    dadosCarregados = true;
-    console.log("Rotas prontas:", DataManager.rotas.length);
+    console.log("Rotas carregadas:", DataManager.rotas.length);
   }catch(e){
     alert("Erro ao carregar rotas.");
   }
@@ -148,26 +168,16 @@ init();
    ABRIR MODAL
 ========================= */
 
-function abrirSelecao(tipo){
+function abrirModal(tipo){
 
-  if(!dadosCarregados){
-    alert("Aguarde, carregando rotas...");
-    return;
-  }
-
-  if(tipo === "destino" && !origem){
-    alert("Selecione a origem primeiro.");
-    return;
-  }
-
-  if(tipo === "parada" && !origem){
+  if(tipo !== "origem" && !origem){
     alert("Selecione a origem primeiro.");
     return;
   }
 
   modo = tipo;
-  modal.style.display="flex";
-  busca.value="";
+  busca.value = "";
+  modal.style.display = "flex";
 
   let dados = [];
 
@@ -181,66 +191,92 @@ function abrirSelecao(tipo){
   }
 
   if(tipo === "destino"){
-    if(parada){
-      dados = DataManager.listarDestinos(parada);
-    }else{
-      dados = DataManager.listarDestinos(origem);
-    }
+    dados = parada 
+      ? DataManager.listarDestinos(parada)
+      : DataManager.listarDestinos(origem);
   }
 
-  render(dados);
+  renderLista(dados);
 }
 
-function render(arr){
+/* =========================
+   RENDER LISTA
+========================= */
 
-  lista.innerHTML="";
+function renderLista(array){
 
-  if(!arr || arr.length === 0){
+  lista.innerHTML = "";
+
+  if(!array || array.length === 0){
     const vazio = document.createElement("div");
-    vazio.innerText="Nenhuma opção disponível";
-    vazio.style.opacity=".5";
+    vazio.innerText = "Nenhuma opção disponível";
+    vazio.style.opacity = ".5";
     lista.appendChild(vazio);
     return;
   }
 
-  arr.forEach(item=>{
+  array.forEach(item=>{
     const div = document.createElement("div");
-    div.innerText=item;
-
-    div.onclick=()=>{
+    div.innerText = item;
+    div.onclick = ()=>{
       selecionar(item);
-      modal.style.display="none";
+      modal.style.display = "none";
     };
-
     lista.appendChild(div);
   });
 }
 
+/* =========================
+   SELECIONAR
+========================= */
+
 function selecionar(valor){
 
-  if(modo==="origem"){
+  if(modo === "origem"){
     origem = valor;
     parada = null;
     destino = null;
-    document.getElementById("origemBtn").innerText = valor;
-    document.getElementById("paradaBtn").style.display="none";
-    document.getElementById("destinoBtn").innerText = "Selecionar destino";
+
+    origemBtn.innerText = valor;
+    paradaBtn.style.display = "none";
+    paradaBtn.innerText = "Selecionar parada";
+    destinoBtn.innerText = "Selecionar destino";
   }
 
-  if(modo==="parada"){
+  if(modo === "parada"){
     parada = valor;
     destino = null;
-    document.getElementById("paradaBtn").innerText = valor;
-    document.getElementById("destinoBtn").innerText = "Selecionar destino";
+
+    paradaBtn.innerText = valor;
+    destinoBtn.innerText = "Selecionar destino";
   }
 
-  if(modo==="destino"){
+  if(modo === "destino"){
     destino = valor;
-    document.getElementById("destinoBtn").innerText = valor;
+    destinoBtn.innerText = valor;
   }
 
   validar();
 }
+
+/* =========================
+   BUSCA FILTRO
+========================= */
+
+busca.addEventListener("input", ()=>{
+  const termo = busca.value.toLowerCase();
+  const itens = lista.querySelectorAll("div");
+
+  itens.forEach(div=>{
+    div.style.display = div.innerText.toLowerCase().includes(termo)
+      ? "block"
+      : "none";
+  });
+});
+
+/* =========================
+   VALIDAR
+========================= */
 
 function validar(){
   confirmarBtn.disabled = !(origem && destino);
@@ -250,41 +286,37 @@ function validar(){
    EVENTOS
 ========================= */
 
-document.getElementById("origemBtn").onclick=()=>abrirSelecao("origem");
-document.getElementById("paradaBtn").onclick=()=>abrirSelecao("parada");
-document.getElementById("destinoBtn").onclick=()=>abrirSelecao("destino");
+origemBtn.onclick = ()=>abrirModal("origem");
+paradaBtn.onclick = ()=>abrirModal("parada");
+destinoBtn.onclick = ()=>abrirModal("destino");
 
-document.getElementById("addParada").onclick=()=>{
+document.getElementById("addParada").onclick = ()=>{
   if(!origem){
     alert("Selecione a origem primeiro.");
     return;
   }
-  document.getElementById("paradaBtn").style.display="block";
+  paradaBtn.style.display = "block";
 };
 
 modal.onclick = e=>{
-  if(e.target===modal) modal.style.display="none";
-};
-
-busca.oninput=()=>{
-  const termo = busca.value.toLowerCase();
-  const itens = [...lista.children];
-  itens.forEach(div=>{
-    div.style.display = div.innerText.toLowerCase().includes(termo) ? "block" : "none";
-  });
+  if(e.target === modal){
+    modal.style.display = "none";
+  }
 };
 
 /* =========================
    CONFIRMAR
 ========================= */
 
-confirmarBtn.onclick=()=>{
+confirmarBtn.onclick = ()=>{
+
+  let valorTotal = 0;
 
   if(!parada){
-    valorTotal = DataManager.buscarValor(origem,destino);
+    valorTotal = DataManager.buscarValor(origem, destino) || 0;
   }else{
-    const parte1 = DataManager.buscarValor(origem,parada) || 0;
-    const parte2 = DataManager.buscarValor(parada,destino) || 0;
+    const parte1 = DataManager.buscarValor(origem, parada) || 0;
+    const parte2 = DataManager.buscarValor(parada, destino) || 0;
     valorTotal = parte1 + parte2;
   }
 
@@ -295,7 +327,7 @@ confirmarBtn.onclick=()=>{
     valor: valorTotal
   }));
 
-  window.location.href="viagem.html";
+  window.location.href = "viagem.html";
 };
 
 </script>

@@ -221,34 +221,6 @@ body{
   </div>
 </div>
 
-  <!-- CATEGORIA -->
-<div class="section">
-  <div class="title">Categoria do veículo</div>
-  <div class="subtitle">Escolha o tipo de carro</div>
-
-  <div class="categoria-grid">
-    <div class="categoria-box" data-categoria="Hatch" data-multi="1.0">
-      🚗 <strong>Hatch</strong>
-      <span>1.0x</span>
-    </div>
-
-    <div class="categoria-box" data-categoria="Sedan" data-multi="1.1">
-      🚘 <strong>Sedan</strong>
-      <span>1.1x</span>
-    </div>
-
-    <div class="categoria-box" data-categoria="SUV" data-multi="1.25">
-      🚙 <strong>SUV</strong>
-      <span>1.25x</span>
-    </div>
-
-    <div class="categoria-box" data-categoria="6 Lugares" data-multi="1.5">
-      🚐 <strong>6 Lugares</strong>
-      <span>1.5x</span>
-    </div>
-  </div>
-</div>
-  
 <!-- TAXAS -->
 <div class="section">
   <div class="title">Configurações da viagem</div>
@@ -306,9 +278,6 @@ let destinoSelecionado = null;
 let valorBase = 0;
 let modo = null;
 
-let categoriaSelecionada = null;
-let multiplicadorCategoria = 1;
-
 /* =========================
    CATEGORIA
 ========================= */
@@ -320,8 +289,6 @@ document.querySelectorAll(".categoria-box").forEach(box=>{
 
     box.classList.add("active");
 
-    categoriaSelecionada = box.dataset.categoria;
-    multiplicadorCategoria = Number(box.dataset.multi);
   });
 });
 
@@ -422,11 +389,7 @@ busca.oninput=()=>{
 ========================= */
 
 function validar(){
-  btn.disabled = !(
-    origemSelecionada &&
-    destinoSelecionado &&
-    categoriaSelecionada
-  );
+  btn.disabled = !(origemSelecionada && destinoSelecionado);
 }
 
 /* =========================
@@ -450,8 +413,6 @@ btn.onclick=()=>{
   App.set("destino", destinoSelecionado);
   App.set("valorBase", Number(valorBase));
   App.set("taxasConfig", config);
-  App.set("categoria", categoriaSelecionada);
-  App.set("multiplicadorCategoria", multiplicadorCategoria);
 
   App.go("resumo.html");
 };
@@ -460,6 +421,7 @@ btn.onclick=()=>{
 
 </body>
 </html>
+
 
 
 

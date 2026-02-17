@@ -192,13 +192,12 @@ const btn = document.getElementById("btnSolicitar");
 function atualizarResumo(){
 
   const corrida = localStorage.getItem("rf_corrida_temp");
-
   if(!corrida) return;
 
   const dados = JSON.parse(corrida);
 
-  document.getElementById("textoBusca").innerText =
-    dados.origem + " → " + dados.destino;
+  // Mantém o texto fixo
+  document.getElementById("textoBusca").innerText = "Para onde vamos?";
 
   document.getElementById("origemResumo").innerText = dados.origem;
   document.getElementById("destinoResumo").innerText = dados.destino;
@@ -207,8 +206,6 @@ function atualizarResumo(){
 
   btn.disabled = false;
 }
-
-document.addEventListener("DOMContentLoaded", atualizarResumo);
 
 /* =========================
    IR PARA BUSCA

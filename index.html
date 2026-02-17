@@ -6,13 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
 body{
   background:linear-gradient(180deg,#000,#050505);
   color:#fff;
@@ -22,104 +16,23 @@ body{
   min-height:100vh;
   padding:20px;
 }
-
-.container{
-  width:100%;
-  max-width:420px;
-}
-
-.logo{
-  width:130px;
-  margin:0 auto 35px auto;
-  display:block;
-  animation:float 4s ease-in-out infinite;
-}
-
-@keyframes float{
-  0%,100%{ transform:translateY(0px);}
-  50%{ transform:translateY(-8px);}
-}
-
-.title{
-  text-align:center;
-  font-size:1.2rem;
-  margin-bottom:20px;
-  font-weight:600;
-}
-
-.phone-box{
-  display:flex;
-  gap:8px;
-  margin-bottom:15px;
-}
-
-.country{
-  background:#1c1c1c;
-  padding:14px;
-  border-radius:10px;
-  font-weight:600;
-  color:#facc15;
-}
-
+.container{width:100%;max-width:420px;}
+.logo{width:130px;margin:0 auto 35px auto;display:block;}
+.title{text-align:center;font-size:1.2rem;margin-bottom:20px;font-weight:600;}
+.phone-box{display:flex;gap:8px;margin-bottom:15px;}
+.country{background:#1c1c1c;padding:14px;border-radius:10px;font-weight:600;color:#facc15;}
 input{
-  flex:1;
-  padding:14px;
-  border-radius:10px;
-  border:none;
-  background:#1c1c1c;
-  color:#fff;
-  font-size:.9rem;
+  flex:1;padding:14px;border-radius:10px;border:none;
+  background:#1c1c1c;color:#fff;font-size:.9rem;
 }
-
-input:focus{
-  outline:1px solid #facc15;
-}
-
-.terms{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  margin:18px 0;
-  font-size:.85rem;
-  color:#ccc;
-}
-
-.terms input{
-  width:18px;
-  height:18px;
-  margin-top:3px;
-  accent-color:#facc15;
-}
-
-.terms a{
-  color:#facc15;
-  text-decoration:none;
-  font-weight:600;
-}
-
+input:focus{outline:1px solid #facc15;}
 button{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:none;
-  font-weight:700;
-  cursor:pointer;
-  transition:.2s;
-  background:#333;
-  color:#777;
+  width:100%;padding:14px;border-radius:12px;border:none;
+  font-weight:700;cursor:pointer;background:#facc15;color:#000;
 }
-
-button.active{
-  background:#facc15;
-  color:#000;
-}
-
-.msg{
-  font-size:.85rem;
-  margin-top:10px;
-  text-align:center;
-  color:#ff6b6b;
-}
+.msg{font-size:.85rem;margin-top:10px;text-align:center;color:#ff6b6b;}
+.link{margin-top:15px;text-align:center;font-size:.9rem;}
+.link a{color:#facc15;text-decoration:none;}
 </style>
 </head>
 <body>
@@ -128,26 +41,20 @@ button.active{
 
   <img src="./icons/logo-1024.png" class="logo">
 
-  <div class="title">Insira seu número de telefone</div>
+  <div class="title">Entrar com telefone</div>
 
   <div class="phone-box">
     <div class="country">+55</div>
     <input type="tel" id="telefone" placeholder="(81) 9 9999-9999">
   </div>
 
-  <div class="terms">
-    <input type="checkbox" id="aceite">
-    <label for="aceite">
-      Li e concordo com os 
-      <a href="termos.html" target="_blank">Termos de Uso</a> 
-      e com a 
-      <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>.
-    </label>
-  </div>
-
-  <button id="btnEntrar" onclick="acessar()" disabled>Continuar</button>
+  <button onclick="acessar()">Continuar</button>
 
   <div class="msg" id="mensagem"></div>
+
+  <div class="link">
+    Não tem conta? <a href="#" onclick="irCadastro()">Criar conta</a>
+  </div>
 
 </div>
 
@@ -156,25 +63,7 @@ button.active{
 
 <script>
 
-const telefoneInput = document.getElementById("telefone");
-const aceite = document.getElementById("aceite");
-const btn = document.getElementById("btnEntrar");
 const mensagem = document.getElementById("mensagem");
-
-function validarBotao(){
-  if(aceite.checked && telefoneInput.value.replace(/\D/g,'').length >= 10){
-    btn.disabled = false;
-    btn.classList.add("active");
-  } else {
-    btn.disabled = true;
-    btn.classList.remove("active");
-  }
-}
-
-aceite.addEventListener("change", validarBotao);
-telefoneInput.addEventListener("input", validarBotao);
-
-/* VERIFICAR SESSÃO */
 
 (async ()=>{
   const { data } = await supabaseClient.auth.getSession();
@@ -183,44 +72,50 @@ telefoneInput.addEventListener("input", validarBotao);
   }
 })();
 
-/* ACESSO */
-
 async function acessar(){
 
   mensagem.innerText="";
-
-  const telefone = "+55" + telefoneInput.value.replace(/\D/g,'');
+  const telefone = "+55" + document.getElementById("telefone").value.replace(/\D/g,'');
 
   if(telefone.length < 13){
     mensagem.innerText="Número inválido.";
     return;
   }
 
-  const { data: perfil } = await supabaseClient
+  // Buscar email pelo telefone
+  const { data: perfil, error } = await supabaseClient
     .from("profiles")
-    .select("*")
+    .select("email")
     .eq("telefone", telefone)
-    .eq("role", "passageiro")
     .single();
 
-  if(!perfil){
-    window.location.href = "cadastro-passageiro.html?tel=" + telefone;
+  if(error || !perfil){
+    mensagem.innerText="Telefone não cadastrado.";
     return;
   }
 
-  const senhaAutomatica = telefone;
+  const senha = prompt("Digite sua senha:");
 
-  const { error } = await supabaseClient.auth.signInWithPassword({
-    email: telefone + "@rfdriver.com",
-    password: senhaAutomatica
+  if(!senha){
+    return;
+  }
+
+  const { error: loginError } = await supabaseClient.auth.signInWithPassword({
+    email: perfil.email,
+    password: senha
   });
 
-  if(error){
-    mensagem.innerText="Erro ao entrar.";
+  if(loginError){
+    mensagem.innerText="Senha incorreta.";
     return;
   }
 
   window.location.href = "passageiro.html";
+}
+
+function irCadastro(){
+  const telefone = "+55" + document.getElementById("telefone").value.replace(/\D/g,'');
+  window.location.href = "cadastro-passageiro.html?tel=" + telefone;
 }
 
 </script>

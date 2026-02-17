@@ -42,10 +42,6 @@ body{
   border-radius:8px;
 }
 
-.menu-btn:hover{
-  background:rgba(0,0,0,.1);
-}
-
 /* MAPA */
 .map{
   position:absolute;
@@ -115,7 +111,6 @@ body{
   margin:10px 0;
 }
 
-/* TOTAL */
 .total{
   margin-top:14px;
   text-align:right;
@@ -124,7 +119,6 @@ body{
   color:#facc15;
 }
 
-/* BOTÃO FIXO */
 .bottom{
   position:absolute;
   bottom:20px;
@@ -149,7 +143,7 @@ button:disabled{
   color:#777;
 }
 
-/* OVERLAY */
+/* MENU */
 .menu-overlay{
   position:fixed;
   inset:0;
@@ -158,7 +152,6 @@ button:disabled{
   z-index:99;
 }
 
-/* MENU */
 .menu-lateral{
   position:fixed;
   top:0;
@@ -228,12 +221,9 @@ button:disabled{
 </head>
 <body>
 
-<!-- OVERLAY -->
 <div id="menuOverlay" class="menu-overlay" onclick="fecharMenu()"></div>
 
-<!-- MENU -->
 <div id="menuLateral" class="menu-lateral">
-
   <div class="menu-header" onclick="irPerfil()">
     <div class="avatar" id="avatarMenu"></div>
     <div>
@@ -243,31 +233,12 @@ button:disabled{
   </div>
 
   <div class="menu-lista">
-
-    <div class="menu-item" onclick="window.location.href='viagem.html'">
-      🚕 Atividade
-    </div>
-
-    <div class="menu-item" onclick="irAjuda()">
-      💬 Ajuda
-    </div>
-
-    <div class="menu-item" onclick="window.location.href='mensagens.html'">
-      📩 Mensagens
-    </div>
-
-    <div class="menu-item" onclick="window.location.href='configuracoes.html'">
-      ⚙️ Configurações
-    </div>
-
-    <div class="menu-item" onclick="window.location.href='convite.html'">
-      🎁 Convide Amigos
-    </div>
-
-    <div class="menu-item sair" onclick="logout()">
-      🚪 Sair
-    </div>
-
+    <div class="menu-item" onclick="window.location.href='viagem.html'">🚕 Atividade</div>
+    <div class="menu-item" onclick="irAjuda()">💬 Ajuda</div>
+    <div class="menu-item" onclick="window.location.href='mensagens.html'">📩 Mensagens</div>
+    <div class="menu-item" onclick="window.location.href='configuracoes.html'">⚙️ Configurações</div>
+    <div class="menu-item" onclick="window.location.href='convite.html'">🎁 Convide Amigos</div>
+    <div class="menu-item sair" onclick="logout()">🚪 Sair</div>
   </div>
 </div>
 
@@ -279,13 +250,8 @@ button:disabled{
 <div class="map"></div>
 
 <div class="card">
-
-  <div class="search-main" onclick="abrirBusca()">
-    🔎 Para onde vamos?
-  </div>
-
+  <div class="search-main" onclick="abrirBusca()">🔎 Para onde vamos?</div>
   <div id="rotaBox" class="rota-box" style="display:none;"></div>
-
 </div>
 
 <div class="bottom">
@@ -293,6 +259,24 @@ button:disabled{
 </div>
 
 <script>
+
+/* ================= SEGURANÇA LOGIN ================= */
+
+if(localStorage.getItem("rf_usuario_logado") !== "true"){
+  window.location.href = "login.html";
+}
+
+/* ================= PERFIL COMPLETO ================= */
+
+function perfilCompleto(){
+  const nome = localStorage.getItem("rf_usuario_nome");
+  const cpf = localStorage.getItem("rf_usuario_cpf");
+  const nascimento = localStorage.getItem("rf_usuario_nascimento");
+  const foto = localStorage.getItem("rf_usuario_foto");
+  const telefone = localStorage.getItem("rf_usuario_telefone");
+
+  return nome && cpf && nascimento && foto && telefone;
+}
 
 /* ================= MENU ================= */
 
@@ -317,20 +301,8 @@ function carregarMenuUsuario(){
   }
 }
 
-function irPerfil(){
-  window.location.href = "perfil.html";
-}
-
-function irAjuda(){
-  const nome = localStorage.getItem("rf_usuario_nome") || "Usuário";
-  const mensagem = encodeURIComponent(
-    "Olá, meu nome é " + nome + " e preciso de ajuda no RF Driver."
-  );
-  window.open("https://wa.me/5581992716132?text=" + mensagem, "_blank");
-}
-
 function logout(){
-  localStorage.removeItem("rf_usuario_logado");
+  localStorage.clear();
   window.location.href = "login.html";
 }
 
@@ -349,6 +321,12 @@ function abrirBusca(){
 
 function carregarRota(){
 
+  if(!perfilCompleto()){
+    alert("Complete seu perfil antes de solicitar uma corrida.");
+    window.location.href = "perfil.html";
+    return;
+  }
+
   const corrida = localStorage.getItem("rf_corrida_temp");
   if(!corrida) return;
 
@@ -357,9 +335,7 @@ function carregarRota(){
 
   if(!origem || !destino) return;
 
-  let html = "";
-
-  html += `
+  let html = `
     <div class="rota-item">
       <span class="label">Origem</span>
       <span class="valor">${origem}</span>
@@ -382,9 +358,7 @@ function carregarRota(){
       <span class="label">Destino</span>
       <span class="valor">${destino}</span>
     </div>
-  `;
 
-  html += `
     <div class="total">
       Total estimado: R$ ${Number(valor).toFixed(2)}
     </div>

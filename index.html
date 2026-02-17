@@ -152,7 +152,7 @@ const mensagem = document.getElementById("mensagem");
 (async ()=>{
   const { data } = await supabaseClient.auth.getSession();
   if(data.session){
-    window.location.href = "passageiro.html";
+    window.location.href = "viagem.html";
   }
 })();
 

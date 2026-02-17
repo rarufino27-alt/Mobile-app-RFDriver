@@ -149,7 +149,7 @@ button.secondary{
 const SUPABASE_URL = "https://msnqiiwcityikslikbow.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zbnFpaXdjaXR5aWtzbGlrYm93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MDM5OTgsImV4cCI6MjA4MzI3OTk5OH0.0KyaSuL5At4_Cfa4TOM7kvvkVYv-gmR2sb7vX6VHkaU";
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const mensagem = document.getElementById("mensagem");
 const stepPhone = document.getElementById("stepPhone");
@@ -160,7 +160,7 @@ const stepCode = document.getElementById("stepCode");
 ========================= */
 
 async function verificarSessao(){
-  const { data } = await supabase.auth.getSession();
+  const { data } = await supabaseClient.auth.getSession();
   if(data.session){
     window.location.href = "viagem.html";
   }
@@ -192,7 +192,7 @@ async function validarCodigo(){
 
   mensagem.innerText="Validando...";
 
-  const { data, error } = await supabase.auth.verifyOtp({
+  const { data, error } = await supabaseClient.auth.verifyOtp({
     phone: phone,
     token: code,
     type: "sms"
@@ -206,7 +206,7 @@ async function validarCodigo(){
     return;
   }
 
-  const { data: sessionData } = await supabase.auth.getSession();
+  const { data: sessionData } = await supabaseClient.auth.getSession();
   console.log("SESSION:", sessionData);
 
   if(!sessionData.session){
@@ -224,7 +224,7 @@ async function validarCodigo(){
     .single();
 
   if(!perfilExistente){
-    await supabase.from("profiles").insert({
+    await supabaseClient.from("profiles").insert({
       id: user.id,
       telefone: phone
     });
@@ -252,7 +252,7 @@ async function validarCodigo(){
 
   mensagem.innerText="Validando...";
 
-  const { data, error } = await supabase.auth.verifyOtp({
+  const { data, error } = await supabaseClient.auth.verifyOtp({
     phone: phone,
     token: code,
     type: "sms"
@@ -274,7 +274,7 @@ async function validarCodigo(){
     .single();
 
   if(!perfilExistente){
-    await supabase.from("profiles").insert({
+    await supabaseClient.from("profiles").insert({
       id: user.id,
       telefone: phone
     });

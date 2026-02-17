@@ -164,10 +164,12 @@ button:active{
 
 <div class="card">
 
-  <div class="search-main">
+  <div class="search-main" onclick="abrirBusca()">
     🔎
-    <input type="text" id="destino" placeholder="Para onde vamos?">
+    <span id="textoBusca">Para onde vamos?</span>
   </div>
+
+</div>
 
   <div class="field">
     <div class="dot origem"></div>
@@ -202,6 +204,19 @@ function validar(){
 origem.addEventListener("input", validar);
 destino.addEventListener("input", validar);
 
+  function abrirBusca(){
+  window.location.href = "buscar.html";
+}
+
+/* Se já tiver corrida selecionada */
+const corrida = localStorage.getItem("rf_corrida_temp");
+
+if(corrida){
+  const dados = JSON.parse(corrida);
+  document.getElementById("textoBusca").innerText =
+    dados.origem + " → " + dados.destino;
+}
+
 function solicitar(){
 
   const dados = {
@@ -218,3 +233,4 @@ function solicitar(){
 
 </body>
 </html>
+

@@ -103,6 +103,15 @@ body{
   opacity:.4;
 }
 
+  .cta-primary{
+  transition:all .3s ease;
+}
+
+.cta-primary:not(:disabled){
+  box-shadow:0 0 18px rgba(250,204,21,.4);
+  transform:translateY(-2px);
+}
+
 .modal{
   position:fixed;
   inset:0;
@@ -160,8 +169,27 @@ body{
   font-size:.85rem;
 }
 
+  .taxa-box{
+  transition:all .2s ease;
+}
+
+.taxa-box.ativa{
+  border-color:#facc15;
+  box-shadow:0 0 10px rgba(250,204,21,.2);
+}
+
 .full-width{
   grid-column:1 / -1;
+}
+
+  .select-btn{
+  transition:all .25s ease;
+}
+
+.select-btn.ativo{
+  border-color:#facc15;
+  box-shadow:0 0 12px rgba(250,204,21,.3);
+  transform:scale(1.02);
 }
 
 </style>
@@ -250,6 +278,13 @@ let destinoSelecionado = null;
 let valorBase = 0;
 let modo = null;
 
+  document.querySelectorAll(".taxa-box input").forEach(input=>{
+  input.addEventListener("change",()=>{
+    input.closest(".taxa-box")
+      .classList.toggle("ativa", input.checked);
+  });
+});
+
 /* =========================
    DATA MANAGER
 ========================= */
@@ -311,6 +346,7 @@ function render(arr){
       if(modo==="origem"){
         origemSelecionada=item;
         origemBtn.textContent=item;
+        origemBtn.classList.add("ativo");
         App.set("origem",item);
 
         destinoSelecionado=null;
@@ -318,6 +354,7 @@ function render(arr){
       }else{
         destinoSelecionado=item;
         destinoBtn.textContent=item;
+        destinoBtn.classList.add("ativo");
         valorBase = DataManager.buscarValor(origemSelecionada,item);
       }
 
@@ -374,6 +411,7 @@ btn.onclick=()=>{
 
 </body>
 </html>
+
 
 
 

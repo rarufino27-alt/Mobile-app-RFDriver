@@ -5,6 +5,8 @@
 <title>RF Driver – Acesso</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{
   margin:0;
@@ -119,26 +121,18 @@ button.secondary{
 
   <div class="title">Entrar no RF Driver</div>
 
-  <!-- ETAPA 1 -->
   <div id="stepPhone">
-
     <div class="phone-box">
       <div class="country">+55</div>
       <input type="tel" id="telefone" placeholder="81999999999">
     </div>
-
     <button onclick="enviarCodigo()">Receber código</button>
-
   </div>
 
-  <!-- ETAPA 2 -->
   <div id="stepCode" class="hidden">
-
     <input type="text" id="codigo" placeholder="Digite o código SMS">
-
     <button onclick="validarCodigo()">Entrar</button>
     <button class="secondary" onclick="voltarTelefone()">Voltar</button>
-
   </div>
 
   <div class="msg" id="mensagem"></div>
@@ -153,17 +147,30 @@ button.secondary{
 <script>
 
 const SUPABASE_URL = "https://msnqiiwcityikslikbow.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zbnFpaXdjaXR5aWtzbGlrYm93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MDM5OTgsImV4cCI6MjA4MzI3OTk5OH0.0KyaSuL5At4_Cfa4TOM7kvvkVYv-gmR2sb7vX6VHkaU";
+const SUPABASE_ANON_KEY = "SEU_ANON_KEY_AQUI";
 
-const API_URL = SUPABASE_URL + "/functions/v1/super-api";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const mensagem = document.getElementById("mensagem");
 const stepPhone = document.getElementById("stepPhone");
 const stepCode = document.getElementById("stepCode");
 
-if(localStorage.getItem("rf_logged") === "true"){
-  window.location.href = "viagem.html";
+/* =========================
+   VERIFICAR SESSÃO AUTOMÁTICA
+========================= */
+
+async function verificarSessao(){
+  const { data } = await supabase.auth.getSession();
+  if(data.session){
+    window.location.href = "viagem.html";
+  }
 }
+
+verificarSessao();
+
+/* =========================
+   ENVIAR OTP
+========================= */
 
 function limparMensagem(){
   mensagem.innerText="";
@@ -187,39 +194,28 @@ async function enviarCodigo(){
 
   mensagem.innerText="Enviando código...";
 
-  try{
+  const { error } = await supabase.auth.signInWithOtp({
+    phone: phone
+  });
 
-    const response = await fetch(API_URL,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY
-      },
-      body:JSON.stringify({ phone })
-    });
-
-    const data = await response.json();
-
-    if(!response.ok){
-      mensagem.innerText="Erro ao enviar código.";
-      mensagem.classList.add("error");
-      return;
-    }
-
-    localStorage.setItem("rf_temp_phone", phone);
-
-    stepPhone.classList.add("hidden");
-    stepCode.classList.remove("hidden");
-
-    mensagem.innerText="Código enviado por SMS.";
-    mensagem.classList.add("success");
-
-  }catch(e){
-    mensagem.innerText="Erro de conexão.";
+  if(error){
+    mensagem.innerText="Erro ao enviar código.";
     mensagem.classList.add("error");
+    return;
   }
+
+  localStorage.setItem("rf_temp_phone", phone);
+
+  stepPhone.classList.add("hidden");
+  stepCode.classList.remove("hidden");
+
+  mensagem.innerText="Código enviado por SMS.";
+  mensagem.classList.add("success");
 }
+
+/* =========================
+   VALIDAR OTP
+========================= */
 
 async function validarCodigo(){
 
@@ -236,36 +232,38 @@ async function validarCodigo(){
 
   mensagem.innerText="Validando...";
 
-  try{
+  const { data, error } = await supabase.auth.verifyOtp({
+    phone: phone,
+    token: code,
+    type: "sms"
+  });
 
-    const response = await fetch(API_URL,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY
-      },
-      body:JSON.stringify({ phone, code })
-    });
-
-    const data = await response.json();
-
-    if(!data.success){
-      mensagem.innerText="Código inválido.";
-      mensagem.classList.add("error");
-      return;
-    }
-
-    localStorage.setItem("rf_logged","true");
-    localStorage.setItem("rf_user_phone", phone);
-
-    window.location.href="viagem.html";
-
-  }catch(e){
-    mensagem.innerText="Erro na validação.";
+  if(error){
+    mensagem.innerText="Código inválido.";
     mensagem.classList.add("error");
+    return;
   }
+
+  const user = data.user;
+
+  // Criar profile automaticamente se não existir
+  const { data: perfilExistente } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if(!perfilExistente){
+    await supabase.from("profiles").insert({
+      id: user.id,
+      telefone: phone
+    });
+  }
+
+  window.location.href="viagem.html";
 }
+
+/* ========================= */
 
 function voltarTelefone(){
   stepCode.classList.add("hidden");

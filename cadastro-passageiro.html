@@ -165,14 +165,37 @@ async function cadastrar(){
       return;
     }
 
-    await supabaseClient.from("profiles").insert({
-      id: data.user.id,
-      nome,
-      telefone,
+    // 🔓 LOGIN IMEDIATO PARA ATIVAR auth.uid()
+    const { error: loginError } = await supabaseClient.auth.signInWithPassword({
       email,
-      role: "passageiro",
-      status: "ativo"
+      password: senha
     });
+
+    if(loginError){
+      mensagem.innerText = loginError.message;
+      btn.disabled = false;
+      btn.innerText = "Finalizar Cadastro";
+      return;
+    }
+
+    // 📁 INSERIR PERFIL COM TRATAMENTO DE ERRO
+    const { error: profileError } = await supabaseClient
+      .from("profiles")
+      .insert({
+        id: data.user.id,
+        nome,
+        telefone,
+        email,
+        role: "passageiro",
+        status: "ativo"
+      });
+
+    if(profileError){
+      mensagem.innerText = profileError.message;
+      btn.disabled = false;
+      btn.innerText = "Finalizar Cadastro";
+      return;
+    }
 
     mensagem.innerText="Conta criada com sucesso!";
     mensagem.classList.add("success");

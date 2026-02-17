@@ -177,40 +177,60 @@ function limparMensagem(){
   mensagem.classList.remove("success","error");
 }
 
-async function enviarCodigo(){
+async function validarCodigo(){
 
   limparMensagem();
 
-  const telefoneInput = document.getElementById("telefone").value;
-  const telefoneLimpo = telefoneInput.replace(/\D/g,'');
+  const code = document.getElementById("codigo").value.trim();
+  const phone = localStorage.getItem("rf_temp_phone");
 
-  if(telefoneLimpo.length < 11){
-    mensagem.innerText="Telefone inválido.";
+  if(!code){
+    mensagem.innerText="Digite o código.";
     mensagem.classList.add("error");
     return;
   }
 
-  const phone = "+55" + telefoneLimpo;
+  mensagem.innerText="Validando...";
 
-  mensagem.innerText="Enviando código...";
-
-  const { error } = await supabase.auth.signInWithOtp({
-    phone: phone
+  const { data, error } = await supabase.auth.verifyOtp({
+    phone: phone,
+    token: code,
+    type: "sms"
   });
 
+  console.log("VERIFY RESULT:", data, error);
+
   if(error){
-    mensagem.innerText="Erro ao enviar código.";
+    mensagem.innerText="Código inválido.";
     mensagem.classList.add("error");
     return;
   }
 
-  localStorage.setItem("rf_temp_phone", phone);
+  const { data: sessionData } = await supabase.auth.getSession();
+  console.log("SESSION:", sessionData);
 
-  stepPhone.classList.add("hidden");
-  stepCode.classList.remove("hidden");
+  if(!sessionData.session){
+    mensagem.innerText="Sessão não criada.";
+    mensagem.classList.add("error");
+    return;
+  }
 
-  mensagem.innerText="Código enviado por SMS.";
-  mensagem.classList.add("success");
+  const user = sessionData.session.user;
+
+  const { data: perfilExistente } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if(!perfilExistente){
+    await supabase.from("profiles").insert({
+      id: user.id,
+      telefone: phone
+    });
+  }
+
+  window.location.href="viagem.html";
 }
 
 /* =========================

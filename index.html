@@ -137,17 +137,12 @@ button.secondary{
 
   <div class="msg" id="mensagem"></div>
 
-  <div class="footer">
-    <a href="termos.html" target="_blank">Termos de Uso</a> |
-    <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>
-  </div>
-
 </div>
 
 <script>
 
 const SUPABASE_URL = "https://msnqiiwcityikslikbow.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zbnFpaXdjaXR5aWtzbGlrYm93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MDM5OTgsImV4cCI6MjA4MzI3OTk5OH0.0KyaSuL5At4_Cfa4TOM7kvvkVYv-gmR2sb7vX6VHkaU";
+const SUPABASE_ANON_KEY = "SUA_ANON_KEY_AQUI";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -155,9 +150,10 @@ const mensagem = document.getElementById("mensagem");
 const stepPhone = document.getElementById("stepPhone");
 const stepCode = document.getElementById("stepCode");
 
-/* =========================
-   VERIFICAR SESSÃO AUTOMÁTICA
-========================= */
+function limparMensagem(){
+  mensagem.innerText="";
+  mensagem.classList.remove("success","error");
+}
 
 async function verificarSessao(){
   const { data } = await supabaseClient.auth.getSession();
@@ -172,65 +168,40 @@ verificarSessao();
    ENVIAR OTP
 ========================= */
 
-function limparMensagem(){
-  mensagem.innerText="";
-  mensagem.classList.remove("success","error");
-}
-
-async function validarCodigo(){
+async function enviarCodigo(){
 
   limparMensagem();
 
-  const code = document.getElementById("codigo").value.trim();
-  const phone = localStorage.getItem("rf_temp_phone");
+  const telefoneInput = document.getElementById("telefone").value;
+  const telefoneLimpo = telefoneInput.replace(/\D/g,'');
 
-  if(!code){
-    mensagem.innerText="Digite o código.";
+  if(telefoneLimpo.length < 11){
+    mensagem.innerText="Telefone inválido.";
     mensagem.classList.add("error");
     return;
   }
 
-  mensagem.innerText="Validando...";
+  const phone = "+55" + telefoneLimpo;
 
-  const { data, error } = await supabaseClient.auth.verifyOtp({
-    phone: phone,
-    token: code,
-    type: "sms"
+  mensagem.innerText="Enviando código...";
+
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    phone: phone
   });
 
-  console.log("VERIFY RESULT:", data, error);
-
   if(error){
-    mensagem.innerText="Código inválido.";
+    mensagem.innerText="Erro ao enviar código.";
     mensagem.classList.add("error");
     return;
   }
 
-  const { data: sessionData } = await supabaseClient.auth.getSession();
-  console.log("SESSION:", sessionData);
+  localStorage.setItem("rf_temp_phone", phone);
 
-  if(!sessionData.session){
-    mensagem.innerText="Sessão não criada.";
-    mensagem.classList.add("error");
-    return;
-  }
+  stepPhone.classList.add("hidden");
+  stepCode.classList.remove("hidden");
 
-  const user = sessionData.session.user;
-
-  const { data: perfilExistente } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if(!perfilExistente){
-    await supabaseClient.from("profiles").insert({
-      id: user.id,
-      telefone: phone
-    });
-  }
-
-  window.location.href="viagem.html";
+  mensagem.innerText="Código enviado por SMS.";
+  mensagem.classList.add("success");
 }
 
 /* =========================
@@ -266,8 +237,7 @@ async function validarCodigo(){
 
   const user = data.user;
 
-  // Criar profile automaticamente se não existir
-  const { data: perfilExistente } = await supabase
+  const { data: perfilExistente } = await supabaseClient
     .from("profiles")
     .select("*")
     .eq("id", user.id)
@@ -282,8 +252,6 @@ async function validarCodigo(){
 
   window.location.href="viagem.html";
 }
-
-/* ========================= */
 
 function voltarTelefone(){
   stepCode.classList.add("hidden");

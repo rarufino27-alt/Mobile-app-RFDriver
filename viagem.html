@@ -298,6 +298,9 @@ body{
 const origemBtn = document.getElementById("origemBtn");
 const destinoBtn = document.getElementById("destinoBtn");
 const btn = document.getElementById("btnAvancar");
+const modal = document.getElementById("modal");
+const lista = document.getElementById("lista");
+const busca = document.getElementById("busca");
 
 let origens = [];
 let destinos = [];
@@ -309,7 +312,10 @@ let modo = null;
 let categoriaSelecionada = null;
 let multiplicadorCategoria = 1;
 
-/* CATEGORIA */
+/* =========================
+   CATEGORIA
+========================= */
+
 document.querySelectorAll(".categoria-box").forEach(box=>{
   box.addEventListener("click",()=>{
     document.querySelectorAll(".categoria-box")
@@ -322,14 +328,114 @@ document.querySelectorAll(".categoria-box").forEach(box=>{
   });
 });
 
-/* DATA */
+/* =========================
+   DATA MANAGER
+========================= */
+
 async function carregar(){
   await DataManager.carregar();
   origens = DataManager.listarOrigens();
 }
 carregar();
 
-/* CONTINUE */
+/* =========================
+   ORIGEM
+========================= */
+
+origemBtn.onclick = ()=>{
+  modo = "origem";
+  modal.style.display="flex";
+  busca.value="";
+  render(origens);
+};
+
+/* =========================
+   DESTINO
+========================= */
+
+destinoBtn.onclick = ()=>{
+  if(!origemSelecionada){
+    alert("Selecione a origem primeiro.");
+    return;
+  }
+
+  modo = "destino";
+  modal.style.display="flex";
+  busca.value="";
+  destinos = DataManager.listarDestinos(origemSelecionada);
+  render(destinos);
+};
+
+/* =========================
+   MODAL CLOSE
+========================= */
+
+modal.onclick = e=>{
+  if(e.target===modal) modal.style.display="none";
+};
+
+/* =========================
+   RENDER LISTA
+========================= */
+
+function render(arr){
+  lista.innerHTML="";
+
+  arr.forEach(item=>{
+    const div=document.createElement("div");
+    div.textContent=item;
+
+    div.onclick=()=>{
+      if(modo==="origem"){
+        origemSelecionada=item;
+        origemBtn.textContent=item;
+        App.set("origem",item);
+
+        destinoSelecionado=null;
+        destinoBtn.textContent="Selecionar destino";
+      }else{
+        destinoSelecionado=item;
+        destinoBtn.textContent=item;
+        valorBase = DataManager.buscarValor(origemSelecionada,item);
+      }
+
+      modal.style.display="none";
+      validar();
+    };
+
+    lista.appendChild(div);
+  });
+}
+
+/* =========================
+   BUSCA
+========================= */
+
+busca.oninput=()=>{
+  const t=busca.value.toLowerCase();
+  const listaAtual = modo==="origem" ? origens : destinos;
+
+  render(
+    listaAtual.filter(i=>i.toLowerCase().includes(t))
+  );
+};
+
+/* =========================
+   VALIDAR BOTÃO
+========================= */
+
+function validar(){
+  btn.disabled = !(
+    origemSelecionada &&
+    destinoSelecionado &&
+    categoriaSelecionada
+  );
+}
+
+/* =========================
+   CONTINUAR
+========================= */
+
 btn.onclick=()=>{
 
   if(!categoriaSelecionada){
@@ -346,11 +452,12 @@ btn.onclick=()=>{
     minutosEspera: minutosEspera.value
   };
 
-  App.set("destino",destinoSelecionado);
-  App.set("valorBase",Number(valorBase));
-  App.set("taxasConfig",config);
-  App.set("categoria",categoriaSelecionada);
-  App.set("multiplicadorCategoria",multiplicadorCategoria);
+  App.set("origem", origemSelecionada);
+  App.set("destino", destinoSelecionado);
+  App.set("valorBase", Number(valorBase));
+  App.set("taxasConfig", config);
+  App.set("categoria", categoriaSelecionada);
+  App.set("multiplicadorCategoria", multiplicadorCategoria);
 
   App.go("resumo.html");
 };
@@ -359,3 +466,4 @@ btn.onclick=()=>{
 
 </body>
 </html>
+

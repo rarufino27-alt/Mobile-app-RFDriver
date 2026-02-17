@@ -77,7 +77,7 @@ input:focus{
 
 .terms{
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   gap:10px;
   margin:18px 0;
   font-size:.85rem;
@@ -87,6 +87,7 @@ input:focus{
 .terms input{
   width:18px;
   height:18px;
+  margin-top:3px;
   accent-color:#facc15;
 }
 
@@ -137,7 +138,10 @@ button.active{
   <div class="terms">
     <input type="checkbox" id="aceite">
     <label for="aceite">
-      Li e aceito os <a href="termos.html" target="_blank">Termos de Uso</a>
+      Li e concordo com os 
+      <a href="termos.html" target="_blank">Termos de Uso</a> 
+      e com a 
+      <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>.
     </label>
   </div>
 
@@ -157,33 +161,20 @@ const aceite = document.getElementById("aceite");
 const btn = document.getElementById("btnEntrar");
 const mensagem = document.getElementById("mensagem");
 
-/* ==============================
-   ATIVAR BOTÃO APÓS ACEITE
-============================== */
-
-aceite.addEventListener("change", ()=>{
-  if(aceite.checked && telefoneInput.value.length >= 10){
+function validarBotao(){
+  if(aceite.checked && telefoneInput.value.replace(/\D/g,'').length >= 10){
     btn.disabled = false;
     btn.classList.add("active");
   } else {
     btn.disabled = true;
     btn.classList.remove("active");
   }
-});
+}
 
-telefoneInput.addEventListener("input", ()=>{
-  if(aceite.checked && telefoneInput.value.length >= 10){
-    btn.disabled = false;
-    btn.classList.add("active");
-  } else {
-    btn.disabled = true;
-    btn.classList.remove("active");
-  }
-});
+aceite.addEventListener("change", validarBotao);
+telefoneInput.addEventListener("input", validarBotao);
 
-/* ==============================
-   VERIFICAR SESSÃO
-============================== */
+/* VERIFICAR SESSÃO */
 
 (async ()=>{
   const { data } = await supabaseClient.auth.getSession();
@@ -192,9 +183,7 @@ telefoneInput.addEventListener("input", ()=>{
   }
 })();
 
-/* ==============================
-   ACESSO POR TELEFONE
-============================== */
+/* ACESSO */
 
 async function acessar(){
 
@@ -207,7 +196,6 @@ async function acessar(){
     return;
   }
 
-  // Verificar se já existe
   const { data: perfil } = await supabaseClient
     .from("profiles")
     .select("*")
@@ -216,12 +204,10 @@ async function acessar(){
     .single();
 
   if(!perfil){
-    // Ir para cadastro
     window.location.href = "cadastro-passageiro.html?tel=" + telefone;
     return;
   }
 
-  // Login automático (password fake baseada no telefone)
   const senhaAutomatica = telefone;
 
   const { error } = await supabaseClient.auth.signInWithPassword({

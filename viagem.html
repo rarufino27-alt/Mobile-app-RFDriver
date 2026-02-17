@@ -2,376 +2,219 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Viagem – RF Driver</title>
+<title>RF Driver – Solicitar Viagem</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
-
-body{background:#000;color:#fff;}
-
-.container{
-  min-height:100vh;
-  padding:40px 24px 140px;
-  display:flex;
-  flex-direction:column;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
-.logo-wrapper{
-  width:110px;height:110px;margin:0 auto 25px;
-  border-radius:50%;background:#000;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 40px rgba(250,204,21,.35);
+body{
+  background:#000;
+  height:100vh;
+  overflow:hidden;
 }
 
-.logo-img{width:70%;}
+/* HEADER AMARELO */
 
-.section{margin-bottom:25px;}
-.title{font-size:1.4rem;font-weight:700;margin-bottom:8px;}
-.subtitle{font-size:.9rem;color:#a1a1aa;margin-bottom:12px;}
+.top{
+  background:#facc15;
+  padding:20px;
+  padding-bottom:80px;
+  color:#000;
+  font-weight:600;
+  font-size:1.1rem;
+}
+
+/* MAPA (placeholder elegante) */
+
+.map{
+  position:absolute;
+  top:80px;
+  left:0;
+  right:0;
+  bottom:0;
+  background:#111;
+  background-image: radial-gradient(circle at center, #1a1a1a 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity:.6;
+}
+
+/* CARD FLUTUANTE */
 
 .card{
-  background:#111;border:1px solid #1c1c1c;
-  border-radius:16px;padding:18px;
-}
-
-.select-btn{
-  padding:16px;border-radius:12px;
-  background:#0d0d0d;border:1px solid #1f2937;
-  cursor:pointer;transition:.25s ease;
-}
-
-.select-btn:hover{border-color:#facc15;}
-
-.select-btn.ativo{
-  border-color:#facc15;
-  box-shadow:0 0 12px rgba(250,204,21,.3);
-  transform:scale(1.02);
-}
-
-.taxa-box{
-  background:#111;border:1px solid #1c1c1c;
-  border-radius:14px;padding:14px;
-  display:flex;justify-content:space-between;
-  align-items:center;font-size:.85rem;
-  margin-bottom:12px;transition:.2s ease;
-}
-
-.taxa-box.ativa{
-  border-color:#facc15;
-  box-shadow:0 0 10px rgba(250,204,21,.2);
-}
-
-.cta-area{
-  position:fixed;bottom:0;left:0;right:0;
-  padding:20px;background:#000;
-}
-
-.cta-primary{
-  width:100%;padding:18px;border:none;
-  border-radius:14px;font-size:1rem;
-  font-weight:700;background:#facc15;
-  color:#000;cursor:pointer;transition:.3s ease;
-}
-
-.cta-primary:disabled{opacity:.4;}
-.cta-primary:not(:disabled){
-  box-shadow:0 0 18px rgba(250,204,21,.4);
-  transform:translateY(-2px);
-}
-
-.modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.85);
-  display:none;align-items:center;justify-content:center;
+  position:absolute;
+  top:110px;
+  left:20px;
+  right:20px;
+  background:#fff;
+  border-radius:20px;
   padding:20px;
+  box-shadow:0 20px 40px rgba(0,0,0,.4);
 }
 
-.modal-content{
-  background:#111;width:100%;max-width:400px;
-  border-radius:18px;padding:18px;
-  border:1px solid #1c1c1c;
+/* CAMPO PRINCIPAL */
+
+.search-main{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px;
+  background:#f2f2f2;
+  border-radius:14px;
+  font-weight:600;
+  font-size:1rem;
+  cursor:pointer;
+  margin-bottom:15px;
 }
 
-.modal-content input{
-  width:100%;padding:14px;border-radius:12px;
-  border:1px solid #1f2937;background:#0d0d0d;
-  color:#fff;margin-bottom:12px;
+.search-main input{
+  border:none;
+  background:none;
+  width:100%;
+  font-size:1rem;
 }
 
-.modal-content div{
-  padding:12px;border-radius:10px;cursor:pointer;
+.search-main input:focus{
+  outline:none;
 }
 
-.modal-content div:hover{background:#1a1a1a;}
+/* CAMPOS ORIGEM DESTINO */
+
+.field{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px;
+  border-bottom:1px solid #eee;
+}
+
+.field:last-child{
+  border-bottom:none;
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+}
+
+.dot.origem{
+  background:#4ade80;
+}
+
+.dot.destino{
+  background:#facc15;
+}
+
+.field input{
+  border:none;
+  flex:1;
+  font-size:.95rem;
+}
+
+.field input:focus{
+  outline:none;
+}
+
+/* BOTÃO FIXO */
+
+.bottom{
+  position:absolute;
+  bottom:20px;
+  left:20px;
+  right:20px;
+}
+
+button{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:16px;
+  background:#facc15;
+  color:#000;
+  font-weight:700;
+  font-size:1rem;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:disabled{
+  background:#333;
+  color:#777;
+}
+
+button:active{
+  transform:scale(.98);
+}
+
 </style>
 </head>
-
 <body>
 
-<div class="container">
-
-<div class="logo-wrapper">
-  <img src="./icons/logo-1024.png" class="logo-img">
+<div class="top">
+  Olá, Rafael!
 </div>
 
-  <button onclick="logout()">Sair</button>
+<div class="map"></div>
 
-<!-- ORIGEM -->
-<div class="section">
-  <div class="title">Origem</div>
-  <div class="card">
-    <div class="select-btn" id="origemBtn">Selecionar origem</div>
-  </div>
-</div>
+<div class="card">
 
-<!-- PARADA -->
-<div class="section">
-  <div class="card">
-    <div class="select-btn" id="paradaBtn">
-      + Adicionar parada (opcional)
-    </div>
-  </div>
-</div>
-
-<!-- DESTINO -->
-<div class="section">
-  <div class="title">Destino</div>
-  <div class="card">
-    <div class="select-btn" id="destinoBtn">Selecionar destino</div>
-  </div>
-</div>
-
-<!-- TAXAS -->
-<div class="section">
-  <div class="title">Adicionais</div>
-
-  <div class="taxa-box">
-    <span>Desvio rápido</span>
-    <input type="checkbox" id="desvioSimples">
+  <div class="search-main">
+    🔎
+    <input type="text" id="destino" placeholder="Para onde vamos?">
   </div>
 
-  <div class="taxa-box">
-    <span>Taxa feira</span>
-    <input type="checkbox" id="taxaFeira">
+  <div class="field">
+    <div class="dot origem"></div>
+    <input type="text" id="origem" placeholder="Local de partida">
   </div>
 
-  <div class="taxa-box">
-    <span>Animal</span>
-    <select id="animal">
-      <option value="0">Não</option>
-      <option value="4.99">Pequeno</option>
-      <option value="6.99">Médio</option>
-      <option value="9.99">Grande</option>
-    </select>
+  <div class="field">
+    <div class="dot destino"></div>
+    <input type="text" id="destino2" placeholder="Destino">
   </div>
 
 </div>
 
+<div class="bottom">
+  <button id="btnSolicitar" disabled onclick="solicitar()">Solicitar corrida</button>
 </div>
-
-<div class="cta-area">
-  <button class="cta-primary" id="btnAvancar" disabled>
-    Continuar
-  </button>
-</div>
-
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <input id="busca" placeholder="Buscar...">
-    <div id="lista" style="max-height:260px;overflow:auto"></div>
-  </div>
-</div>
-
-<script src="core/global.js"></script>
-<script src="core/datamanager.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="core/supabase.js"></script>
-
-<script>
-async function logout(){
-
-  if(typeof supabaseClient === "undefined"){
-    console.error("Supabase não carregado.");
-    return;
-  }
-
-  await supabaseClient.auth.signOut();
-  window.location.href = "index.html";
-}
-</script>
 
 <script>
 
-const origemBtn = document.getElementById("origemBtn");
-const paradaBtn = document.getElementById("paradaBtn");
-const destinoBtn = document.getElementById("destinoBtn");
-const btn = document.getElementById("btnAvancar");
-const modal = document.getElementById("modal");
-const lista = document.getElementById("lista");
-const busca = document.getElementById("busca");
-
-let origens = [];
-let destinos = [];
-let origemSelecionada = null;
-let paradaSelecionada = null;
-let destinoSelecionado = null;
-
-let valorTrecho1 = 0;
-let valorTrecho2 = 0;
-let valorBase = 0;
-let modo = null;
-
-/* ================= CARREGAR DADOS ================= */
-
-document.addEventListener("DOMContentLoaded", async ()=>{
-  await DataManager.carregar();
-  origens = DataManager.listarOrigens();
-});
-
-/* ================= ORIGEM ================= */
-
-origemBtn.onclick = ()=>{
-  modo = "origem";
-  modal.style.display="flex";
-  busca.value="";
-  render(origens);
-};
-
-/* ================= PARADA ================= */
-
-paradaBtn.onclick = ()=>{
-  if(!origemSelecionada){
-    alert("Selecione a origem primeiro.");
-    return;
-  }
-
-  modo = "parada";
-  destinos = DataManager.listarDestinos(origemSelecionada);
-  modal.style.display="flex";
-  busca.value="";
-  render(destinos);
-};
-
-/* ================= DESTINO ================= */
-
-destinoBtn.onclick = ()=>{
-  if(!origemSelecionada){
-    alert("Selecione a origem primeiro.");
-    return;
-  }
-
-  modo = "destino";
-
-  if(paradaSelecionada){
-    destinos = DataManager.listarDestinos(paradaSelecionada);
-  }else{
-    destinos = DataManager.listarDestinos(origemSelecionada);
-  }
-
-  modal.style.display="flex";
-  busca.value="";
-  render(destinos);
-};
-
-/* ================= MODAL ================= */
-
-modal.onclick = e=>{
-  if(e.target===modal) modal.style.display="none";
-};
-
-/* ================= RENDER ================= */
-
-function render(arr){
-  lista.innerHTML="";
-
-  arr.forEach(item=>{
-    const div=document.createElement("div");
-    div.textContent=item;
-
-    div.onclick=()=>{
-
-      if(modo==="origem"){
-        origemSelecionada=item;
-        origemBtn.textContent=item;
-        origemBtn.classList.add("ativo");
-        paradaSelecionada=null;
-        paradaBtn.textContent="+ Adicionar parada (opcional)";
-        destinoSelecionado=null;
-      }
-
-      else if(modo==="parada"){
-        paradaSelecionada=item;
-        paradaBtn.textContent="Parada: " + item;
-        paradaBtn.classList.add("ativo");
-        valorTrecho1 = DataManager.buscarValor(origemSelecionada,item);
-      }
-
-      else if(modo==="destino"){
-        destinoSelecionado=item;
-        destinoBtn.textContent=item;
-        destinoBtn.classList.add("ativo");
-
-        if(paradaSelecionada){
-          valorTrecho2 = DataManager.buscarValor(paradaSelecionada,item);
-          valorBase = valorTrecho1 + valorTrecho2;
-        }else{
-          valorBase = DataManager.buscarValor(origemSelecionada,item);
-        }
-      }
-
-      modal.style.display="none";
-      validar();
-    };
-
-    lista.appendChild(div);
-  });
-}
-
-/* ================= BUSCA ================= */
-
-busca.oninput=()=>{
-  const t=busca.value.toLowerCase();
-  render(destinos.filter(i=>i.toLowerCase().includes(t)));
-};
-
-/* ================= VALIDAR ================= */
+const origem = document.getElementById("origem");
+const destino = document.getElementById("destino2");
+const btn = document.getElementById("btnSolicitar");
 
 function validar(){
-  btn.disabled = !(origemSelecionada && destinoSelecionado);
+  if(origem.value.trim() !== "" && destino.value.trim() !== ""){
+    btn.disabled = false;
+  }else{
+    btn.disabled = true;
+  }
 }
 
-/* ================= TAXAS ANIMAÇÃO ================= */
+origem.addEventListener("input", validar);
+destino.addEventListener("input", validar);
 
-document.querySelectorAll(".taxa-box input").forEach(input=>{
-  input.addEventListener("change",()=>{
-    input.closest(".taxa-box")
-      .classList.toggle("ativa", input.checked);
-  });
-});
+function solicitar(){
 
-/* ================= CONTINUAR ================= */
-
-btn.onclick=()=>{
-
-  const config = {
-    desvioSimples: desvioSimples.checked,
-    taxaFeira: taxaFeira.checked,
-    animal: animal.value
+  const dados = {
+    origem: origem.value.trim(),
+    destino: destino.value.trim()
   };
 
-  App.set("origem", origemSelecionada);
-  App.set("parada", paradaSelecionada);
-  App.set("destino", destinoSelecionado);
-  App.set("valorBase", Number(valorBase));
-  App.set("taxasConfig", config);
+  localStorage.setItem("rf_corrida_temp", JSON.stringify(dados));
 
-  App.go("resumo.html");
-};
+  window.location.href = "resumo.html";
+}
 
 </script>
 
 </body>
 </html>
-
-
-

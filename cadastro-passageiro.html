@@ -41,7 +41,6 @@ button{
   cursor:pointer;
   background:#facc15;
   color:#000;
-  transition:.2s;
 }
 button:disabled{
   background:#444;
@@ -54,9 +53,7 @@ button:disabled{
   text-align:center;
   color:#ff6b6b;
 }
-.success{
-  color:#4ade80;
-}
+.success{color:#4ade80;}
 </style>
 </head>
 <body>
@@ -69,8 +66,8 @@ button:disabled{
 
   <div class="card">
 
-    <label>Telefone</label>
-    <input type="text" id="telefone" readonly>
+    <label>Telefone (+55)</label>
+    <input type="tel" id="telefone" placeholder="(81) 9 9999-9999">
 
     <label>Nome completo</label>
     <input type="text" id="nome" placeholder="Digite seu nome completo">
@@ -95,23 +92,30 @@ button:disabled{
 <script>
 
 const params = new URLSearchParams(window.location.search);
-const telefone = params.get("tel") || "";
-const telefoneLimpo = telefone.replace(/\D/g,'');
+const telefoneURL = params.get("tel");
 
-document.getElementById("telefone").value = telefone;
+const telefoneInput = document.getElementById("telefone");
 const mensagem = document.getElementById("mensagem");
 const btn = document.getElementById("btnCadastrar");
+
+// Se veio telefone pela URL, preencher
+if(telefoneURL){
+  telefoneInput.value = telefoneURL.replace("+55","");
+}
 
 async function cadastrar(){
 
   mensagem.innerText="";
   mensagem.classList.remove("success");
 
+  const telefoneLimpo = telefoneInput.value.replace(/\D/g,'');
+  const telefone = "+55" + telefoneLimpo;
+
   const nome = document.getElementById("nome").value.trim();
   const email = document.getElementById("email").value.trim().toLowerCase();
   const senha = document.getElementById("senha").value.trim();
 
-  if(!telefoneLimpo || telefoneLimpo.length < 11){
+  if(telefoneLimpo.length < 11){
     mensagem.innerText="Telefone inválido.";
     return;
   }
@@ -121,12 +125,12 @@ async function cadastrar(){
     return;
   }
 
-  if(!email || !email.includes("@")){
+  if(!email.includes("@")){
     mensagem.innerText="Informe um email válido.";
     return;
   }
 
-  if(!senha || senha.length < 6){
+  if(senha.length < 6){
     mensagem.innerText="Senha deve ter no mínimo 6 caracteres.";
     return;
   }
@@ -136,11 +140,10 @@ async function cadastrar(){
 
   try{
 
-    // 🔎 Verificar duplicidade de email ou telefone
     const { data: existente } = await supabaseClient
       .from("profiles")
       .select("id")
-      .or(`email.eq.${email},telefone.eq.+55${telefoneLimpo}`)
+      .or(`email.eq.${email},telefone.eq.${telefone}`)
       .maybeSingle();
 
     if(existente){
@@ -150,7 +153,6 @@ async function cadastrar(){
       return;
     }
 
-    // 🔐 Criar usuário no Auth
     const { data, error } = await supabaseClient.auth.signUp({
       email,
       password: senha
@@ -163,24 +165,14 @@ async function cadastrar(){
       return;
     }
 
-    // 📁 Criar perfil
-    const { error: profileError } = await supabaseClient
-      .from("profiles")
-      .insert({
-        id: data.user.id,
-        nome,
-        telefone: "+55" + telefoneLimpo,
-        email,
-        role: "passageiro",
-        status: "ativo"
-      });
-
-    if(profileError){
-      mensagem.innerText = profileError.message;
-      btn.disabled = false;
-      btn.innerText = "Finalizar Cadastro";
-      return;
-    }
+    await supabaseClient.from("profiles").insert({
+      id: data.user.id,
+      nome,
+      telefone,
+      email,
+      role: "passageiro",
+      status: "ativo"
+    });
 
     mensagem.innerText="Conta criada com sucesso!";
     mensagem.classList.add("success");
@@ -189,8 +181,8 @@ async function cadastrar(){
       window.location.href="index.html";
     },1500);
 
-  } catch(err){
-    mensagem.innerText="Erro inesperado. Tente novamente.";
+  }catch(e){
+    mensagem.innerText="Erro inesperado.";
     btn.disabled = false;
     btn.innerText = "Finalizar Cadastro";
   }

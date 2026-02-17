@@ -59,25 +59,37 @@ button:disabled{
 
 <button id="confirmar" disabled onclick="confirmar()">Confirmar rota</button>
 
+<script src="core/dataManager.js"></script>
+
 <script>
 
 let dadosJson = [];
 
 async function carregar(){
 
-  const response = await fetch("data.json");
-  dadosJson = await response.json();
+  try{
 
-  const origensUnicas = [...new Set(dadosJson.map(item => item.origem))];
+    // Aguarda o DataManager carregar todos os arquivos
+    await DataManager.carregar();
 
-  const origemSelect = document.getElementById("origemSelect");
+    dadosJson = DataManager.getRotas();
 
-  origensUnicas.forEach(o=>{
-    const option = document.createElement("option");
-    option.value = o;
-    option.textContent = o;
-    origemSelect.appendChild(option);
-  });
+    const origensUnicas = [...new Set(dadosJson.map(item => item.origem))];
+
+    const origemSelect = document.getElementById("origemSelect");
+
+    origensUnicas.forEach(o=>{
+      const option = document.createElement("option");
+      option.value = o;
+      option.textContent = o;
+      origemSelect.appendChild(option);
+    });
+
+  }catch(e){
+    alert("Erro ao carregar rotas.");
+    console.error(e);
+  }
+
 }
 
 carregar();
@@ -88,7 +100,10 @@ document.getElementById("origemSelect").addEventListener("change", function(){
   const destinoSelect = document.getElementById("destinoSelect");
 
   destinoSelect.innerHTML = "<option value=''>Selecione o destino</option>";
-  destinoSelect.disabled = false;
+  destinoSelect.disabled = true;
+  document.getElementById("confirmar").disabled = true;
+
+  if(!origem) return;
 
   const destinos = dadosJson
     .filter(item => item.origem === origem)
@@ -101,12 +116,18 @@ document.getElementById("origemSelect").addEventListener("change", function(){
     destinoSelect.appendChild(option);
   });
 
+  destinoSelect.disabled = false;
+
 });
 
 document.getElementById("destinoSelect").addEventListener("change", function(){
+
   if(this.value){
     document.getElementById("confirmar").disabled = false;
+  }else{
+    document.getElementById("confirmar").disabled = true;
   }
+
 });
 
 function confirmar(){
@@ -118,6 +139,11 @@ function confirmar(){
     item.origem === origem && item.destino === destino
   );
 
+  if(!rota){
+    alert("Rota não encontrada.");
+    return;
+  }
+
   localStorage.setItem("rf_corrida_temp", JSON.stringify({
     origem,
     destino,
@@ -125,6 +151,7 @@ function confirmar(){
   }));
 
   window.location.href = "viagem.html";
+
 }
 
 </script>

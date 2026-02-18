@@ -2,37 +2,47 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>RF – Início</title>
+<title>RF – Viagem</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<script src="core/datamanager.js"></script>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
 
 body{
   background:#000;
   height:100vh;
   overflow:hidden;
+  color:#fff;
 }
 
 /* HEADER */
-.header{
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:80px;
+.top{
   background:#facc15;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
   padding:20px;
+  padding-bottom:70px;
+  color:#000;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.top-left{
   font-weight:600;
-  z-index:20;
+  font-size:1.05rem;
 }
 
 .menu-btn{
   font-size:22px;
   cursor:pointer;
+  padding:6px 10px;
+  border-radius:8px;
 }
 
 /* MAPA */
@@ -46,212 +56,330 @@ body{
   opacity:.6;
 }
 
-/* CARD PRINCIPAL */
-.card{
+/* CENTRO */
+.center{
   position:absolute;
-  top:120px;
-  left:20px;
-  right:20px;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:90%;
+  max-width:420px;
+}
+
+.titulo-central{
+  text-align:center;
+  font-weight:700;
+  font-size:1.1rem;
+  margin-bottom:20px;
+}
+
+/* CARD BUSCA */
+.card{
   background:#fff;
+  color:#000;
   border-radius:20px;
-  padding:20px;
-  box-shadow:0 20px 40px rgba(0,0,0,.3);
-  z-index:10;
+  padding:18px;
+  box-shadow:0 20px 40px rgba(0,0,0,.4);
+}
+
+.campo{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid #eee;
   cursor:pointer;
 }
 
-.titulo{
-  font-size:1.2rem;
-  font-weight:700;
-  margin-bottom:15px;
-}
-
-.linha{
-  padding:12px 0;
-  border-bottom:1px solid #eee;
-}
-
-.linha:last-child{
+.campo:last-child{
   border-bottom:none;
 }
 
-/* HISTÓRICO */
-.historico-box{
+.campo-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+}
+
+.origem{ background:#22c55e; }
+.parada{ background:#facc15; }
+.destino{ background:#ef4444; }
+
+.plus{
+  font-size:20px;
+  font-weight:700;
+  color:#666;
+}
+
+/* BOTÃO */
+.bottom{
   position:absolute;
-  top:280px;
+  bottom:20px;
   left:20px;
   right:20px;
-  background:#fff;
-  border-radius:20px;
-  padding:15px;
-  z-index:10;
 }
 
-.hist-titulo{
+button{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:16px;
+  background:#facc15;
+  color:#000;
   font-weight:700;
-  margin-bottom:10px;
-}
-
-.hist-item{
-  font-size:.9rem;
-  margin-bottom:5px;
-}
-
-.btn-historico{
-  margin-top:8px;
-  font-size:.85rem;
-  color:#facc15;
+  font-size:1rem;
   cursor:pointer;
 }
 
-/* ================= MENU ================= */
+button:disabled{
+  background:#333;
+  color:#777;
+}
 
-.overlay{
+/* MODAL */
+.modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.5);
+  background:rgba(0,0,0,.8);
   display:none;
-  z-index:30;
-}
-
-.menu-lateral{
-  position:fixed;
-  top:0;
-  left:-280px;
-  width:260px;
-  height:100%;
-  background:#fff;
-  z-index:40;
-  transition:.3s;
-  display:flex;
-  flex-direction:column;
-}
-
-.menu-lateral.ativo{
-  left:0;
-}
-
-.menu-header{
-  background:#facc15;
+  align-items:center;
+  justify-content:center;
   padding:20px;
-  font-weight:700;
 }
 
-.menu-item{
-  padding:15px 20px;
-  border-bottom:1px solid #eee;
+.modal-content{
+  background:#111;
+  width:100%;
+  max-width:420px;
+  border-radius:18px;
+  padding:18px;
+  max-height:80vh;
+  overflow:hidden;
+}
+
+.modal-content input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  background:#1a1a1a;
+  color:#fff;
+  margin-bottom:12px;
+}
+
+.lista{
+  max-height:300px;
+  overflow-y:auto;
+}
+
+.lista div{
+  padding:12px;
+  border-radius:10px;
   cursor:pointer;
 }
 
-.menu-item:hover{
-  background:#f5f5f5;
+.lista div:hover{
+  background:#222;
 }
-
-.menu-item.sair{
-  color:#e11d48;
-  font-weight:600;
-}
-
 </style>
 </head>
 <body>
 
-<!-- OVERLAY -->
-<div id="overlay" class="overlay" onclick="fecharMenu()"></div>
-
-<!-- MENU LATERAL -->
-<div id="menu" class="menu-lateral">
-  <div class="menu-header" id="menuNome">Usuário</div>
-
-  <div class="menu-item" onclick="window.location.href='viagem.html'">Início</div>
-  <div class="menu-item" onclick="window.location.href='historico.html'">Histórico</div>
-  <div class="menu-item" onclick="window.location.href='perfil.html'">Perfil</div>
-  <div class="menu-item" onclick="window.location.href='configuracoes.html'">Configurações</div>
-  <div class="menu-item sair" onclick="logout()">Sair</div>
-</div>
-
-<!-- HEADER -->
-<div class="header">
-  <div id="saudacao">Olá!</div>
-  <div class="menu-btn" onclick="abrirMenu()">☰</div>
+<div class="top">
+  <div class="top-left">Olá!</div>
+  <div class="menu-btn">☰</div>
 </div>
 
 <div class="map"></div>
 
-<div class="card" onclick="abrirBusca()">
-  <div class="titulo">Para onde vamos hoje?</div>
-  <div class="linha">Origem</div>
-  <div class="linha">Destino</div>
+<div class="center">
+
+  <div class="titulo-central">
+    Para onde vamos hoje?
+  </div>
+
+  <div class="card">
+
+    <div class="campo" id="origemBtn">
+      <div class="campo-left">
+        <div class="dot origem"></div>
+        <div id="origemTexto">Selecionar origem</div>
+      </div>
+    </div>
+
+    <div class="campo" id="paradaBtn" style="display:none;">
+      <div class="campo-left">
+        <div class="dot parada"></div>
+        <div id="paradaTexto">Selecionar parada</div>
+      </div>
+    </div>
+
+    <div class="campo" id="destinoBtn">
+      <div class="campo-left">
+        <div class="dot destino"></div>
+        <div id="destinoTexto">Selecionar destino</div>
+      </div>
+      <div class="plus" id="addParada">＋</div>
+    </div>
+
+  </div>
+
 </div>
 
-<div class="historico-box" id="historicoBox" style="display:none;">
-  <div class="hist-titulo">Última viagem</div>
-  <div class="hist-item" id="ultimaViagem"></div>
-  <div class="btn-historico" onclick="window.location.href='historico.html'">
-    Ver histórico completo
+<div class="bottom">
+  <button id="confirmar" disabled>Confirmar rota</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <input type="text" id="busca" placeholder="Buscar local...">
+    <div class="lista" id="lista"></div>
   </div>
 </div>
 
 <script>
 
-/* ================= LOGIN ================= */
+let origem = null;
+let parada = null;
+let destino = null;
+let modo = null;
 
-const session = JSON.parse(localStorage.getItem("rf_session"));
-if(!session || !session.logado){
-  window.location.href="index.html";
+const modal = document.getElementById("modal");
+const lista = document.getElementById("lista");
+const busca = document.getElementById("busca");
+const confirmarBtn = document.getElementById("confirmar");
+
+async function init(){
+  try{
+    await DataManager.carregar();
+  }catch(e){
+    alert("Erro ao carregar rotas.");
+  }
+}
+init();
+
+function abrirModal(tipo){
+
+  if(tipo !== "origem" && !origem){
+    alert("Selecione a origem primeiro.");
+    return;
+  }
+
+  modo = tipo;
+  busca.value = "";
+  modal.style.display = "flex";
+
+  let dados = [];
+
+  if(tipo === "origem"){
+    dados = DataManager.listarOrigens();
+  }
+
+  if(tipo === "parada"){
+    dados = DataManager.listarDestinos(origem)
+      .filter(p => DataManager.listarDestinos(p).length > 0);
+  }
+
+  if(tipo === "destino"){
+    dados = parada
+      ? DataManager.listarDestinos(parada)
+      : DataManager.listarDestinos(origem);
+  }
+
+  renderLista(dados);
 }
 
-/* ================= ZERAR ROTA ================= */
+function renderLista(array){
+  lista.innerHTML = "";
 
-localStorage.removeItem("rf_corrida_temp");
-
-/* ================= SAUDAÇÃO ================= */
-
-const nomeUsuario = localStorage.getItem("rf_usuario_nome") || "Usuário";
-
-document.getElementById("saudacao").innerText = "Olá, " + nomeUsuario + "!";
-document.getElementById("menuNome").innerText = nomeUsuario;
-
-/* ================= MENU ================= */
-
-function abrirMenu(){
-  document.getElementById("menu").classList.add("ativo");
-  document.getElementById("overlay").style.display="block";
+  array.forEach(item=>{
+    const div = document.createElement("div");
+    div.innerText = item;
+    div.onclick = ()=>{
+      selecionar(item);
+      modal.style.display = "none";
+    };
+    lista.appendChild(div);
+  });
 }
 
-function fecharMenu(){
-  document.getElementById("menu").classList.remove("ativo");
-  document.getElementById("overlay").style.display="none";
+function selecionar(valor){
+
+  if(modo === "origem"){
+    origem = valor;
+    parada = null;
+    destino = null;
+    document.getElementById("origemTexto").innerText = valor;
+    document.getElementById("paradaTexto").innerText = "Selecionar parada";
+    document.getElementById("destinoTexto").innerText = "Selecionar destino";
+    document.getElementById("paradaBtn").style.display="none";
+  }
+
+  if(modo === "parada"){
+    parada = valor;
+    destino = null;
+    document.getElementById("paradaTexto").innerText = valor;
+  }
+
+  if(modo === "destino"){
+    destino = valor;
+    document.getElementById("destinoTexto").innerText = valor;
+  }
+
+  validar();
 }
 
-function logout(){
-  localStorage.removeItem("rf_session");
-  window.location.href="index.html";
+function validar(){
+  confirmarBtn.disabled = !(origem && destino);
 }
 
-/* ================= BUSCA ================= */
+document.getElementById("origemBtn").onclick = ()=>abrirModal("origem");
+document.getElementById("paradaBtn").onclick = ()=>abrirModal("parada");
+document.getElementById("destinoBtn").onclick = ()=>abrirModal("destino");
 
-function abrirBusca(){
-  window.location.href="buscar.html";
-}
+document.getElementById("addParada").onclick = (e)=>{
+  e.stopPropagation();
+  if(!origem){
+    alert("Selecione a origem primeiro.");
+    return;
+  }
+  document.getElementById("paradaBtn").style.display="flex";
+};
 
-/* ================= HISTÓRICO ================= */
+modal.onclick = e=>{
+  if(e.target === modal){
+    modal.style.display="none";
+  }
+};
 
-function carregarUltimaViagem(){
+confirmarBtn.onclick = ()=>{
 
-  const historico = JSON.parse(localStorage.getItem("rf_historico")) || [];
+  let valorTotal = 0;
 
-  if(historico.length === 0) return;
+  if(!parada){
+    valorTotal = DataManager.buscarValor(origem, destino) || 0;
+  }else{
+    const parte1 = DataManager.buscarValor(origem, parada) || 0;
+    const parte2 = DataManager.buscarValor(parada, destino) || 0;
+    valorTotal = parte1 + parte2;
+  }
 
-  const ultima = historico[0];
+  localStorage.setItem("rf_corrida_temp", JSON.stringify({
+    origem,
+    parada,
+    destino,
+    valor: valorTotal
+  }));
 
-  document.getElementById("ultimaViagem").innerText =
-    `${ultima.origem} → ${ultima.destino} • R$ ${ultima.valor}`;
-
-  document.getElementById("historicoBox").style.display="block";
-}
-
-carregarUltimaViagem();
+  window.location.href = "selecionar.html";
+};
 
 </script>
 

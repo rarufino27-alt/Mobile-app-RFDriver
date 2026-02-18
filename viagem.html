@@ -50,6 +50,37 @@ body{
   opacity:.6;
 }
 
+/* BLOCO SUPERIOR ESTILO 99 */
+.busca-box{
+  position:absolute;
+  top:90px;
+  left:20px;
+  right:20px;
+  background:#fff;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+
+.buscar-btn{
+  background:#f2f2f2;
+  padding:14px;
+  border-radius:14px;
+  font-weight:600;
+  margin-bottom:12px;
+  cursor:pointer;
+}
+
+.rota-info{
+  font-size:.85rem;
+}
+
+.rota-item{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:6px;
+}
+
 /* MENU */
 .menu-overlay{
   position:fixed;
@@ -125,7 +156,7 @@ body{
   bottom:0;
   left:0;
   right:0;
-  height:65%;
+  height:55%;
   background:#fff;
   border-top-left-radius:25px;
   border-top-right-radius:25px;
@@ -142,29 +173,16 @@ body{
   margin:10px auto;
 }
 
-/* ROTA */
-.rota-area{
-  padding:0 20px 15px;
-  border-bottom:1px solid #eee;
-}
-
-.rota-titulo{
+.sheet-title{
+  font-size:1.1rem;
   font-weight:700;
-  margin-bottom:10px;
+  padding:0 20px 10px;
 }
 
-.rota-item{
-  display:flex;
-  justify-content:space-between;
-  font-size:.9rem;
-  margin-bottom:6px;
-}
-
-/* CATEGORIAS */
 .categorias-container{
   flex:1;
   overflow-y:auto;
-  padding:10px 20px;
+  padding:0 20px;
 }
 
 .categoria-card{
@@ -210,7 +228,6 @@ body{
   font-weight:600;
 }
 
-/* BOTTOM BAR */
 .bottom-bar{
   display:flex;
   justify-content:space-between;
@@ -245,12 +262,8 @@ body{
     <div class="avatar" id="avatarMenu"></div>
     <div class="menu-nome" id="menuNome">Usuário</div>
   </div>
-
   <div class="menu-lista">
     <div class="menu-item" onclick="window.location.href='viagem.html'">🚕 Atividade</div>
-    <div class="menu-item" onclick="window.location.href='mensagens.html'">📩 Mensagens</div>
-    <div class="menu-item" onclick="window.location.href='configuracoes.html'">⚙️ Configurações</div>
-    <div class="menu-item" onclick="window.location.href='convite.html'">🎁 Convide Amigos</div>
     <div class="menu-item sair" onclick="logout()">🚪 Sair</div>
   </div>
 </div>
@@ -264,22 +277,21 @@ body{
 <!-- MAPA -->
 <div class="map"></div>
 
+<!-- BLOCO SUPERIOR -->
+<div class="busca-box">
+  <div class="buscar-btn" onclick="window.location.href='buscar.html'">
+    🔎 Para onde vamos?
+  </div>
+  <div id="rotaInfo" class="rota-info"></div>
+</div>
+
 <!-- BOTTOM SHEET -->
 <div class="bottom-sheet">
   <div class="sheet-handle"></div>
-
-  <!-- ROTA -->
-  <div class="rota-area">
-    <div class="rota-titulo">Para onde vamos?</div>
-    <div id="rotaInfo"></div>
-  </div>
-
-  <!-- CATEGORIAS -->
+  <div class="sheet-title">Categoria de viagem</div>
   <div class="categorias-container">
     <div id="categoriasBox"></div>
   </div>
-
-  <!-- TOTAL -->
   <div class="bottom-bar">
     <div class="valor-total" id="valorTotal">R$ 0,00</div>
     <button id="btnSolicitar" onclick="solicitar()">Solicitar</button>
@@ -290,13 +302,6 @@ body{
 
 if(localStorage.getItem("rf_logged") !== "true"){
   window.location.href = "index.html";
-}
-
-function perfilCompleto(){
-  return localStorage.getItem("rf_usuario_nome")
-    && localStorage.getItem("rf_usuario_cpf")
-    && localStorage.getItem("rf_usuario_nascimento")
-    && localStorage.getItem("rf_usuario_telefone");
 }
 
 function abrirMenu(){
@@ -311,7 +316,7 @@ function fecharMenu(){
 
 function logout(){
   localStorage.clear();
-  window.location.href = "index.html";
+  window.location.href="index.html";
 }
 
 function carregarUsuario(){
@@ -321,12 +326,6 @@ function carregarUsuario(){
 }
 
 function carregarRota(){
-
-  if(!perfilCompleto()){
-    window.location.href = "perfil.html";
-    return;
-  }
-
   const corrida = localStorage.getItem("rf_corrida_temp");
   if(!corrida) return;
 
@@ -334,27 +333,14 @@ function carregarRota(){
   const { origem, parada, destino, valor } = dados;
 
   let html = `
-    <div class="rota-item">
-      <span>Origem</span>
-      <span>${origem}</span>
-    </div>
+    <div class="rota-item"><span>Origem</span><span>${origem}</span></div>
   `;
 
   if(parada){
-    html += `
-      <div class="rota-item">
-        <span>Parada</span>
-        <span>${parada}</span>
-      </div>
-    `;
+    html += `<div class="rota-item"><span>Parada</span><span>${parada}</span></div>`;
   }
 
-  html += `
-    <div class="rota-item">
-      <span>Destino</span>
-      <span>${destino}</span>
-    </div>
-  `;
+  html += `<div class="rota-item"><span>Destino</span><span>${destino}</span></div>`;
 
   document.getElementById("rotaInfo").innerHTML = html;
 
@@ -376,18 +362,18 @@ function renderCategorias(valorBase){
   const box = document.getElementById("categoriasBox");
   const valorTotal = document.getElementById("valorTotal");
 
-  box.innerHTML = "";
-  let selecionada = 0;
+  box.innerHTML="";
+  let selecionada=0;
 
   categorias.forEach((cat,index)=>{
 
     const valor = valorBase * cat.mult * dinamico;
 
-    const card = document.createElement("div");
-    card.className = "categoria-card";
-    if(index === 0) card.classList.add("ativa");
+    const card=document.createElement("div");
+    card.className="categoria-card";
+    if(index===0) card.classList.add("ativa");
 
-    card.innerHTML = `
+    card.innerHTML=`
       <div class="cat-left">
         <div class="cat-icon">${cat.icone}</div>
         <div class="cat-info">
@@ -398,11 +384,11 @@ function renderCategorias(valorBase){
       <div class="cat-preco">R$ ${valor.toFixed(2)}</div>
     `;
 
-    card.onclick = ()=>{
+    card.onclick=()=>{
       document.querySelectorAll(".categoria-card")
-        .forEach(c=>c.classList.remove("ativa"));
+      .forEach(c=>c.classList.remove("ativa"));
       card.classList.add("ativa");
-      selecionada = index;
+      selecionada=index;
       atualizarTotal();
     };
 
@@ -410,19 +396,18 @@ function renderCategorias(valorBase){
   });
 
   function atualizarTotal(){
-    const cat = categorias[selecionada];
-    const valor = valorBase * cat.mult * dinamico;
-    valorTotal.innerText = "R$ " + valor.toFixed(2);
-
-    localStorage.setItem("rf_categoria", cat.nome);
-    localStorage.setItem("rf_valor_final", valor);
+    const cat=categorias[selecionada];
+    const valor=valorBase*cat.mult*dinamico;
+    valorTotal.innerText="R$ "+valor.toFixed(2);
+    localStorage.setItem("rf_categoria",cat.nome);
+    localStorage.setItem("rf_valor_final",valor);
   }
 
   atualizarTotal();
 }
 
 function solicitar(){
-  window.location.href = "resumo.html";
+  window.location.href="resumo.html";
 }
 
 carregarUsuario();

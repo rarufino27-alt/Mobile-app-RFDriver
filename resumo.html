@@ -22,7 +22,7 @@ body{
   overflow:hidden;
 }
 
-/* ================= TOPO ================= */
+/* ===== TOPO ===== */
 
 .top{
   background:#facc15;
@@ -37,11 +37,11 @@ body{
 }
 
 .titulo{
-  margin-top:5px;
   font-weight:700;
+  margin-top:5px;
 }
 
-/* ================= CONTEÚDO ================= */
+/* ===== CONTEÚDO ===== */
 
 .content{
   position:absolute;
@@ -50,43 +50,81 @@ body{
   transform:translateX(-50%);
   width:90%;
   max-width:420px;
-  bottom:100px;
+  bottom:110px;
   overflow-y:auto;
 }
 
-/* ================= BLOCO ================= */
+/* ===== BLOCOS ===== */
 
 .bloco{
   background:#fff;
-  border-radius:16px;
-  padding:15px;
-  margin-bottom:15px;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:18px;
   box-shadow:0 6px 15px rgba(0,0,0,.06);
+  animation:fadeUp .4s ease;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
 }
 
 .bloco h3{
-  margin-bottom:10px;
+  margin-bottom:12px;
   font-size:.95rem;
 }
 
-/* ================= OPÇÕES ================= */
+/* ===== SWITCH ===== */
 
-.opcao{
+.switch{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   padding:10px 0;
-  border-bottom:1px solid #eee;
+}
+
+.toggle{
+  width:45px;
+  height:24px;
+  background:#ddd;
+  border-radius:20px;
+  position:relative;
   cursor:pointer;
+  transition:.3s;
 }
 
-.opcao:last-child{
-  border:none;
+.toggle::after{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  background:#fff;
+  border-radius:50%;
+  top:3px;
+  left:3px;
+  transition:.3s;
 }
 
-.opcao.ativa{
-  font-weight:600;
-  color:#000;
+.toggle.ativo{
+  background:#facc15;
 }
 
-/* ================= DETALHAMENTO ================= */
+.toggle.ativo::after{
+  left:24px;
+}
+
+/* ===== SELECT ANIMAL ===== */
+
+select{
+  width:100%;
+  padding:10px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  margin-top:8px;
+}
+
+/* ===== DETALHAMENTO ===== */
 
 .linha{
   display:flex;
@@ -104,7 +142,17 @@ body{
   font-weight:700;
 }
 
-/* ================= BOTÃO ================= */
+.total-anim{
+  animation:pulse .3s ease;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.08);}
+  100%{transform:scale(1);}
+}
+
+/* ===== BOTÃO ===== */
 
 .bottom-bar{
   position:absolute;
@@ -135,29 +183,33 @@ button{
 
 <div class="content">
 
+  <!-- ADICIONAIS -->
   <div class="bloco">
     <h3>Adicionais</h3>
 
-    <div class="opcao" onclick="toggleExtra('mercado', Taxas.feira)">
-      Saída de mercado
+    <div class="switch">
+      <span>Saída de mercado (+ R$ ${Taxas.feira.toFixed(2)})</span>
+      <div class="toggle" id="mercadoToggle" onclick="toggleExtra('mercado')"></div>
     </div>
 
-    <div class="opcao" onclick="toggleExtra('praia', Taxas.voltaPraia)">
-      Saída de praia
+    <div class="switch">
+      <span>Saída de praia (+ R$ ${Taxas.voltaPraia.toFixed(2)})</span>
+      <div class="toggle" id="praiaToggle" onclick="toggleExtra('praia')"></div>
     </div>
 
-    <div class="opcao" onclick="toggleAnimal()">
-      Transporte animal
+    <div style="margin-top:10px;">
+      <label>Transporte animal</label>
+      <select id="animalSelect" onchange="selectAnimal()">
+        <option value="nao">Não</option>
+        <option value="pequeno">Pequeno (+ R$ ${Taxas.animal.pequeno.toFixed(2)})</option>
+        <option value="medio">Médio (+ R$ ${Taxas.animal.medio.toFixed(2)})</option>
+        <option value="grande">Grande (+ R$ ${Taxas.animal.grande.toFixed(2)})</option>
+      </select>
     </div>
 
-    <div id="animalOpcoes" style="display:none; margin-top:10px;">
-      <div class="opcao" onclick="selectAnimal('pequeno')">Pequeno</div>
-      <div class="opcao" onclick="selectAnimal('medio')">Médio</div>
-      <div class="opcao" onclick="selectAnimal('grande')">Grande</div>
-      <div class="opcao" onclick="selectAnimal('longa')">Longa</div>
-    </div>
   </div>
 
+  <!-- DETALHAMENTO -->
   <div class="bloco">
     <h3>Detalhamento</h3>
     <div id="detalhamento"></div>
@@ -172,87 +224,107 @@ button{
 
 <script>
 
-const valorSelecionado = Number(localStorage.getItem("rf_valor_final")) || 0;
-let extras = 0;
-let animalSelecionado = null;
+const baseSelecionado = Number(localStorage.getItem("rf_valor_final")) || 0;
 
-function toggleExtra(tipo, valor){
-  const el = event.target;
-  el.classList.toggle("ativa");
+let extras = {
+  mercado: false,
+  praia: false,
+  animal: "nao"
+};
 
-  if(el.classList.contains("ativa")){
-    extras += valor;
-  }else{
-    extras -= valor;
-  }
-
+function toggleExtra(tipo){
+  extras[tipo] = !extras[tipo];
+  document.getElementById(tipo+"Toggle").classList.toggle("ativo");
   atualizarResumo();
 }
 
-function toggleAnimal(){
-  const box = document.getElementById("animalOpcoes");
-  box.style.display = box.style.display === "none" ? "block" : "none";
-}
-
-function selectAnimal(tipo){
-  animalSelecionado = tipo;
-  extras += Taxas.animal[tipo];
+function selectAnimal(){
+  extras.animal = document.getElementById("animalSelect").value;
   atualizarResumo();
 }
 
 function atualizarResumo(){
 
-  let base = valorSelecionado;
-  let total = base + extras;
+  let total = baseSelecionado;
+  let detalhamento = "";
 
-  const detalhamento = document.getElementById("detalhamento");
-  detalhamento.innerHTML = "";
-
-  detalhamento.innerHTML += `
+  detalhamento += `
     <div class="linha">
-      <span>Valor da viagem</span>
-      <span>R$ ${base.toFixed(2)}</span>
+      <span>Valor categoria</span>
+      <span>R$ ${baseSelecionado.toFixed(2)}</span>
     </div>
   `;
 
+  /* DINÂMICO */
   if(Dinamico.ativo){
-    detalhamento.innerHTML += `
+    const valorSemDinamico = baseSelecionado / Dinamico.multiplicador;
+    detalhamento += `
       <div class="linha">
-        <span>Tarifa dinâmica (${Dinamico.motivo})</span>
-        <span>Aplicada</span>
+        <span>Tarifa dinâmica (${Dinamico.multiplicador}x)</span>
+        <span>+ R$ ${(baseSelecionado - valorSemDinamico).toFixed(2)}</span>
       </div>
     `;
   }
 
+  /* NOTURNO */
   const agora = new Date();
   const hora = agora.getHours() + (agora.getMinutes()/60);
   if(hora >= 22.5 || hora <= 5){
-    detalhamento.innerHTML += `
+    detalhamento += `
       <div class="linha">
         <span>Adicional noturno</span>
-        <span>Incluído</span>
+        <span>+ R$ ${Taxas.noturno.valorFixo.toFixed(2)}</span>
       </div>
     `;
   }
 
-  if(extras > 0){
-    detalhamento.innerHTML += `
+  /* MERCADO */
+  if(extras.mercado){
+    total += Taxas.feira;
+    detalhamento += `
       <div class="linha">
-        <span>Extras</span>
-        <span>R$ ${extras.toFixed(2)}</span>
+        <span>Saída de mercado</span>
+        <span>+ R$ ${Taxas.feira.toFixed(2)}</span>
       </div>
     `;
   }
 
-  detalhamento.innerHTML += `
+  /* PRAIA */
+  if(extras.praia){
+    total += Taxas.voltaPraia;
+    detalhamento += `
+      <div class="linha">
+        <span>Saída de praia</span>
+        <span>+ R$ ${Taxas.voltaPraia.toFixed(2)}</span>
+      </div>
+    `;
+  }
+
+  /* ANIMAL */
+  if(extras.animal !== "nao"){
+    const valorAnimal = Taxas.animal[extras.animal];
+    total += valorAnimal;
+    detalhamento += `
+      <div class="linha">
+        <span>Animal (${extras.animal})</span>
+        <span>+ R$ ${valorAnimal.toFixed(2)}</span>
+      </div>
+    `;
+  }
+
+  detalhamento += `
     <div class="linha total">
       <span>Total</span>
       <span>R$ ${total.toFixed(2)}</span>
     </div>
   `;
 
-  document.getElementById("totalFinal").innerText =
-    "R$ " + total.toFixed(2);
+  document.getElementById("detalhamento").innerHTML = detalhamento;
+
+  const totalEl = document.getElementById("totalFinal");
+  totalEl.classList.add("total-anim");
+  setTimeout(()=>totalEl.classList.remove("total-anim"),300);
+  totalEl.innerText = "R$ " + total.toFixed(2);
 
   localStorage.setItem("rf_total_final", total);
 }

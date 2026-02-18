@@ -2,87 +2,13 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Resumo – RF DRIVER</title>
+<title>RF – Resumo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="core/global.js"></script>
 <script src="core/dinamico.js"></script>
+<script src="core/taxas.js"></script>
 
 <style>
-
-/* =============================
-   TARIFA DINÂMICA
-============================= */
-
-.preco-normal{
-  text-decoration:line-through;
-  font-size:.85rem;
-  color:#777;
-  display:block;
-}
-
-.preco-dinamico{
-  color:#facc15;
-  font-size:1.2rem;
-  font-weight:800;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
-.raio{
-  animation:pulse 1s infinite alternate;
-}
-
-@keyframes pulse{
-  from{transform:scale(1);}
-  to{transform:scale(1.2);}
-}
-
-/* MICRO ANIMAÇÃO */
-
-@keyframes selectPop{
-  0%{transform:scale(1);}
-  50%{transform:scale(1.05);}
-  100%{transform:scale(1.02);}
-}
-
-/* LOADER */
-
-.loading-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(4px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-  opacity:0;
-  pointer-events:none;
-  transition:.3s;
-}
-
-.loading-overlay.active{
-  opacity:1;
-  pointer-events:all;
-}
-
-.loader{
-  width:45px;
-  height:45px;
-  border:4px solid #333;
-  border-top:4px solid #facc15;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-  to{ transform:rotate(360deg); }
-}
-
-/* GERAL */
-
 *{
   margin:0;
   padding:0;
@@ -91,289 +17,253 @@
 }
 
 body{
-  background:#000;
-  color:#fff;
+  background:#fff;
+  height:100vh;
+  overflow:hidden;
 }
 
-.container{
-  padding:20px 16px 140px;
-  max-width:480px;
-  margin:0 auto;
+/* ================= TOPO ================= */
+
+.top{
+  background:#facc15;
+  padding:25px 20px 100px 20px;
+  border-bottom-left-radius:40px;
+  border-bottom-right-radius:40px;
 }
 
-.header{
-  margin-bottom:20px;
-}
-
-.header h1{
+.logo{
+  font-weight:900;
   font-size:1.4rem;
+}
+
+.titulo{
+  margin-top:5px;
   font-weight:700;
 }
 
-/* CATEGORIAS */
+/* ================= CONTEÚDO ================= */
 
-.categoria-card{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px;
+.content{
+  position:absolute;
+  top:130px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:420px;
+  bottom:100px;
+  overflow-y:auto;
+}
+
+/* ================= BLOCO ================= */
+
+.bloco{
+  background:#fff;
   border-radius:16px;
-  background:#0d0d0d;
-  border:2px solid transparent;
-  margin-bottom:12px;
-  cursor:pointer;
-  transition:all .25s ease;
+  padding:15px;
+  margin-bottom:15px;
+  box-shadow:0 6px 15px rgba(0,0,0,.06);
 }
 
-.categoria-card.active{
-  border-color:#facc15;
-  box-shadow:0 0 20px rgba(250,204,21,.25);
-  animation:selectPop .25s ease;
-  transform:scale(1.02);
-}
-
-.categoria-left{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-
-.categoria-left img{
-  width:55px;
-}
-
-.categoria-info h3{
-  font-size:1rem;
-  font-weight:700;
-}
-
-.categoria-info span{
-  font-size:.8rem;
-  color:#a1a1aa;
-}
-
-.categoria-preco{
-  text-align:right;
-}
-
-/* ROTA */
-
-.card{
-  background:#111;
-  border-radius:16px;
-  padding:16px;
-  border:1px solid #1c1c1c;
-  margin-top:18px;
-}
-
-.section-title{
-  font-size:.85rem;
-  color:#a1a1aa;
+.bloco h3{
   margin-bottom:10px;
+  font-size:.95rem;
 }
 
-.route span{
-  display:block;
-  margin-bottom:6px;
+/* ================= OPÇÕES ================= */
+
+.opcao{
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
 }
 
-/* DETALHES */
+.opcao:last-child{
+  border:none;
+}
 
-.details div{
+.opcao.ativa{
+  font-weight:600;
+  color:#000;
+}
+
+/* ================= DETALHAMENTO ================= */
+
+.linha{
   display:flex;
   justify-content:space-between;
   margin-bottom:6px;
-  font-size:.9rem;
+  font-size:.85rem;
 }
 
-/* TOTAL */
-
-.total-box{
-  background:#151515;
-  border:1px solid #facc15;
-  border-radius:18px;
-  padding:20px;
-  text-align:center;
-  margin-top:20px;
+.linha span:first-child{
+  color:#777;
 }
 
 .total{
-  font-size:2rem;
-  font-weight:800;
-  color:#facc15;
-}
-
-/* CTA */
-
-.cta-area{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  padding:20px;
-  background:#000;
-}
-
-.cta-primary{
-  width:100%;
-  padding:18px;
-  border:none;
-  border-radius:14px;
-  font-size:1.05rem;
+  font-size:1.2rem;
   font-weight:700;
+}
+
+/* ================= BOTÃO ================= */
+
+.bottom-bar{
+  position:absolute;
+  bottom:25px;
+  left:20px;
+  right:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+button{
+  padding:12px 28px;
+  border:none;
+  border-radius:30px;
   background:#facc15;
-  color:#000;
+  font-weight:700;
   cursor:pointer;
 }
-
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="top">
+  <div class="logo">RF</div>
+  <div class="titulo">Resumo</div>
+</div>
 
-  <div class="header">
-    <h1>Escolha sua categoria</h1>
+<div class="content">
+
+  <div class="bloco">
+    <h3>Adicionais</h3>
+
+    <div class="opcao" onclick="toggleExtra('mercado', Taxas.feira)">
+      Saída de mercado
+    </div>
+
+    <div class="opcao" onclick="toggleExtra('praia', Taxas.voltaPraia)">
+      Saída de praia
+    </div>
+
+    <div class="opcao" onclick="toggleAnimal()">
+      Transporte animal
+    </div>
+
+    <div id="animalOpcoes" style="display:none; margin-top:10px;">
+      <div class="opcao" onclick="selectAnimal('pequeno')">Pequeno</div>
+      <div class="opcao" onclick="selectAnimal('medio')">Médio</div>
+      <div class="opcao" onclick="selectAnimal('grande')">Grande</div>
+      <div class="opcao" onclick="selectAnimal('longa')">Longa</div>
+    </div>
   </div>
 
-  <div id="listaCategorias"></div>
-
-  <div class="card route">
-    <div class="section-title">Itinerário</div>
-    <span>📍 Origem: <strong id="origemTxt"></strong></span>
-    <span>🏁 Destino: <strong id="destinoTxt"></strong></span>
-  </div>
-
-  <div class="card">
-    <div class="section-title">Detalhamento</div>
-    <div class="details" id="detalhamento"></div>
-  </div>
-
-  <div class="total-box">
-    <div class="total" id="total">R$ 0,00</div>
+  <div class="bloco">
+    <h3>Detalhamento</h3>
+    <div id="detalhamento"></div>
   </div>
 
 </div>
 
-<div class="cta-area">
-  <button class="cta-primary" onclick="solicitar()">
-    Solicitar Viagem
-  </button>
+<div class="bottom-bar">
+  <div class="total" id="totalFinal">R$ 0,00</div>
+  <button onclick="finalizar()">Solicitar</button>
 </div>
 
 <script>
 
-/* BASE */
+const valorSelecionado = Number(localStorage.getItem("rf_valor_final")) || 0;
+let extras = 0;
+let animalSelecionado = null;
 
-const origem = App.get("origem");
-const destino = App.get("destino");
-const valorBase = Number(App.get("valorBase") || 0);
-const config = App.get("taxasConfig") || {};
+function toggleExtra(tipo, valor){
+  const el = event.target;
+  el.classList.toggle("ativa");
 
-document.getElementById("origemTxt").innerText = origem || "-";
-document.getElementById("destinoTxt").innerText = destino || "-";
+  if(el.classList.contains("ativa")){
+    extras += valor;
+  }else{
+    extras -= valor;
+  }
 
-let totalBase = valorBase;
+  atualizarResumo();
+}
 
-if(config.desvioSimples) totalBase += 5;
-if(config.taxaFeira) totalBase += 5;
-if(Number(config.animal) > 0) totalBase += Number(config.animal);
+function toggleAnimal(){
+  const box = document.getElementById("animalOpcoes");
+  box.style.display = box.style.display === "none" ? "block" : "none";
+}
 
-/* =============================
-   CATEGORIAS RF
-============================= */
+function selectAnimal(tipo){
+  animalSelecionado = tipo;
+  extras += Taxas.animal[tipo];
+  atualizarResumo();
+}
 
-const categorias = [
-  { nome:"Disponível Agora", multi:1.10, desc:"Prioridade na corrida", img:"./icons/hatch.png" },
-  { nome:"RF Basic", multi:1.00, desc:"Mais econômico", img:"./icons/hatch.png" },
-  { nome:"RF Confort", multi:1.15, desc:"Mais conforto", img:"./icons/sedan.png" },
-  { nome:"RF Premium", multi:1.25, desc:"Mais espaço e status", img:"./icons/suv.png" },
-  { nome:"RF 6 Lugares", multi:1.50, desc:"Ideal para grupos", img:"./icons/van.png" },
-  { nome:"RF Envios", multi:1.00, desc:"Entrega rápida", img:"./icons/envio.png" }
-];
+function atualizarResumo(){
 
-let categoriaSelecionada = categorias[0].nome;
+  let base = valorSelecionado;
+  let total = base + extras;
 
-const lista = document.getElementById("listaCategorias");
+  const detalhamento = document.getElementById("detalhamento");
+  detalhamento.innerHTML = "";
 
-lista.innerHTML = categorias.map((cat,i)=>{
+  detalhamento.innerHTML += `
+    <div class="linha">
+      <span>Valor da viagem</span>
+      <span>R$ ${base.toFixed(2)}</span>
+    </div>
+  `;
 
-  const valorNormal = totalBase * cat.multi;
-  let valorFinal = valorNormal;
-
-  let precoHTML = `R$ ${valorNormal.toFixed(2)}`;
-
-  if(typeof Dinamico !== "undefined" && Dinamico.ativo){
-    valorFinal = valorNormal * Dinamico.multiplicador;
-
-    precoHTML = `
-      <span class="preco-normal">R$ ${valorNormal.toFixed(2)}</span>
-      <span class="preco-dinamico"><span class="raio">⚡</span>R$ ${valorFinal.toFixed(2)}</span>
+  if(Dinamico.ativo){
+    detalhamento.innerHTML += `
+      <div class="linha">
+        <span>Tarifa dinâmica (${Dinamico.motivo})</span>
+        <span>Aplicada</span>
+      </div>
     `;
   }
 
-  return `
-    <div class="categoria-card ${i===0 ? 'active':''}"
-         data-nome="${cat.nome}"
-         data-multi="${cat.multi}">
-      <div class="categoria-left">
-        <img src="${cat.img}">
-        <div class="categoria-info">
-          <h3>${cat.nome}</h3>
-          <span>${cat.desc}</span>
-        </div>
+  const agora = new Date();
+  const hora = agora.getHours() + (agora.getMinutes()/60);
+  if(hora >= 22.5 || hora <= 5){
+    detalhamento.innerHTML += `
+      <div class="linha">
+        <span>Adicional noturno</span>
+        <span>Incluído</span>
       </div>
-      <div class="categoria-preco">${precoHTML}</div>
-    </div>
-  `;
-}).join("");
-
-document.querySelectorAll(".categoria-card").forEach(card=>{
-  card.addEventListener("click",()=>{
-    document.querySelectorAll(".categoria-card")
-      .forEach(c=>c.classList.remove("active"));
-
-    card.classList.add("active");
-    categoriaSelecionada = card.dataset.nome;
-    atualizar();
-  });
-});
-
-function atualizar(){
-
-  const cat = categorias.find(c=>c.nome===categoriaSelecionada);
-  let valor = totalBase * cat.multi;
-
-  if(typeof Dinamico !== "undefined" && Dinamico.ativo){
-    valor *= Dinamico.multiplicador;
+    `;
   }
 
-  document.getElementById("detalhamento").innerHTML = `
-    <div>
-      <span>Categoria</span>
-      <strong>${categoriaSelecionada}</strong>
+  if(extras > 0){
+    detalhamento.innerHTML += `
+      <div class="linha">
+        <span>Extras</span>
+        <span>R$ ${extras.toFixed(2)}</span>
+      </div>
+    `;
+  }
+
+  detalhamento.innerHTML += `
+    <div class="linha total">
+      <span>Total</span>
+      <span>R$ ${total.toFixed(2)}</span>
     </div>
   `;
 
-  document.getElementById("total").innerText = `R$ ${valor.toFixed(2)}`;
+  document.getElementById("totalFinal").innerText =
+    "R$ " + total.toFixed(2);
 
-  App.set("categoria", categoriaSelecionada);
-  App.set("total", valor);
+  localStorage.setItem("rf_total_final", total);
 }
 
-atualizar();
-
-function solicitar(){
-  document.getElementById("loadingOverlay").classList.add("active");
-  setTimeout(()=>{ App.go("procurando.html"); },900);
+function finalizar(){
+  window.location.href = "procurando.html";
 }
+
+atualizarResumo();
 
 </script>
-
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="loader"></div>
-</div>
 
 </body>
 </html>

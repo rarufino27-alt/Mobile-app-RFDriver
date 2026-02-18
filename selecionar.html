@@ -23,16 +23,14 @@ body{
   overflow:hidden;
 }
 
-/* ================= HEADER PADRÃO ================= */
+/* ================= HEADER ================= */
 
 .top{
   background:#facc15;
-  padding:25px 20px 90px 20px;
+  padding:25px 20px 120px 20px;
   border-bottom-left-radius:40px;
   border-bottom-right-radius:40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  position:relative;
 }
 
 .logo{
@@ -42,74 +40,34 @@ body{
   animation:fadeIn 1s ease forwards;
 }
 
+.titulo-topo{
+  position:absolute;
+  bottom:70px;
+  left:20px;
+  font-weight:700;
+  font-size:1rem;
+}
+
 @keyframes fadeIn{
   from{opacity:0; transform:translateY(-10px);}
   to{opacity:1; transform:translateY(0);}
 }
 
-.menu-btn{
-  font-size:22px;
-  cursor:pointer;
-}
+/* ================= ROTA FIXA ================= */
 
-/* ================= MENU ================= */
-
-.menu-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  display:none;
-  z-index:99;
-}
-
-.menu{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100%;
-  background:#fff;
-  transition:.3s;
-  z-index:100;
-  padding:20px;
-}
-
-.menu.ativo{
-  left:0;
-}
-
-.menu h3{
-  margin-bottom:20px;
-}
-
-.menu-item{
-  padding:12px 0;
-  border-bottom:1px solid #eee;
-  cursor:pointer;
-}
-
-/* ================= CONTEÚDO ================= */
-
-.content{
+.rota-box{
   position:absolute;
-  top:130px;
+  top:90px;
   left:50%;
   transform:translateX(-50%);
   width:90%;
   max-width:420px;
-  max-height:calc(100vh - 220px);
-  overflow-y:auto;
-}
-
-/* ================= ROTA ================= */
-
-.rota-box{
   background:#fff;
   border-radius:18px;
   padding:15px;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
-  margin-bottom:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,.1);
   font-size:.85rem;
+  z-index:5;
 }
 
 .rota-item{
@@ -122,40 +80,45 @@ body{
   color:#777;
 }
 
-/* ================= TÍTULO ================= */
+/* ================= CONTEÚDO ROLÁVEL ================= */
 
-.titulo{
-  font-weight:700;
-  margin-bottom:10px;
+.content{
+  position:absolute;
+  top:210px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:420px;
+  bottom:100px;
+  overflow-y:auto;
 }
 
 /* ================= CATEGORIA ================= */
 
 .categoria{
-  padding:14px 0;
-  border-bottom:1px solid #eee;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #eee;
+  margin-bottom:10px;
   display:flex;
   justify-content:space-between;
   cursor:pointer;
-  transition:.2s;
+  transition:.25s ease;
+}
+
+.categoria:hover{
+  background:#fafafa;
 }
 
 .categoria.ativa{
-  font-weight:600;
-}
-
-.cat-info{
-  display:flex;
-  flex-direction:column;
+  border-color:#facc15;
+  box-shadow:0 0 10px rgba(250,204,21,.3);
+  transform:scale(1.02);
 }
 
 .cat-desc{
   font-size:.75rem;
   color:#777;
-}
-
-.preco{
-  text-align:right;
 }
 
 .preco-antigo{
@@ -165,20 +128,34 @@ body{
 }
 
 .preco-dinamico{
-  font-size:.95rem;
   font-weight:700;
   color:#facc15;
 }
 
 /* ================= PAGAMENTO ================= */
 
+.pagamento-bloco{
+  background:#fff6cc;
+  padding:15px;
+  border-radius:16px;
+  margin-top:20px;
+}
+
 .pag-item{
-  padding:12px 0;
-  border-bottom:1px solid #eee;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:6px;
   cursor:pointer;
+  transition:.2s;
+}
+
+.pag-item:hover{
+  background:#fff2a8;
 }
 
 .pag-item.ativo{
+  background:#facc15;
+  color:#000;
   font-weight:600;
 }
 
@@ -197,6 +174,11 @@ body{
 .valor-total{
   font-size:1.3rem;
   font-weight:700;
+  transition:.2s;
+}
+
+.valor-total.animar{
+  transform:scale(1.1);
 }
 
 button{
@@ -211,30 +193,21 @@ button{
 </head>
 <body>
 
-<!-- MENU -->
-<div class="menu-overlay" id="menuOverlay" onclick="fecharMenu()"></div>
-<div class="menu" id="menu">
-  <h3>Menu</h3>
-  <div class="menu-item">Histórico</div>
-  <div class="menu-item">Pagamentos</div>
-  <div class="menu-item">Configurações</div>
-</div>
-
-<!-- HEADER -->
 <div class="top">
   <div class="logo">RF</div>
-  <div class="menu-btn" onclick="abrirMenu()">☰</div>
+  <div class="titulo-topo">Categoria de viagem</div>
 </div>
+
+<div class="rota-box" id="rotaBox"></div>
 
 <div class="content">
 
-  <div class="rota-box" id="rotaBox"></div>
-
-  <div class="titulo">Categoria de viagem</div>
   <div id="categorias"></div>
 
-  <div class="titulo" style="margin-top:20px;">Forma de pagamento</div>
-  <div id="pagamentos"></div>
+  <div class="pagamento-bloco">
+    <div style="font-weight:700; margin-bottom:8px;">Forma de pagamento</div>
+    <div id="pagamentos"></div>
+  </div>
 
 </div>
 
@@ -245,54 +218,30 @@ button{
 
 <script>
 
-/* ================= MENU ================= */
-
-function abrirMenu(){
-  document.getElementById("menu").classList.add("ativo");
-  document.getElementById("menuOverlay").style.display="block";
-}
-
-function fecharMenu(){
-  document.getElementById("menu").classList.remove("ativo");
-  document.getElementById("menuOverlay").style.display="none";
-}
-
-/* ================= LÓGICA ORIGINAL PRESERVADA ================= */
+/* === LÓGICA ORIGINAL (INTACTA) === */
 
 const corrida = JSON.parse(localStorage.getItem("rf_corrida_temp"));
 if(!corrida) window.location.href = "viagem.html";
 
 const { origem, parada, destino, valor } = corrida;
 
-let rotaHTML = `
-<div class="rota-item"><span>Origem</span><span>${origem}</span></div>
-`;
-
+let rotaHTML = `<div class="rota-item"><span>Origem</span><span>${origem}</span></div>`;
 if(parada){
   rotaHTML += `<div class="rota-item"><span>Parada</span><span>${parada}</span></div>`;
 }
-
-rotaHTML += `
-<div class="rota-item"><span>Destino</span><span>${destino}</span></div>
-`;
-
+rotaHTML += `<div class="rota-item"><span>Destino</span><span>${destino}</span></div>`;
 document.getElementById("rotaBox").innerHTML = rotaHTML;
-
-/* ================= TAXA NOTURNA ================= */
 
 function aplicarNoturno(valorBase){
   const agora = new Date();
   const hora = agora.getHours();
   const minuto = agora.getMinutes();
   const horario = hora + (minuto/60);
-
   if(horario >= 22.5 || horario <= 5){
     return valorBase + Taxas.noturno.valorFixo;
   }
   return valorBase;
 }
-
-/* ================= CATEGORIAS ================= */
 
 const categoriasData = [
   { nome:"Driver", desc:"Mais econômico", mult:1.0 },
@@ -327,7 +276,7 @@ function renderCategorias(){
         <div>${cat.nome}</div>
         <div class="cat-desc">${cat.desc}</div>
       </div>
-      <div class="preco">${precoHTML}</div>
+      <div>${precoHTML}</div>
     `;
 
     card.onclick = ()=>{
@@ -343,8 +292,6 @@ function renderCategorias(){
   atualizarTotal();
 }
 
-/* ================= PAGAMENTOS ================= */
-
 function renderPagamentos(){
   const pagamentos = ["Dinheiro","Pix","Cartão"];
   const box = document.getElementById("pagamentos");
@@ -359,13 +306,12 @@ function renderPagamentos(){
       document.querySelectorAll(".pag-item").forEach(i=>i.classList.remove("ativo"));
       div.classList.add("ativo");
       pagamentoSelecionado = p;
+      atualizarTotal();
     };
 
     box.appendChild(div);
   });
 }
-
-/* ================= TOTAL ================= */
 
 function atualizarTotal(){
   const cat = categoriasData[categoriaSelecionada];
@@ -373,15 +319,16 @@ function atualizarTotal(){
   base = aplicarNoturno(base);
   let total = Dinamico.ativo ? base * Dinamico.multiplicador : base;
 
-  document.getElementById("valorTotal").innerText =
-    "R$ " + total.toFixed(2);
+  const el = document.getElementById("valorTotal");
+  el.classList.add("animar");
+  setTimeout(()=>el.classList.remove("animar"),200);
+
+  el.innerText = "R$ " + total.toFixed(2);
 
   localStorage.setItem("rf_categoria", cat.nome);
   localStorage.setItem("rf_pagamento", pagamentoSelecionado);
   localStorage.setItem("rf_valor_final", total);
 }
-
-/* ================= AÇÃO ================= */
 
 function solicitar(){
   window.location.href = "resumo.html";

@@ -38,8 +38,6 @@ body{
 .menu-btn{
   font-size:22px;
   cursor:pointer;
-  padding:6px 10px;
-  border-radius:8px;
 }
 
 /* MAPA */
@@ -51,162 +49,6 @@ body{
   bottom:0;
   background:#111;
   opacity:.6;
-}
-
-/* CARD */
-.card{
-  position:absolute;
-  top:110px;
-  left:20px;
-  right:20px;
-  background:#fff;
-  border-radius:20px;
-  padding:20px;
-  box-shadow:0 20px 40px rgba(0,0,0,.4);
-  max-height:65vh;
-  overflow-y:auto;
-}
-
-  .categoria-container{
-  top:auto;
-  margin-top:20px;
-  position:relative;
-}
-
-.categoria-titulo{
-  font-weight:700;
-  font-size:1rem;
-  margin-bottom:10px;
-}
-
-/* BUSCA */
-.search-main{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:14px;
-  background:#f2f2f2;
-  border-radius:14px;
-  font-weight:600;
-  font-size:1rem;
-  cursor:pointer;
-  margin-bottom:18px;
-}
-
-.rota-box{
-  margin-top:10px;
-  background:#111;
-  border-radius:18px;
-  padding:16px;
-  color:#fff;
-}
-
-.rota-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.label{
-  font-size:.75rem;
-  color:#888;
-}
-
-.valor{
-  font-size:.85rem;
-  font-weight:500;
-}
-
-.linha{
-  height:1px;
-  background:#222;
-  margin:10px 0;
-}
-
-/* CATEGORIAS */
-.categorias{
-  margin-top:15px;
-}
-
-.categoria-card{
-  background:#fff;
-  border-bottom:1px solid #eee;
-  padding:14px 5px;
-  cursor:pointer;
-  transition:.2s;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.categoria-card.ativa{
-  background:#f9f9f9;
-  border-left:4px solid #facc15;
-}
-
-.cat-info{
-  display:flex;
-  flex-direction:column;
-}
-
-.cat-nome{
-  font-weight:600;
-  font-size:.9rem;
-}
-
-.cat-desc{
-  font-size:.75rem;
-  color:#888;
-  margin-top:3px;
-}
-
-.cat-valor{
-  font-weight:600;
-  font-size:.9rem;
-}
-
-.preco-antigo{
-  text-decoration:line-through;
-  font-size:.7rem;
-  color:#999;
-}
-
-.preco-dinamico{
-  color:#facc15;
-  font-weight:700;
-}
-
-.total-final{
-  margin-top:10px;
-  text-align:right;
-  font-size:1rem;
-  font-weight:700;
-  color:#facc15;
-}
-
-/* BOTÃO */
-.bottom{
-  position:absolute;
-  bottom:20px;
-  left:20px;
-  right:20px;
-}
-
-button{
-  width:100%;
-  padding:16px;
-  border:none;
-  border-radius:16px;
-  background:#facc15;
-  color:#000;
-  font-weight:700;
-  font-size:1rem;
-  cursor:pointer;
-}
-
-button:disabled{
-  background:#333;
-  color:#777;
 }
 
 /* MENU */
@@ -257,15 +99,9 @@ button:disabled{
   font-weight:600;
 }
 
-.menu-editar{
-  font-size:.8rem;
-  opacity:.7;
-}
-
 .menu-lista{
   padding:10px;
   flex:1;
-  overflow:auto;
 }
 
 .menu-item{
@@ -284,7 +120,7 @@ button:disabled{
   font-weight:600;
 }
 
-  /* BOTTOM SHEET */
+/* BOTTOM SHEET */
 
 .bottom-sheet{
   position:absolute;
@@ -378,21 +214,19 @@ button:disabled{
   background:#facc15;
   font-weight:700;
   font-size:1rem;
+  cursor:pointer;
 }
-
 </style>
 </head>
 <body>
 
+<!-- MENU -->
 <div id="menuOverlay" class="menu-overlay" onclick="fecharMenu()"></div>
 
 <div id="menuLateral" class="menu-lateral">
   <div class="menu-header" onclick="window.location.href='perfil.html'">
     <div class="avatar" id="avatarMenu"></div>
-    <div>
-      <div class="menu-nome" id="menuNome">Usuário</div>
-      <div class="menu-editar">Editar minhas informações</div>
-    </div>
+    <div class="menu-nome" id="menuNome">Usuário</div>
   </div>
 
   <div class="menu-lista">
@@ -404,13 +238,16 @@ button:disabled{
   </div>
 </div>
 
+<!-- HEADER -->
 <div class="top">
   <div class="top-left" id="saudacao">Olá!</div>
   <div class="menu-btn" onclick="abrirMenu()">☰</div>
 </div>
 
+<!-- MAPA -->
 <div class="map"></div>
 
+<!-- BOTTOM SHEET -->
 <div class="bottom-sheet">
   <div class="sheet-handle"></div>
 
@@ -424,16 +261,14 @@ button:disabled{
   </div>
 </div>
 
-<div class="bottom">
-  <button id="btnSolicitar" disabled onclick="solicitar()">Solicitar corrida</button>
-</div>
-
 <script>
 
+/* LOGIN */
 if(localStorage.getItem("rf_logged") !== "true"){
   window.location.href = "index.html";
 }
 
+/* PERFIL */
 function perfilCompleto(){
   return localStorage.getItem("rf_usuario_nome")
     && localStorage.getItem("rf_usuario_cpf")
@@ -441,6 +276,7 @@ function perfilCompleto(){
     && localStorage.getItem("rf_usuario_telefone");
 }
 
+/* MENU */
 function abrirMenu(){
   document.getElementById("menuLateral").classList.add("ativo");
   document.getElementById("menuOverlay").style.display="block";
@@ -462,10 +298,7 @@ function carregarUsuario(){
   document.getElementById("menuNome").innerText = nome;
 }
 
-function abrirBusca(){
-  window.location.href = "buscar.html";
-}
-
+/* ROTA */
 function carregarRota(){
 
   if(!perfilCompleto()){
@@ -477,40 +310,12 @@ function carregarRota(){
   if(!corrida) return;
 
   const dados = JSON.parse(corrida);
-  const { origem, parada, destino, valor } = dados;
-
-  let html = `
-    <div class="rota-item">
-      <span class="label">Origem</span>
-      <span class="valor">${origem}</span>
-    </div>
-  `;
-
-  if(parada){
-    html += `
-      <div class="linha"></div>
-      <div class="rota-item">
-        <span class="label">Parada</span>
-        <span class="valor">${parada}</span>
-      </div>
-    `;
-  }
-
-  html += `
-    <div class="linha"></div>
-    <div class="rota-item">
-      <span class="label">Destino</span>
-      <span class="valor">${destino}</span>
-    </div>
-  `;
-
-  document.getElementById("rotaBox").innerHTML = html;
-  document.getElementById("rotaBox").style.display = "block";
-  document.getElementById("btnSolicitar").disabled = false;
+  const { valor } = dados;
 
   renderCategorias(Number(valor));
 }
 
+/* CATEGORIAS */
 function renderCategorias(valorBase){
 
   const dinamico = window.multiplicadorDinamico || 1;
@@ -575,6 +380,7 @@ function solicitar(){
   window.location.href = "resumo.html";
 }
 
+/* INIT */
 carregarUsuario();
 carregarRota();
 

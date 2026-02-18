@@ -141,12 +141,112 @@ button:disabled{
   background:#333;
   color:#777;
 }
+
+/* MENU */
+.menu-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  display:none;
+  z-index:99;
+}
+
+.menu-lateral{
+  position:fixed;
+  top:0;
+  left:-300px;
+  width:280px;
+  height:100%;
+  background:#fff;
+  z-index:100;
+  transition:.3s;
+  display:flex;
+  flex-direction:column;
+}
+
+.menu-lateral.ativo{
+  left:0;
+}
+
+.menu-header{
+  padding:20px;
+  background:#facc15;
+  display:flex;
+  gap:15px;
+  align-items:center;
+  cursor:pointer;
+}
+
+.avatar{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:#000;
+  background-size:cover;
+  background-position:center;
+}
+
+.menu-nome{
+  font-weight:600;
+}
+
+.menu-editar{
+  font-size:.8rem;
+  opacity:.7;
+}
+
+.menu-lista{
+  padding:10px;
+  flex:1;
+  overflow:auto;
+}
+
+.menu-item{
+  padding:14px;
+  border-radius:12px;
+  margin-bottom:5px;
+  cursor:pointer;
+}
+
+.menu-item:hover{
+  background:#f2f2f2;
+}
+
+.menu-item.sair{
+  color:#d11a2a;
+  font-weight:600;
+}
 </style>
 </head>
 <body>
 
+<!-- OVERLAY -->
+<div id="menuOverlay" class="menu-overlay" onclick="fecharMenu()"></div>
+
+<!-- MENU -->
+<div id="menuLateral" class="menu-lateral">
+
+  <div class="menu-header" onclick="window.location.href='perfil.html'">
+    <div class="avatar" id="avatarMenu"></div>
+    <div>
+      <div class="menu-nome" id="menuNome">Usuário</div>
+      <div class="menu-editar">Editar minhas informações</div>
+    </div>
+  </div>
+
+  <div class="menu-lista">
+    <div class="menu-item" onclick="window.location.href='viagem.html'">🚕 Atividade</div>
+    <div class="menu-item" onclick="window.location.href='mensagens.html'">📩 Mensagens</div>
+    <div class="menu-item" onclick="window.location.href='configuracoes.html'">⚙️ Configurações</div>
+    <div class="menu-item" onclick="window.location.href='convite.html'">🎁 Convide Amigos</div>
+    <div class="menu-item sair" onclick="logout()">🚪 Sair</div>
+  </div>
+
+</div>
+
 <div class="top">
   <div class="top-left" id="saudacao">Olá!</div>
+  <div class="menu-btn" onclick="abrirMenu()">☰</div>
 </div>
 
 <div class="map"></div>
@@ -162,7 +262,7 @@ button:disabled{
 
 <script>
 
-/* ================= LOGIN CORRETO ================= */
+/* ================= LOGIN ================= */
 
 if(localStorage.getItem("rf_logged") !== "true"){
   window.location.href = "index.html";
@@ -177,6 +277,34 @@ function perfilCompleto(){
   const telefone = localStorage.getItem("rf_usuario_telefone");
 
   return nome && cpf && nascimento && telefone;
+}
+
+/* ================= MENU ================= */
+
+function abrirMenu(){
+  document.getElementById("menuLateral").classList.add("ativo");
+  document.getElementById("menuOverlay").style.display="block";
+}
+
+function fecharMenu(){
+  document.getElementById("menuLateral").classList.remove("ativo");
+  document.getElementById("menuOverlay").style.display="none";
+}
+
+function logout(){
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+
+function carregarMenuUsuario(){
+  const nome = localStorage.getItem("rf_usuario_nome") || "Usuário";
+  const foto = localStorage.getItem("rf_usuario_foto");
+
+  document.getElementById("menuNome").innerText = nome;
+
+  if(foto){
+    document.getElementById("avatarMenu").style.backgroundImage = `url('${foto}')`;
+  }
 }
 
 /* ================= USUÁRIO ================= */
@@ -248,6 +376,7 @@ function solicitar(){
 /* ================= INIT ================= */
 
 carregarUsuario();
+carregarMenuUsuario();
 carregarRota();
 
 </script>

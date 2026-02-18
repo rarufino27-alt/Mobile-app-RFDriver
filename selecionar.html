@@ -142,88 +142,130 @@ body{
 
 </div>
 
+<script src="dataManager.js"></script>
 <script src="dinamico.js"></script>
 <script src="taxas.js"></script>
 
 <script>
 
-const corrida = JSON.parse(localStorage.getItem("rf_corrida_temp"));
-if(!corrida) window.location.href="buscar.html";
+async function iniciar(){
 
-const valorBase = Number(corrida.valor);
-const dinamico = window.multiplicadorDinamico || 1;
+  await DataManager.carregar();
 
-const categorias = [
-  { nome:"Driver", mult:1.0 },
-  { nome:"Driver Plus", mult:1.15 },
-  { nome:"Driver Comfort", mult:1.25 },
-  { nome:"Driver 6 Lugares", mult:1.50 }
-];
+  const corrida = JSON.parse(localStorage.getItem("rf_corrida_temp"));
+  if(!corrida) window.location.href="buscar.html";
 
-let categoriaSelecionada = 0;
-let pagamentoSelecionado = "Dinheiro";
+  const valorBase = DataManager.calcularValorCompleto(
+    corrida.origem,
+    corrida.parada,
+    corrida.destino
+  );
 
-const lista = document.getElementById("listaCategorias");
-const totalEl = document.getElementById("valorTotal");
-
-/* Render categorias */
-
-categorias.forEach((cat,index)=>{
-
-  const div = document.createElement("div");
-  div.className="item";
-  if(index===0) div.classList.add("ativo");
-
-  div.innerHTML=`
-    <div>
-      <div>${cat.nome}</div>
-      <div class="desc">${(cat.mult).toFixed(2)}x valor base</div>
-    </div>
-    <div>R$ ${(valorBase*cat.mult*dinamico).toFixed(2)}</div>
-  `;
-
-  div.onclick=()=>{
-    document.querySelectorAll(".item").forEach(i=>i.classList.remove("ativo"));
-    div.classList.add("ativo");
-    categoriaSelecionada=index;
-    atualizarTotal();
-  };
-
-  lista.appendChild(div);
-});
-
-/* Pagamento */
-
-document.querySelectorAll(".pagamento-item").forEach(item=>{
-  item.onclick=()=>{
-    document.querySelectorAll(".pagamento-item")
-      .forEach(p=>p.classList.remove("ativo"));
-    item.classList.add("ativo");
-    pagamentoSelecionado=item.dataset.pag;
-  };
-});
-
-function atualizarTotal(){
-
-  const cat = categorias[categoriaSelecionada];
-  let total = valorBase * cat.mult * dinamico;
-
-  if(window.calcularTaxas){
-    total += window.calcularTaxas(total);
+  if(valorBase === null){
+    alert("Rota não encontrada.");
+    return;
   }
 
-  totalEl.innerText="R$ "+total.toFixed(2);
+  const dinamicoAtivo = Dinamico?.ativo || false;
+  const multiplicadorDinamico = dinamicoAtivo ? Dinamico.multiplicador : 1;
 
-  localStorage.setItem("rf_valor_final", total);
-  localStorage.setItem("rf_categoria", cat.nome);
-  localStorage.setItem("rf_pagamento", pagamentoSelecionado);
+  const categorias = [
+    { nome:"Driver", mult:1.0 },
+    { nome:"Driver Plus", mult:1.15 },
+    { nome:"Driver Comfort", mult:1.25 },
+    { nome:"Driver 6 Lugares", mult:1.50 }
+  ];
+
+  let categoriaSelecionada = 0;
+  let pagamentoSelecionado = "Dinheiro";
+
+  const lista = document.getElementById("listaCategorias");
+  const totalEl = document.getElementById("valorTotal");
+
+  lista.innerHTML = "";
+
+  categorias.forEach((cat,index)=>{
+
+    const valorCategoria = valorBase * cat.mult;
+    const valorFinal = valorCategoria * multiplicadorDinamico;
+
+    const div = document.createElement("div");
+    div.className="item";
+    if(index===0) div.classList.add("ativo");
+
+    let precoHTML;
+
+    if(dinamicoAtivo){
+      precoHTML = `
+        <div style="text-align:right;">
+          <div style="text-decoration:line-through;font-size:.75rem;color:#999;">
+            R$ ${valorCategoria.toFixed(2)}
+          </div>
+          <div style="font-weight:700;color:#facc15;">
+            ⚡ R$ ${valorFinal.toFixed(2)}
+          </div>
+        </div>
+      `;
+    }else{
+      precoHTML = `<div>R$ ${valorFinal.toFixed(2)}</div>`;
+    }
+
+    div.innerHTML=`
+      <div>
+        <div>${cat.nome}</div>
+        <div class="desc">${cat.mult.toFixed(2)}x valor base</div>
+      </div>
+      ${precoHTML}
+    `;
+
+    div.onclick=()=>{
+      document.querySelectorAll(".item")
+        .forEach(i=>i.classList.remove("ativo"));
+      div.classList.add("ativo");
+      categoriaSelecionada=index;
+      atualizarTotal();
+    };
+
+    lista.appendChild(div);
+  });
+
+  function atualizarTotal(){
+
+    const cat = categorias[categoriaSelecionada];
+
+    let total = valorBase * cat.mult;
+
+    if(window.calcularTaxas){
+      total += window.calcularTaxas(total);
+    }
+
+    total *= multiplicadorDinamico;
+
+    totalEl.innerText="R$ "+total.toFixed(2);
+
+    localStorage.setItem("rf_valor_final", total);
+    localStorage.setItem("rf_categoria", cat.nome);
+    localStorage.setItem("rf_pagamento", pagamentoSelecionado);
+  }
+
+  document.querySelectorAll(".pagamento-item").forEach(item=>{
+    item.onclick=()=>{
+      document.querySelectorAll(".pagamento-item")
+        .forEach(p=>p.classList.remove("ativo"));
+      item.classList.add("ativo");
+      pagamentoSelecionado=item.dataset.pag;
+      atualizarTotal();
+    };
+  });
+
+  atualizarTotal();
 }
 
 function solicitar(){
   window.location.href="resumo.html";
 }
 
-atualizarTotal();
+iniciar();
 
 </script>
 

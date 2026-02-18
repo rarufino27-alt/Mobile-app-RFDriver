@@ -22,8 +22,7 @@ body{
 /* HEADER */
 .top{
   background:#facc15;
-  padding:20px;
-  padding-bottom:70px;
+  padding:18px 20px 70px;
   color:#000;
   display:flex;
   justify-content:space-between;
@@ -32,7 +31,7 @@ body{
 
 .top-left{
   font-weight:600;
-  font-size:1.05rem;
+  font-size:1rem;
 }
 
 .menu-btn{
@@ -121,19 +120,17 @@ body{
 }
 
 /* BOTTOM SHEET */
-
 .bottom-sheet{
   position:absolute;
   bottom:0;
   left:0;
   right:0;
-  height:55%;
+  height:65%;
   background:#fff;
   border-top-left-radius:25px;
   border-top-right-radius:25px;
   display:flex;
   flex-direction:column;
-  overflow:hidden;
   box-shadow:0 -10px 30px rgba(0,0,0,.3);
 }
 
@@ -145,6 +142,25 @@ body{
   margin:10px auto;
 }
 
+/* ROTA */
+.rota-area{
+  padding:0 20px 15px;
+  border-bottom:1px solid #eee;
+}
+
+.rota-titulo{
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.rota-item{
+  display:flex;
+  justify-content:space-between;
+  font-size:.9rem;
+  margin-bottom:6px;
+}
+
+/* CATEGORIAS */
 .categorias-container{
   flex:1;
   overflow-y:auto;
@@ -194,6 +210,7 @@ body{
   font-weight:600;
 }
 
+/* BOTTOM BAR */
 .bottom-bar{
   display:flex;
   justify-content:space-between;
@@ -251,10 +268,18 @@ body{
 <div class="bottom-sheet">
   <div class="sheet-handle"></div>
 
+  <!-- ROTA -->
+  <div class="rota-area">
+    <div class="rota-titulo">Para onde vamos?</div>
+    <div id="rotaInfo"></div>
+  </div>
+
+  <!-- CATEGORIAS -->
   <div class="categorias-container">
     <div id="categoriasBox"></div>
   </div>
 
+  <!-- TOTAL -->
   <div class="bottom-bar">
     <div class="valor-total" id="valorTotal">R$ 0,00</div>
     <button id="btnSolicitar" onclick="solicitar()">Solicitar</button>
@@ -263,12 +288,10 @@ body{
 
 <script>
 
-/* LOGIN */
 if(localStorage.getItem("rf_logged") !== "true"){
   window.location.href = "index.html";
 }
 
-/* PERFIL */
 function perfilCompleto(){
   return localStorage.getItem("rf_usuario_nome")
     && localStorage.getItem("rf_usuario_cpf")
@@ -276,7 +299,6 @@ function perfilCompleto(){
     && localStorage.getItem("rf_usuario_telefone");
 }
 
-/* MENU */
 function abrirMenu(){
   document.getElementById("menuLateral").classList.add("ativo");
   document.getElementById("menuOverlay").style.display="block";
@@ -298,7 +320,6 @@ function carregarUsuario(){
   document.getElementById("menuNome").innerText = nome;
 }
 
-/* ROTA */
 function carregarRota(){
 
   if(!perfilCompleto()){
@@ -310,12 +331,36 @@ function carregarRota(){
   if(!corrida) return;
 
   const dados = JSON.parse(corrida);
-  const { valor } = dados;
+  const { origem, parada, destino, valor } = dados;
+
+  let html = `
+    <div class="rota-item">
+      <span>Origem</span>
+      <span>${origem}</span>
+    </div>
+  `;
+
+  if(parada){
+    html += `
+      <div class="rota-item">
+        <span>Parada</span>
+        <span>${parada}</span>
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="rota-item">
+      <span>Destino</span>
+      <span>${destino}</span>
+    </div>
+  `;
+
+  document.getElementById("rotaInfo").innerHTML = html;
 
   renderCategorias(Number(valor));
 }
 
-/* CATEGORIAS */
 function renderCategorias(valorBase){
 
   const dinamico = window.multiplicadorDinamico || 1;
@@ -380,7 +425,6 @@ function solicitar(){
   window.location.href = "resumo.html";
 }
 
-/* INIT */
 carregarUsuario();
 carregarRota();
 

@@ -216,6 +216,71 @@ button:disabled{
   color:#d11a2a;
   font-weight:600;
 }
+
+ .categorias{
+  margin-top:15px;
+}
+
+.categoria-card{
+  background:#111;
+  border:1px solid #222;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:.25s ease;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.categoria-card.ativa{
+  border-color:#facc15;
+  box-shadow:0 0 12px rgba(250,204,21,.3);
+  transform:scale(1.02);
+}
+
+.cat-info{
+  display:flex;
+  flex-direction:column;
+}
+
+.cat-nome{
+  font-weight:600;
+  font-size:.9rem;
+}
+
+.cat-desc{
+  font-size:.7rem;
+  color:#888;
+  margin-top:3px;
+}
+
+.cat-valor{
+  font-weight:600;
+  font-size:.9rem;
+  text-align:right;
+}
+
+.preco-antigo{
+  text-decoration:line-through;
+  font-size:.7rem;
+  color:#888;
+}
+
+.preco-dinamico{
+  color:#facc15;
+  font-weight:700;
+}
+
+.total-final{
+  margin-top:10px;
+  text-align:right;
+  font-size:1rem;
+  font-weight:700;
+  color:#facc15;
+}
+ 
 </style>
 </head>
 <body>
@@ -254,6 +319,8 @@ button:disabled{
 <div class="card">
   <div class="search-main" onclick="abrirBusca()">🔎 Para onde vamos?</div>
   <div id="rotaBox" class="rota-box" style="display:none;"></div>
+  <div class="categorias" id="categoriasBox"></div>
+<div class="total-final" id="totalFinal" style="display:none;"></div>
 </div>
 
 <div class="bottom">
@@ -367,6 +434,92 @@ function carregarRota(){
   document.getElementById("rotaBox").innerHTML = html;
   document.getElementById("rotaBox").style.display = "block";
   document.getElementById("btnSolicitar").disabled = false;
+  renderCategorias(Number(valor));
+}
+
+  function renderCategorias(valorBase){
+
+  const dinamico = window.multiplicadorDinamico || 1;
+
+  const categorias = [
+    { nome:"Driver", desc:"Mais econômico", mult:1.0 },
+    { nome:"Prioritária", desc:"Chega mais rápido", mult:1.15 },
+    { nome:"Confort", desc:"Mais conforto", mult:1.25 },
+    { nome:"6 Lugares", desc:"Ideal para grupos", mult:1.50 }
+  ];
+
+  const box = document.getElementById("categoriasBox");
+  const totalFinal = document.getElementById("totalFinal");
+
+  box.innerHTML = "";
+
+  let categoriaSelecionada = 0;
+
+  categorias.forEach((cat,index)=>{
+
+    const valorCategoria = valorBase * cat.mult;
+    const valorComDinamico = valorCategoria * dinamico;
+
+    const card = document.createElement("div");
+    card.className = "categoria-card";
+    if(index === 0) card.classList.add("ativa");
+
+    let precoHTML = "";
+
+    if(dinamico > 1){
+      precoHTML = `
+        <div class="preco-antigo">
+          R$ ${valorCategoria.toFixed(2)}
+        </div>
+        <div class="preco-dinamico">
+          ⚡ R$ ${valorComDinamico.toFixed(2)}
+        </div>
+      `;
+    }else{
+      precoHTML = `
+        <div class="cat-valor">
+          R$ ${valorCategoria.toFixed(2)}
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="cat-info">
+        <div class="cat-nome">${cat.nome}</div>
+        <div class="cat-desc">${cat.desc}</div>
+      </div>
+      <div>
+        ${precoHTML}
+      </div>
+    `;
+
+    card.onclick = ()=>{
+      document.querySelectorAll(".categoria-card")
+        .forEach(c=>c.classList.remove("ativa"));
+      card.classList.add("ativa");
+
+      categoriaSelecionada = index;
+
+      atualizarTotal();
+    };
+
+    box.appendChild(card);
+  });
+
+  function atualizarTotal(){
+    const cat = categorias[categoriaSelecionada];
+    const valorCategoria = valorBase * cat.mult;
+    const valorComDinamico = valorCategoria * dinamico;
+
+    totalFinal.style.display="block";
+    totalFinal.innerText =
+      "Total: R$ " + valorComDinamico.toFixed(2);
+
+    localStorage.setItem("rf_categoria", cat.nome);
+    localStorage.setItem("rf_valor_final", valorComDinamico);
+  }
+
+  atualizarTotal();
 }
 
 function solicitar(){

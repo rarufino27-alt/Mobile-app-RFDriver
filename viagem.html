@@ -283,6 +283,103 @@ button:disabled{
   color:#d11a2a;
   font-weight:600;
 }
+
+  /* BOTTOM SHEET */
+
+.bottom-sheet{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:55%;
+  background:#fff;
+  border-top-left-radius:25px;
+  border-top-right-radius:25px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  box-shadow:0 -10px 30px rgba(0,0,0,.3);
+}
+
+.sheet-handle{
+  width:40px;
+  height:5px;
+  background:#ddd;
+  border-radius:10px;
+  margin:10px auto;
+}
+
+.categorias-container{
+  flex:1;
+  overflow-y:auto;
+  padding:10px 20px;
+}
+
+.categoria-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.categoria-card.ativa{
+  font-weight:600;
+}
+
+.cat-left{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.cat-icon{
+  font-size:22px;
+}
+
+.cat-info{
+  display:flex;
+  flex-direction:column;
+}
+
+.cat-nome{
+  font-size:.95rem;
+}
+
+.cat-desc{
+  font-size:.75rem;
+  color:#777;
+}
+
+.cat-preco{
+  font-size:1rem;
+  font-weight:600;
+}
+
+.bottom-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+  border-top:1px solid #eee;
+}
+
+.valor-total{
+  font-size:1.4rem;
+  font-weight:700;
+}
+
+#btnSolicitar{
+  padding:14px 28px;
+  border:none;
+  border-radius:30px;
+  background:#facc15;
+  font-weight:700;
+  font-size:1rem;
+}
+
 </style>
 </head>
 <body>
@@ -314,15 +411,17 @@ button:disabled{
 
 <div class="map"></div>
 
-<div class="card">
-  <div class="search-main" onclick="abrirBusca()">🔎 Para onde vamos?</div>
-  <div id="rotaBox" class="rota-box" style="display:none;"></div>
-</div>
+<div class="bottom-sheet">
+  <div class="sheet-handle"></div>
 
-<div class="card categoria-container">
-  <div class="categoria-titulo">Vamos de qual categoria?</div>
-  <div class="categorias" id="categoriasBox"></div>
-  <div class="total-final" id="totalFinal" style="display:none;"></div>
+  <div class="categorias-container">
+    <div id="categoriasBox"></div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="valor-total" id="valorTotal">R$ 0,00</div>
+    <button id="btnSolicitar" onclick="solicitar()">Solicitar</button>
+  </div>
 </div>
 
 <div class="bottom">
@@ -418,50 +517,42 @@ function renderCategorias(valorBase){
 
   const categorias = [
     { nome:"Driver", desc:"4 lugares • até 10 min", mult:1.0, icone:"🚗" },
-    { nome:"Prioritária", desc:"4 lugares • Chega mais rápido", mult:1.15, icone:"⭐" },
-    { nome:"Confort", desc:"4 lugares • Mais conforto", mult:1.25, icone:"💺" },
+    { nome:"Prioritária", desc:"Chega mais rápido", mult:1.15, icone:"⭐" },
+    { nome:"Confort", desc:"Mais conforto", mult:1.25, icone:"💺" },
     { nome:"6 Lugares", desc:"Até 6 passageiros", mult:1.50, icone:"🚐" },
-    { nome:"Envios Driver", desc:"Entrega rápida de objetos", mult:1.0, icone:"📦" }
+    { nome:"Envios Driver", desc:"Entrega rápida", mult:1.0, icone:"📦" }
   ];
 
   const box = document.getElementById("categoriasBox");
-  const totalFinal = document.getElementById("totalFinal");
-  const botao = document.getElementById("btnSolicitar");
+  const valorTotal = document.getElementById("valorTotal");
 
   box.innerHTML = "";
-  let categoriaSelecionada = 0;
+  let selecionada = 0;
 
   categorias.forEach((cat,index)=>{
 
-    const valorCategoria = valorBase * cat.mult;
-    const valorFinal = valorCategoria * dinamico;
+    const valor = valorBase * cat.mult * dinamico;
 
     const card = document.createElement("div");
     card.className = "categoria-card";
     if(index === 0) card.classList.add("ativa");
 
-    let precoHTML = dinamico > 1 ?
-      `<div><div class="preco-antigo">R$ ${valorCategoria.toFixed(2)}</div>
-       <div class="preco-dinamico">⚡ R$ ${valorFinal.toFixed(2)}</div></div>`
-      :
-      `<div class="cat-valor">R$ ${valorCategoria.toFixed(2)}</div>`;
-
     card.innerHTML = `
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div style="font-size:22px;">${cat.icone}</div>
+      <div class="cat-left">
+        <div class="cat-icon">${cat.icone}</div>
         <div class="cat-info">
           <div class="cat-nome">${cat.nome}</div>
           <div class="cat-desc">${cat.desc}</div>
         </div>
       </div>
-      ${precoHTML}
+      <div class="cat-preco">R$ ${valor.toFixed(2)}</div>
     `;
 
     card.onclick = ()=>{
       document.querySelectorAll(".categoria-card")
         .forEach(c=>c.classList.remove("ativa"));
       card.classList.add("ativa");
-      categoriaSelecionada = index;
+      selecionada = index;
       atualizarTotal();
     };
 
@@ -469,13 +560,12 @@ function renderCategorias(valorBase){
   });
 
   function atualizarTotal(){
-    const cat = categorias[categoriaSelecionada];
-    const valorFinal = (valorBase * cat.mult) * dinamico;
-    totalFinal.style.display="block";
-    totalFinal.innerText = "Total: R$ " + valorFinal.toFixed(2);
-    botao.innerText = "Solicitar " + cat.nome;
+    const cat = categorias[selecionada];
+    const valor = valorBase * cat.mult * dinamico;
+    valorTotal.innerText = "R$ " + valor.toFixed(2);
+
     localStorage.setItem("rf_categoria", cat.nome);
-    localStorage.setItem("rf_valor_final", valorFinal);
+    localStorage.setItem("rf_valor_final", valor);
   }
 
   atualizarTotal();

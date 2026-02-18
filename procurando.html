@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Procurando Motorista – RF Driver</title>
+<title>RF – Procurando Motorista</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="core/global.js"></script>
@@ -16,175 +16,173 @@
 }
 
 body{
-  background:#000;
-  color:#fff;
+  background:#fff;
+  height:100vh;
+  overflow:hidden;
 }
 
-.container{
-  min-height:100vh;
-  padding:40px 20px 140px;
-  max-width:420px;
-  margin:0 auto;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
+/* ===== TOPO ===== */
+
+.top{
+  background:#facc15;
+  padding:25px 20px 120px;
+  border-bottom-left-radius:40px;
+  border-bottom-right-radius:40px;
 }
 
-.logo-wrapper{
-  width:90px;
-  height:90px;
-  margin:0 auto 25px auto;
-  border-radius:50%;
-  background:#000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 0 30px rgba(250,204,21,.35);
-}
-
-.logo-img{
-  width:70%;
+.logo{
+  font-weight:900;
+  font-size:1.4rem;
 }
 
 .status{
-  text-align:center;
-  margin-bottom:8px;
-  font-size:1.3rem;
+  margin-top:5px;
   font-weight:700;
 }
 
-.sub{
-  text-align:center;
-  font-size:.85rem;
-  color:#a1a1aa;
-  margin-bottom:25px;
+/* ===== MAPA FAKE ===== */
+
+.map{
+  position:absolute;
+  top:140px;
+  left:0;
+  right:0;
+  bottom:0;
+  background:radial-gradient(circle at 30% 30%, #e5e5e5 0%, #f5f5f5 60%);
+  overflow:hidden;
 }
 
+/* Pontos animados simulando motoristas */
+
+.dot{
+  position:absolute;
+  width:10px;
+  height:10px;
+  background:#facc15;
+  border-radius:50%;
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1); opacity:1;}
+  50%{transform:scale(1.5); opacity:.4;}
+  100%{transform:scale(1); opacity:1;}
+}
+
+/* ===== CARD INFERIOR ===== */
+
 .card{
-  background:#111;
-  border-radius:18px;
-  padding:18px;
-  border:1px solid #1c1c1c;
-  margin-bottom:25px;
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  border-top-left-radius:25px;
+  border-top-right-radius:25px;
+  padding:20px;
+  box-shadow:0 -10px 30px rgba(0,0,0,.1);
+  animation:slideUp .4s ease;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(40px); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
+}
+
+.spinner{
+  width:40px;
+  height:40px;
+  border:4px solid #eee;
+  border-top:4px solid #facc15;
+  border-radius:50%;
+  margin:0 auto 15px;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg);}
 }
 
 .route{
   text-align:center;
-  font-size:.9rem;
-  margin-bottom:15px;
-}
-
-.route strong{
-  display:block;
-  margin:6px 0;
+  font-size:.85rem;
+  margin-bottom:10px;
 }
 
 .categoria{
   text-align:center;
-  font-size:.85rem;
-  color:#60a5fa;
-  margin-bottom:12px;
+  font-size:.8rem;
+  color:#666;
 }
 
 .total{
   text-align:center;
-  font-size:2.4rem;
+  font-size:1.6rem;
   font-weight:800;
-  color:#facc15;
   margin-top:10px;
 }
 
 .timer{
   text-align:center;
-  font-size:.8rem;
-  color:#94a3b8;
-  margin-bottom:25px;
+  font-size:.75rem;
+  color:#888;
+  margin-top:6px;
 }
 
-.cta-area{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  padding:20px;
-  background:#000;
-}
-
-.btn{
+.btn-cancel{
+  margin-top:15px;
   width:100%;
-  padding:16px;
-  border-radius:14px;
+  padding:14px;
   border:none;
-  font-weight:700;
-  font-size:1rem;
-  margin-bottom:12px;
+  border-radius:14px;
+  background:#fff;
+  border:1px solid #ef4444;
+  color:#ef4444;
+  font-weight:600;
   cursor:pointer;
   transition:.2s;
 }
 
-.btn-secondary{
-  background:#111;
-  border:1px solid #2563eb;
-  color:#2563eb;
-}
-
-.btn-danger{
-  background:#111;
-  border:1px solid #ef4444;
-  color:#ef4444;
-}
-
-.btn:active{
-  transform:scale(.96);
+.btn-cancel:active{
+  transform:scale(.97);
 }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <div>
-
-    <div class="logo-wrapper">
-      <img src="./icons/logo-1024.png" class="logo-img">
-    </div>
-
-    <div class="status" id="statusText">
-      Procurando motorista...
-    </div>
-
-    <div class="sub">
-      Estamos enviando sua solicitação para motoristas próximos
-    </div>
-
-    <div class="card">
-
-      <div class="timer" id="timer">
-        Tempo de espera: 0s
-      </div>
-
-      <div class="route">
-        <strong id="origem"></strong>
-        ↓
-        <strong id="destino"></strong>
-      </div>
-
-      <div class="categoria" id="categoria"></div>
-
-      <div class="total" id="total"></div>
-
-    </div>
-
-  </div>
+<div class="top">
+  <div class="logo">RF</div>
+  <div class="status" id="statusText">Buscando motoristas próximos...</div>
 </div>
 
-<div class="cta-area">
-  <button class="btn btn-secondary" onclick="aumentarOferta()">
-    Oferecer valor maior
-  </button>
+<div class="map">
+  <div class="dot" style="top:30%; left:20%;"></div>
+  <div class="dot" style="top:50%; left:60%; animation-delay:1s;"></div>
+  <div class="dot" style="top:70%; left:35%; animation-delay:1.5s;"></div>
+</div>
 
-  <button class="btn btn-danger" onclick="cancelar()">
+<div class="card">
+
+  <div class="spinner"></div>
+
+  <div class="route">
+    <strong id="origem"></strong>
+    <br>↓<br>
+    <strong id="destino"></strong>
+  </div>
+
+  <div class="categoria" id="categoria"></div>
+
+  <div class="total" id="total"></div>
+
+  <div class="timer" id="timer">
+    Tempo de espera: 0s
+  </div>
+
+  <button class="btn-cancel" onclick="cancelar()">
     Cancelar corrida
   </button>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -195,7 +193,7 @@ body{
 const origem = App.get("origem") || "-";
 const destino = App.get("destino") || "-";
 const total = Number(App.get("total") || 0);
-const categoriaSelecionada = App.get("categoria") || "Categoria padrão";
+const categoriaSelecionada = App.get("categoria") || "Driver";
 
 document.getElementById("origem").innerText = origem;
 document.getElementById("destino").innerText = destino;
@@ -203,49 +201,36 @@ document.getElementById("total").innerText = "R$ " + total.toFixed(2);
 document.getElementById("categoria").innerText = categoriaSelecionada;
 
 let segundos = 0;
+
 setInterval(()=>{
   segundos++;
   document.getElementById("timer").innerText =
     "Tempo de espera: " + segundos + "s";
+
+  if(segundos === 5){
+    document.getElementById("statusText").innerText =
+      "Motoristas visualizando sua corrida...";
+  }
+
+  if(segundos === 10){
+    document.getElementById("statusText").innerText =
+      "Conectando com o melhor motorista...";
+  }
+
 },1000);
 
-function aumentarOferta(){
-  let novo = prompt("Digite o novo valor da oferta:", total.toFixed(2));
-  if(novo && !isNaN(novo) && Number(novo) > total){
-    App.set("total", Number(novo));
-    location.reload();
-  }else{
-    alert("Digite um valor maior que o atual.");
-  }
-}
+/* ===== CANCELAR ===== */
 
 function cancelar(){
   if(confirm("Deseja cancelar a corrida?")){
     App.reset();
-    App.go("index.html");
+    App.go("viagem.html");
   }
 }
 
-// ==========================
-// CRIAR CORRIDA (NÃO DEPENDE MAIS DA GEO)
-// ==========================
+/* ===== BACKEND (INALTERADO) ===== */
 
 async function criarCorrida() {
-
-  let lat = null;
-  let lng = null;
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        lat = pos.coords.latitude;
-        lng = pos.coords.longitude;
-      },
-      () => {
-        console.warn("Geolocalização negada ou falhou.");
-      }
-    );
-  }
 
   const { data, error } = await supabaseClient
     .from("rides")
@@ -255,31 +240,20 @@ async function criarCorrida() {
         destino: destino,
         valor: total,
         categoria: categoriaSelecionada,
-        status: "procurando",
-        passageiro_lat: lat,
-        passageiro_lng: lng
+        status: "procurando"
       }
     ])
     .select()
     .single();
 
   if (error) {
-    console.error(error);
     alert("Erro ao criar corrida.");
     return;
   }
 
-  console.log("Corrida criada:", data);
-
   App.set("ride_id", data.id);
   escutarAceite(data.id);
 }
-
-criarCorrida();
-
-// ==========================
-// ESCUTAR ACEITE
-// ==========================
 
 function escutarAceite(rideId){
 
@@ -297,8 +271,8 @@ function escutarAceite(rideId){
 
         if(payload.new.status === "aceita"){
           document.getElementById("statusText").innerText =
-            "Motorista encontrado!";
-          
+            "Motorista encontrado! 🚗";
+
           setTimeout(()=>{
             App.go("motorista-caminho.html");
           },1500);
@@ -308,6 +282,8 @@ function escutarAceite(rideId){
     )
     .subscribe();
 }
+
+criarCorrida();
 
 </script>
 

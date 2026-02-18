@@ -67,6 +67,18 @@ body{
   overflow-y:auto;
 }
 
+  .categoria-container{
+  top:auto;
+  margin-top:20px;
+  position:relative;
+}
+
+.categoria-titulo{
+  font-weight:700;
+  font-size:1rem;
+  margin-bottom:10px;
+}
+
 /* BUSCA */
 .search-main{
   display:flex;
@@ -305,6 +317,10 @@ button:disabled{
 <div class="card">
   <div class="search-main" onclick="abrirBusca()">🔎 Para onde vamos?</div>
   <div id="rotaBox" class="rota-box" style="display:none;"></div>
+</div>
+
+<div class="card categoria-container">
+  <div class="categoria-titulo">Vamos de qual categoria?</div>
   <div class="categorias" id="categoriasBox"></div>
   <div class="total-final" id="totalFinal" style="display:none;"></div>
 </div>

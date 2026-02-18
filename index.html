@@ -145,17 +145,37 @@ button.secondary{
 <script>
 
 const SUPABASE_URL = "https://msnqiiwcityikslikbow.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zbnFpaXdjaXR5aWtzbGlrYm93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MDM5OTgsImV4cCI6MjA4MzI3OTk5OH0.0KyaSuL5At4_Cfa4TOM7kvvkVYv-gmR2sb7vX6VHkaU";
+const SUPABASE_ANON_KEY = "SUA_CHAVE_AQUI";
 const API_URL = SUPABASE_URL + "/functions/v1/super-api";
 
 const mensagem = document.getElementById("mensagem");
 const stepPhone = document.getElementById("stepPhone");
 const stepCode = document.getElementById("stepCode");
 
+/* =========================
+   VERIFICAR SESSÃO AO ABRIR
+========================= */
+
+(function verificarSessao(){
+
+  const session = JSON.parse(localStorage.getItem("rf_session"));
+
+  if(session && session.logado === true){
+    window.location.href = "viagem.html";
+  }
+
+})();
+
+/* ========================= */
+
 function limparMensagem(){
   mensagem.innerText="";
   mensagem.classList.remove("success","error");
 }
+
+/* =========================
+   ENVIAR CÓDIGO
+========================= */
 
 async function enviarCodigo(){
 
@@ -186,8 +206,6 @@ async function enviarCodigo(){
       body:JSON.stringify({ phone })
     });
 
-    const data = await response.json();
-
     if(!response.ok){
       mensagem.innerText="Erro ao enviar código.";
       mensagem.classList.add("error");
@@ -207,6 +225,10 @@ async function enviarCodigo(){
     mensagem.classList.add("error");
   }
 }
+
+/* =========================
+   VALIDAR CÓDIGO
+========================= */
 
 async function validarCodigo(){
 
@@ -243,8 +265,20 @@ async function validarCodigo(){
       return;
     }
 
-    localStorage.setItem("rf_logged","true");
-    localStorage.setItem("rf_user_phone", phone);
+    /* =========================
+       CRIAR SESSÃO PERSISTENTE
+    ========================= */
+
+    const session = {
+      telefone: phone,
+      logado: true,
+      loginEm: new Date().toISOString()
+    };
+
+    localStorage.setItem("rf_session", JSON.stringify(session));
+
+    /* LIMPA TEMP */
+    localStorage.removeItem("rf_temp_phone");
 
     window.location.href="viagem.html";
 
@@ -253,6 +287,8 @@ async function validarCodigo(){
     mensagem.classList.add("error");
   }
 }
+
+/* ========================= */
 
 function voltarTelefone(){
   stepCode.classList.add("hidden");

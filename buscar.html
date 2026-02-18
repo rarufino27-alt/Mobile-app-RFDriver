@@ -2,8 +2,10 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>RF Driver – Buscar</title>
+<title>RF – Escolher rota</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="core/datamanager.js"></script>
 
 <style>
 *{
@@ -14,59 +16,92 @@
 }
 
 body{
-  background:#000;
-  color:#fff;
-  padding:20px;
+  background:#f5f5f5;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
-h2{
-  margin-bottom:25px;
-  font-weight:600;
+/* HEADER */
+.header{
+  background:#fff;
+  padding:18px 20px;
+  font-weight:700;
+  font-size:1.1rem;
+  border-bottom:1px solid #eee;
 }
 
-.select-box{
-  background:#111;
-  padding:16px;
-  border-radius:16px;
-  margin-bottom:15px;
+/* CARD */
+.card{
+  background:#fff;
+  margin:20px;
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.05);
+}
+
+.campo{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid #f0f0f0;
   cursor:pointer;
-  border:1px solid #222;
-  transition:.2s;
 }
 
-.select-box:hover{
-  border-color:#facc15;
+.campo:last-child{
+  border-bottom:none;
 }
+
+.campo-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:.95rem;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+}
+
+.origem{ background:#22c55e; }
+.parada{ background:#facc15; }
+.destino{ background:#ef4444; }
 
 .plus{
-  text-align:center;
-  font-size:28px;
-  margin:10px 0;
-  cursor:pointer;
-  color:#facc15;
+  font-size:20px;
+  font-weight:700;
+  color:#666;
+}
+
+/* BOTÃO */
+.bottom{
+  margin-top:auto;
+  padding:20px;
 }
 
 button{
   width:100%;
-  padding:16px;
+  padding:14px;
   border:none;
-  border-radius:16px;
+  border-radius:30px;
   background:#facc15;
-  color:#000;
   font-weight:700;
   font-size:1rem;
-  margin-top:20px;
+  cursor:pointer;
 }
 
 button:disabled{
-  background:#333;
-  color:#777;
+  background:#ddd;
 }
 
+/* MODAL */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.9);
+  background:rgba(0,0,0,.5);
   display:none;
   align-items:center;
   justify-content:center;
@@ -74,54 +109,75 @@ button:disabled{
 }
 
 .modal-content{
-  background:#111;
+  background:#fff;
   width:100%;
   max-width:420px;
-  border-radius:18px;
+  border-radius:20px;
   padding:18px;
   max-height:80vh;
-  overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
 .modal-content input{
   width:100%;
-  padding:14px;
+  padding:12px;
   border-radius:12px;
-  border:none;
-  background:#1a1a1a;
-  color:#fff;
+  border:1px solid #eee;
   margin-bottom:12px;
 }
 
 .lista{
-  max-height:300px;
   overflow-y:auto;
+  flex:1;
 }
 
 .lista div{
-  padding:12px;
+  padding:10px 8px;
   border-radius:10px;
   cursor:pointer;
 }
 
 .lista div:hover{
-  background:#222;
+  background:#f2f2f2;
 }
 </style>
 </head>
 <body>
 
-<h2>Escolha sua rota</h2>
+<div class="header">
+  Escolher destino
+</div>
 
-<div class="select-box" id="origemBtn">Selecionar origem</div>
+<div class="card">
 
-<div class="plus" id="addParada">＋</div>
+  <div class="campo" id="origemBtn">
+    <div class="campo-left">
+      <div class="dot origem"></div>
+      <div id="origemTexto">Selecionar origem</div>
+    </div>
+  </div>
 
-<div class="select-box" id="paradaBtn" style="display:none;">Selecionar parada</div>
+  <div class="campo" id="paradaBtn" style="display:none;">
+    <div class="campo-left">
+      <div class="dot parada"></div>
+      <div id="paradaTexto">Selecionar parada</div>
+    </div>
+  </div>
 
-<div class="select-box" id="destinoBtn">Selecionar destino</div>
+  <div class="campo" id="destinoBtn">
+    <div class="campo-left">
+      <div class="dot destino"></div>
+      <div id="destinoTexto">Selecionar destino</div>
+    </div>
+    <div class="plus" id="addParada">＋</div>
+  </div>
 
-<button id="confirmar" disabled>Confirmar rota</button>
+</div>
+
+<div class="bottom">
+  <button id="confirmar" disabled>Confirmar rota</button>
+</div>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
@@ -130,8 +186,6 @@ button:disabled{
     <div class="lista" id="lista"></div>
   </div>
 </div>
-
-<script src="core/datamanager.js"></script>
 
 <script>
 
@@ -149,24 +203,18 @@ const origemBtn = document.getElementById("origemBtn");
 const paradaBtn = document.getElementById("paradaBtn");
 const destinoBtn = document.getElementById("destinoBtn");
 
-/* =========================
-   INICIALIZAÇÃO
-========================= */
+/* ================= INIT ================= */
 
 async function init(){
   try{
     await DataManager.carregar();
-    console.log("Rotas carregadas:", DataManager.rotas.length);
   }catch(e){
     alert("Erro ao carregar rotas.");
   }
 }
-
 init();
 
-/* =========================
-   ABRIR MODAL
-========================= */
+/* ================= ABRIR MODAL ================= */
 
 function abrirModal(tipo){
 
@@ -191,7 +239,7 @@ function abrirModal(tipo){
   }
 
   if(tipo === "destino"){
-    dados = parada 
+    dados = parada
       ? DataManager.listarDestinos(parada)
       : DataManager.listarDestinos(origem);
   }
@@ -199,9 +247,7 @@ function abrirModal(tipo){
   renderLista(dados);
 }
 
-/* =========================
-   RENDER LISTA
-========================= */
+/* ================= RENDER LISTA ================= */
 
 function renderLista(array){
 
@@ -226,9 +272,7 @@ function renderLista(array){
   });
 }
 
-/* =========================
-   SELECIONAR
-========================= */
+/* ================= SELECIONAR ================= */
 
 function selecionar(valor){
 
@@ -237,65 +281,57 @@ function selecionar(valor){
     parada = null;
     destino = null;
 
-    origemBtn.innerText = valor;
+    document.getElementById("origemTexto").innerText = valor;
+    document.getElementById("paradaTexto").innerText = "Selecionar parada";
+    document.getElementById("destinoTexto").innerText = "Selecionar destino";
     paradaBtn.style.display = "none";
-    paradaBtn.innerText = "Selecionar parada";
-    destinoBtn.innerText = "Selecionar destino";
   }
 
   if(modo === "parada"){
     parada = valor;
     destino = null;
-
-    paradaBtn.innerText = valor;
-    destinoBtn.innerText = "Selecionar destino";
+    document.getElementById("paradaTexto").innerText = valor;
+    document.getElementById("destinoTexto").innerText = "Selecionar destino";
   }
 
   if(modo === "destino"){
     destino = valor;
-    destinoBtn.innerText = valor;
+    document.getElementById("destinoTexto").innerText = valor;
   }
 
   validar();
 }
 
-/* =========================
-   BUSCA FILTRO
-========================= */
+/* ================= BUSCA FILTRO ================= */
 
 busca.addEventListener("input", ()=>{
   const termo = busca.value.toLowerCase();
-  const itens = lista.querySelectorAll("div");
-
-  itens.forEach(div=>{
+  lista.querySelectorAll("div").forEach(div=>{
     div.style.display = div.innerText.toLowerCase().includes(termo)
       ? "block"
       : "none";
   });
 });
 
-/* =========================
-   VALIDAR
-========================= */
+/* ================= VALIDAR ================= */
 
 function validar(){
   confirmarBtn.disabled = !(origem && destino);
 }
 
-/* =========================
-   EVENTOS
-========================= */
+/* ================= EVENTOS ================= */
 
 origemBtn.onclick = ()=>abrirModal("origem");
 paradaBtn.onclick = ()=>abrirModal("parada");
 destinoBtn.onclick = ()=>abrirModal("destino");
 
-document.getElementById("addParada").onclick = ()=>{
+document.getElementById("addParada").onclick = (e)=>{
+  e.stopPropagation();
   if(!origem){
     alert("Selecione a origem primeiro.");
     return;
   }
-  paradaBtn.style.display = "block";
+  paradaBtn.style.display = "flex";
 };
 
 modal.onclick = e=>{
@@ -304,9 +340,7 @@ modal.onclick = e=>{
   }
 };
 
-/* =========================
-   CONFIRMAR
-========================= */
+/* ================= CONFIRMAR ================= */
 
 confirmarBtn.onclick = ()=>{
 
@@ -327,7 +361,7 @@ confirmarBtn.onclick = ()=>{
     valor: valorTotal
   }));
 
-  window.location.href = "viagem.html";
+  window.location.href = "selecionar.html";
 };
 
 </script>

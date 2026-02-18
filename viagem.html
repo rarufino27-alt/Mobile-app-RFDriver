@@ -222,22 +222,16 @@ button:disabled{
 }
 
 .categoria-card{
-  background:#111;
-  border:1px solid #222;
-  border-radius:16px;
-  padding:14px;
-  margin-bottom:10px;
+  background:#fff;
+  border-bottom:1px solid #eee;
+  padding:14px 5px;
   cursor:pointer;
-  transition:.25s ease;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  transition:.2s;
 }
 
 .categoria-card.ativa{
-  border-color:#facc15;
-  box-shadow:0 0 12px rgba(250,204,21,.3);
-  transform:scale(1.02);
+  background:#f9f9f9;
+  border-left:4px solid #facc15;
 }
 
 .cat-info{
@@ -442,14 +436,41 @@ function carregarRota(){
   const dinamico = window.multiplicadorDinamico || 1;
 
   const categorias = [
-    { nome:"Driver", desc:"Mais econômico", mult:1.0 },
-    { nome:"Prioritária", desc:"Chega mais rápido", mult:1.15 },
-    { nome:"Confort", desc:"Mais conforto", mult:1.25 },
-    { nome:"6 Lugares", desc:"Ideal para grupos", mult:1.50 }
+    {
+      nome:"Driver",
+      desc:"4 lugares • até 10 min",
+      mult:1.0,
+      icone:"🚗"
+    },
+    {
+      nome:"Prioritária",
+      desc:"4 lugares • Chega mais rápido",
+      mult:1.15,
+      icone:"⭐"
+    },
+    {
+      nome:"Confort",
+      desc:"4 lugares • Mais conforto",
+      mult:1.25,
+      icone:"💺"
+    },
+    {
+      nome:"6 Lugares",
+      desc:"Até 6 passageiros",
+      mult:1.50,
+      icone:"🚐"
+    },
+    {
+      nome:"Envios Driver",
+      desc:"Entrega rápida de objetos",
+      mult:1.0,
+      icone:"📦"
+    }
   ];
 
   const box = document.getElementById("categoriasBox");
   const totalFinal = document.getElementById("totalFinal");
+  const botao = document.getElementById("btnSolicitar");
 
   box.innerHTML = "";
 
@@ -458,7 +479,7 @@ function carregarRota(){
   categorias.forEach((cat,index)=>{
 
     const valorCategoria = valorBase * cat.mult;
-    const valorComDinamico = valorCategoria * dinamico;
+    const valorFinal = valorCategoria * dinamico;
 
     const card = document.createElement("div");
     card.className = "categoria-card";
@@ -468,11 +489,9 @@ function carregarRota(){
 
     if(dinamico > 1){
       precoHTML = `
-        <div class="preco-antigo">
-          R$ ${valorCategoria.toFixed(2)}
-        </div>
-        <div class="preco-dinamico">
-          ⚡ R$ ${valorComDinamico.toFixed(2)}
+        <div style="text-align:right">
+          <div class="preco-antigo">R$ ${valorCategoria.toFixed(2)}</div>
+          <div class="preco-dinamico">⚡ R$ ${valorFinal.toFixed(2)}</div>
         </div>
       `;
     }else{
@@ -484,26 +503,45 @@ function carregarRota(){
     }
 
     card.innerHTML = `
-      <div class="cat-info">
-        <div class="cat-nome">${cat.nome}</div>
-        <div class="cat-desc">${cat.desc}</div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="font-size:22px;">${cat.icone}</div>
+        <div class="cat-info">
+          <div class="cat-nome">${cat.nome}</div>
+          <div class="cat-desc">${cat.desc}</div>
+        </div>
       </div>
-      <div>
-        ${precoHTML}
-      </div>
+      ${precoHTML}
     `;
 
     card.onclick = ()=>{
       document.querySelectorAll(".categoria-card")
         .forEach(c=>c.classList.remove("ativa"));
       card.classList.add("ativa");
-
       categoriaSelecionada = index;
-
       atualizarTotal();
     };
 
     box.appendChild(card);
+  });
+
+  function atualizarTotal(){
+    const cat = categorias[categoriaSelecionada];
+    const valorCategoria = valorBase * cat.mult;
+    const valorFinal = valorCategoria * dinamico;
+
+    totalFinal.style.display="block";
+    totalFinal.innerText = "Total: R$ " + valorFinal.toFixed(2);
+
+    botao.innerText = "Solicitar " + cat.nome;
+
+    localStorage.setItem("rf_categoria", cat.nome);
+    localStorage.setItem("rf_valor_final", valorFinal);
+  }
+
+  atualizarTotal();
+}
+
+  box.appendChild(card);
   });
 
   function atualizarTotal(){

@@ -25,7 +25,7 @@ body{
 
 .top{
   background:#facc15;
-  padding:25px 20px 120px;
+  padding:25px 20px 110px;
   border-bottom-left-radius:40px;
   border-bottom-right-radius:40px;
 }
@@ -49,10 +49,7 @@ body{
   right:0;
   bottom:0;
   background:radial-gradient(circle at 30% 30%, #e5e5e5 0%, #f5f5f5 60%);
-  overflow:hidden;
 }
-
-/* Pontos animados simulando motoristas */
 
 .dot{
   position:absolute;
@@ -69,7 +66,7 @@ body{
   100%{transform:scale(1); opacity:1;}
 }
 
-/* ===== CARD INFERIOR ===== */
+/* ===== CARD ===== */
 
 .card{
   position:absolute;
@@ -82,6 +79,8 @@ body{
   padding:20px;
   box-shadow:0 -10px 30px rgba(0,0,0,.1);
   animation:slideUp .4s ease;
+  max-height:65%;
+  overflow-y:auto;
 }
 
 @keyframes slideUp{
@@ -103,21 +102,20 @@ body{
   to{transform:rotate(360deg);}
 }
 
-.route{
-  text-align:center;
+.linha{
+  display:flex;
+  justify-content:space-between;
   font-size:.85rem;
-  margin-bottom:10px;
+  margin-bottom:6px;
 }
 
-.categoria{
-  text-align:center;
-  font-size:.8rem;
-  color:#666;
+.linha span:first-child{
+  color:#777;
 }
 
 .total{
   text-align:center;
-  font-size:1.6rem;
+  font-size:1.5rem;
   font-weight:800;
   margin-top:10px;
 }
@@ -126,7 +124,7 @@ body{
   text-align:center;
   font-size:.75rem;
   color:#888;
-  margin-top:6px;
+  margin-top:8px;
 }
 
 .btn-cancel{
@@ -140,11 +138,6 @@ body{
   color:#ef4444;
   font-weight:600;
   cursor:pointer;
-  transition:.2s;
-}
-
-.btn-cancel:active{
-  transform:scale(.97);
 }
 </style>
 </head>
@@ -165,19 +158,11 @@ body{
 
   <div class="spinner"></div>
 
-  <div class="route">
-    <strong id="origem"></strong>
-    <br>↓<br>
-    <strong id="destino"></strong>
-  </div>
+  <div id="detalhamento"></div>
 
-  <div class="categoria" id="categoria"></div>
+  <div class="total" id="totalFinal"></div>
 
-  <div class="total" id="total"></div>
-
-  <div class="timer" id="timer">
-    Tempo de espera: 0s
-  </div>
+  <div class="timer" id="timer">Tempo de espera: 0s</div>
 
   <button class="btn-cancel" onclick="cancelar()">
     Cancelar corrida
@@ -190,15 +175,66 @@ body{
 
 <script>
 
-const origem = App.get("origem") || "-";
-const destino = App.get("destino") || "-";
-const total = Number(App.get("total") || 0);
-const categoriaSelecionada = App.get("categoria") || "Driver";
+/* ===========================
+   LER DADOS COMPLETOS
+=========================== */
 
-document.getElementById("origem").innerText = origem;
-document.getElementById("destino").innerText = destino;
-document.getElementById("total").innerText = "R$ " + total.toFixed(2);
-document.getElementById("categoria").innerText = categoriaSelecionada;
+const corrida = JSON.parse(localStorage.getItem("rf_corrida_temp")) || {};
+const totalFinal = Number(localStorage.getItem("rf_total_final")) || 0;
+const categoria = localStorage.getItem("rf_categoria") || "Driver";
+
+const origem = corrida.origem || "-";
+const parada = corrida.parada || null;
+const destino = corrida.destino || "-";
+
+/* ===========================
+   MONTAR DETALHAMENTO
+=========================== */
+
+let detalhesHTML = `
+  <div class="linha"><span>Origem</span><span>${origem}</span></div>
+`;
+
+if(parada){
+  detalhesHTML += `
+    <div class="linha"><span>Parada</span><span>${parada}</span></div>
+  `;
+}
+
+detalhesHTML += `
+  <div class="linha"><span>Destino</span><span>${destino}</span></div>
+  <div class="linha"><span>Categoria</span><span>${categoria}</span></div>
+`;
+
+/* Dinâmico */
+if(Dinamico.ativo){
+  detalhesHTML += `
+    <div class="linha">
+      <span>Tarifa dinâmica (${Dinamico.multiplicador}x)</span>
+      <span>Aplicada</span>
+    </div>
+  `;
+}
+
+/* Noturno */
+const agora = new Date();
+const hora = agora.getHours() + (agora.getMinutes()/60);
+if(hora >= 22.5 || hora <= 5){
+  detalhesHTML += `
+    <div class="linha">
+      <span>Adicional noturno</span>
+      <span>Incluído</span>
+    </div>
+  `;
+}
+
+document.getElementById("detalhamento").innerHTML = detalhesHTML;
+document.getElementById("totalFinal").innerText =
+  "Total: R$ " + totalFinal.toFixed(2);
+
+/* ===========================
+   TIMER + STATUS PROGRESSIVO
+=========================== */
 
 let segundos = 0;
 
@@ -219,16 +255,22 @@ setInterval(()=>{
 
 },1000);
 
-/* ===== CANCELAR ===== */
+/* ===========================
+   CANCELAR
+=========================== */
 
 function cancelar(){
   if(confirm("Deseja cancelar a corrida?")){
-    App.reset();
+    localStorage.removeItem("rf_corrida_temp");
+    localStorage.removeItem("rf_total_final");
+    localStorage.removeItem("rf_categoria");
     App.go("viagem.html");
   }
 }
 
-/* ===== BACKEND (INALTERADO) ===== */
+/* ===========================
+   CRIAR CORRIDA COMPLETA
+=========================== */
 
 async function criarCorrida() {
 
@@ -237,9 +279,13 @@ async function criarCorrida() {
     .insert([
       {
         origem: origem,
+        parada: parada,
         destino: destino,
-        valor: total,
-        categoria: categoriaSelecionada,
+        categoria: categoria,
+        valor_total: totalFinal,
+        tarifa_dinamica: Dinamico.ativo,
+        multiplicador_dinamico: Dinamico.ativo ? Dinamico.multiplicador : null,
+        adicional_noturno: (hora >= 22.5 || hora <= 5),
         status: "procurando"
       }
     ])

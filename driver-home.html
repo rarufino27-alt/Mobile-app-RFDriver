@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>RF Driver</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+body{
+  background:#fff;
+  overflow:hidden;
+}
+
+/* ===== HEADER ===== */
+
+.header{
+  background:#facc15;
+  height:90px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  position:relative;
+}
+
+.menu-btn{
+  font-size:1.5rem;
+  cursor:pointer;
+}
+
+.logo{
+  font-weight:900;
+  font-size:1.2rem;
+  color:#fff;
+  letter-spacing:1px;
+}
+
+.valor-dia{
+  position:absolute;
+  bottom:-20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#000;
+  color:#fff;
+  padding:8px 20px;
+  border-radius:30px;
+  font-weight:700;
+  font-size:.9rem;
+}
+
+/* ===== MAPA ESTÁTICO ===== */
+
+.mapa{
+  position:absolute;
+  top:90px;
+  bottom:120px;
+  left:0;
+  right:0;
+  background:url("https://maps.gstatic.com/tactile/basepage/pegman_sherlock.png") center center no-repeat,
+             linear-gradient(#eaeaea,#f8f8f8);
+  background-size:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#999;
+  font-weight:600;
+}
+
+/* ===== BOTÃO STATUS ===== */
+
+.status-container{
+  position:absolute;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+}
+
+.status-btn{
+  padding:15px 50px;
+  border:none;
+  border-radius:40px;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.offline{
+  background:#ddd;
+  color:#000;
+}
+
+.online{
+  background:#22c55e;
+  color:#fff;
+}
+
+/* ===== MENU LATERAL ===== */
+
+.menu{
+  position:fixed;
+  top:0;
+  left:-260px;
+  width:260px;
+  height:100%;
+  background:#fff;
+  box-shadow:2px 0 15px rgba(0,0,0,.15);
+  transition:.3s;
+  z-index:1000;
+  padding:20px;
+}
+
+.menu.ativo{
+  left:0;
+}
+
+.menu-header{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.menu-header img{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  object-fit:cover;
+  margin-bottom:10px;
+}
+
+.menu-header h3{
+  font-size:1rem;
+}
+
+.menu-header span{
+  font-size:.8rem;
+  color:#777;
+}
+
+.menu ul{
+  list-style:none;
+}
+
+.menu ul li{
+  padding:12px 0;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+  font-size:.95rem;
+}
+
+.menu ul li:hover{
+  color:#facc15;
+}
+
+/* ===== OVERLAY ===== */
+
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.3);
+  display:none;
+  z-index:900;
+}
+
+.overlay.ativo{
+  display:block;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  <div class="logo">RF DRIVER</div>
+  <div></div>
+  <div class="valor-dia" id="valorDia">R$ 0,00</div>
+</div>
+
+<div class="mapa">
+  MAPA (EM BREVE INTEGRAÇÃO REAL)
+</div>
+
+<div class="status-container">
+  <button id="statusBtn" class="status-btn offline" onclick="toggleStatus()">CONECTAR</button>
+</div>
+
+<div class="menu" id="menu">
+  <div class="menu-header">
+    <img src="https://i.pravatar.cc/150?img=3" alt="Foto">
+    <h3>Rafael ⭐ 5.0</h3>
+    <span>Toque para editar perfil</span>
+  </div>
+
+  <ul>
+    <li onclick="irPara('ganhos')">Ganhos</li>
+    <li onclick="irPara('historico')">Histórico de Corridas</li>
+    <li onclick="irPara('carteira')">Carteira</li>
+    <li onclick="irPara('indicar')">Indique um Motorista</li>
+    <li onclick="abrirWhats()">Central de Ajuda</li>
+    <li onclick="irPara('notificacoes')">Notificações</li>
+    <li onclick="irPara('configuracoes')">Configurações</li>
+    <li onclick="logout()">Sair</li>
+  </ul>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<script>
+
+function toggleMenu(){
+  document.getElementById("menu").classList.toggle("ativo");
+  document.getElementById("overlay").classList.toggle("ativo");
+}
+
+function toggleStatus(){
+  const btn = document.getElementById("statusBtn");
+
+  if(btn.classList.contains("offline")){
+    btn.classList.remove("offline");
+    btn.classList.add("online");
+    btn.innerText = "DESCONECTAR";
+  } else {
+    btn.classList.remove("online");
+    btn.classList.add("offline");
+    btn.innerText = "CONECTAR";
+  }
+}
+
+function abrirWhats(){
+  window.open("https://wa.me/5599999999999","_blank"); // colocar número real do suporte RF
+}
+
+function irPara(pagina){
+  alert("Página: " + pagina + " (em construção)");
+}
+
+function logout(){
+  alert("Sessão encerrada.");
+}
+
+function atualizarValorDia(){
+  const valor = Number(localStorage.getItem("rf_driver_ganho_dia")) || 0;
+  document.getElementById("valorDia").innerText = 
+    "R$ " + valor.toFixed(2);
+}
+
+atualizarValorDia();
+
+</script>
+
+</body>
+</html>

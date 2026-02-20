@@ -1,0 +1,21 @@
+{
+  "name": "RF Passageiro",
+  "short_name": "RF",
+  "start_url": "/passageiro/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#facc15",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/rf-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/rf-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
